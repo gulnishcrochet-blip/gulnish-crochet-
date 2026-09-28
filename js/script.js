@@ -703,13 +703,17 @@
     if (productsView) productsView.hidden = true;
   }
 
-  function showProducts(catKey) {
+  function showProducts(catKey, subKey) {
     if (categoryView) categoryView.hidden = true;
     if (productsView) productsView.hidden = false;
     if (searchInput) searchInput.value = "";
-    document.querySelectorAll(".filter-btn").forEach(function (b) {
-      b.classList.toggle("active", b.dataset.filter === catKey);
-    });
+    if (filterWrap) {
+      filterWrap.querySelectorAll(".filter-btn").forEach(function (b) {
+        b.classList.toggle("active", b.dataset.filter === catKey);
+      });
+    }
+    buildSubFilters(catKey);
+    setSubFilterUI(subKey || "all");
     visibleCount = INITIAL_VISIBLE;
     applyFilters();
     if (productsView) {
