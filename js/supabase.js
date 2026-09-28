@@ -307,8 +307,6 @@
           if (target) {
             p.category = target.category;
             p.subcategory = target.subcategory;
-            /* Keep the label in step with the category it just moved to. */
-            p.name = p.name || "Untitled product";
           }
           if (carried.some(function (c) { return c.id === p.id; })) return;
           carried.push(p);
