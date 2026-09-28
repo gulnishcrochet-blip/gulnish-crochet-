@@ -192,6 +192,7 @@
   var cancelEditBtn = document.getElementById("cancelEdit");
   var deleteProductBtn = document.getElementById("deleteProduct");
   var formTitle = document.getElementById("formTitle");
+  var subcategoryWarn = document.getElementById("subcategoryWarn");
 
   function resetForm() {
     editingId = null;
