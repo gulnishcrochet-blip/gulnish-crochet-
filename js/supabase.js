@@ -101,17 +101,24 @@
   /* ---------- default settings (mirrors original) ---------- */
 
   /* Categories are positional: the key for the category at index i is
-     "gr" + (i + 1), and every product stores that key verbatim. New categories
-     are therefore always APPENDED - inserting one would silently re-point
-     every existing product at the wrong category. */
-  var DEFAULT_COUNT = 8;
-  var DEFAULT_NAMES = ["Purses", "Gajrays", "Keychains"];
-  var EXTRA_CATEGORY_NAMES = { 4: "Bags", 5: "Jewellery", 6: "Headband", 7: "Bouquet", 8: "Gifts" };
+     "gr" + (i + 1), and every product stores that key verbatim. Re-ordering,
+     merging or removing a category therefore re-points every product whose
+     key moves, so TAXONOMY_VERSION below is how a layout change tells saved
+     settings (localStorage or the settings table) to adopt the new shape
+     instead of keeping names that now sit on the wrong products. */
+  var DEFAULT_COUNT = 6;
+  var DEFAULT_NAMES = ["Purse/Bags", "Gajrays"];
+  var EXTRA_CATEGORY_NAMES = { 3: "Jewellery", 4: "Headband", 5: "Bouquet", 6: "Gifts" };
 
   /* Subcategories are positional inside their parent, so the key is "sg" +
      (index + 1) and is only ever read alongside the product's own category.
      A blank entry list means "no subcategories" - most categories are flat. */
-  var EXTRA_SUBCATEGORY_NAMES = { 8: ["Shirt Keychain"] };
+  var EXTRA_SUBCATEGORY_NAMES = { 6: ["Keychains"] };
+
+  /* Bump whenever the category list, their order, or their subcategories
+     change. Saved settings stamped with an older value keep their WhatsApp
+     number, bank details and delivery times, but take the new taxonomy. */
+  var TAXONOMY_VERSION = 2;
 
   function subKey(i) { return "sg" + (i + 1); }
   function subIndexOf(key) { return parseInt(String(key || "").replace("sg", ""), 10) - 1; }
@@ -124,14 +131,12 @@
   }
 
   var CATEGORY_IMAGE_SETS = {
-    gr1: ["images/purses/purse-1.webp", "images/purses/purse-2.webp", "images/purses/purse-23.webp", "images/purses/purse-24.webp"],
+    gr1: ["images/purses/purse-1.webp", "images/purses/purse-2.webp", "images/purses/purse-23.webp", "images/bags/bag-1.webp", "images/purses/purse-24.webp"],
     gr2: [],
-    gr3: ["images/keychains/keychain-1.webp", "images/keychains/keychain-2.webp"],
-    gr4: ["images/bags/bag-1.webp", "images/bags/bag-2.webp"],
-    gr5: ["images/jewellery/jewellery-1.webp", "images/jewellery/jewellery-2.webp", "images/jewellery/jewellery-3.webp", "images/jewellery/jewellery-4.webp", "images/jewellery/jewellery-5.webp", "images/jewellery/jewellery-6.webp", "images/jewellery/jewellery-7.webp", "images/jewellery/jewellery-8.webp", "images/jewellery/jewellery-9.webp"],
-    gr6: ["images/headbands/headband-1.webp", "images/headbands/headband-2.webp"],
-    gr7: ["images/bouquets/bouquet-1.webp", "images/bouquets/bouquet-2.webp", "images/bouquets/bouquet-3.webp", "images/bouquets/bouquet-4.webp", "images/bouquets/bouquet-5.webp", "images/bouquets/bouquet-6.webp", "images/bouquets/bouquet-7.webp"],
-    gr8: []
+    gr3: ["images/jewellery/jewellery-1.webp", "images/jewellery/jewellery-2.webp", "images/jewellery/jewellery-3.webp", "images/jewellery/jewellery-4.webp", "images/jewellery/jewellery-5.webp", "images/jewellery/jewellery-6.webp", "images/jewellery/jewellery-7.webp", "images/jewellery/jewellery-8.webp", "images/jewellery/jewellery-9.webp"],
+    gr4: ["images/headbands/headband-1.webp", "images/headbands/headband-2.webp"],
+    gr5: ["images/bouquets/bouquet-1.webp", "images/bouquets/bouquet-2.webp", "images/bouquets/bouquet-3.webp", "images/bouquets/bouquet-4.webp", "images/bouquets/bouquet-5.webp", "images/bouquets/bouquet-6.webp", "images/bouquets/bouquet-7.webp"],
+    gr6: ["images/keychains/keychain-1.webp", "images/keychains/keychain-2.webp"]
   };
 
   /* Keys may be a whole category (gr2) or a single product id. A product with
@@ -142,27 +147,21 @@
   var HIDE_PRODUCT_IMAGES = {
     gr2: true,
     "seed_gr1_6": true,
-    "seed_gr1_7": true,
-    "seed_gr8_1": true
+    "seed_gr1_7": true
   };
 
   /* ---------- placeholder product catalog ---------- */
   var RAW_IMAGES = {
-    gr1: ["images/purses/purse-1.webp", "images/purses/purse-2.webp", "images/purses/purse-3.webp", "images/purses/purse-4.webp", "images/purses/purse-5.webp", "images/purses/purse-6.webp", "images/purses/purse-7.webp", "images/purses/purse-8.webp", "images/purses/purse-9.webp", "images/purses/purse-10.webp", "images/purses/purse-11.webp", "images/purses/purse-12.webp", "images/purses/purse-13.webp", "images/purses/purse-14.webp", "images/purses/purse-15.webp", "images/purses/purse-16.webp", "images/purses/purse-17.webp", "images/purses/purse-18.webp", "images/purses/purse-19.webp", "images/purses/purse-20.webp", "images/purses/purse-21.webp", "images/purses/purse-22.webp", "images/purses/purse-23.webp", "images/purses/purse-24.webp", "images/purses/purse-25.webp", "images/purses/purse-26.webp", "images/purses/purse-27.webp", "images/purses/purse-28.webp", "images/purses/purse-29.webp", "images/purses/purse-30.webp", "images/purses/purse-31.webp", "images/purses/purse-32.webp", "images/purses/purse-33.webp"],
+    gr1: ["images/purses/purse-1.webp", "images/purses/purse-2.webp", "images/purses/purse-3.webp", "images/purses/purse-4.webp", "images/purses/purse-5.webp", "images/purses/purse-6.webp", "images/purses/purse-7.webp", "images/purses/purse-8.webp", "images/purses/purse-9.webp", "images/purses/purse-10.webp", "images/purses/purse-11.webp", "images/purses/purse-12.webp", "images/purses/purse-13.webp", "images/purses/purse-14.webp", "images/purses/purse-15.webp", "images/purses/purse-16.webp", "images/purses/purse-17.webp", "images/purses/purse-18.webp", "images/purses/purse-19.webp", "images/purses/purse-20.webp", "images/purses/purse-21.webp", "images/purses/purse-22.webp", "images/purses/purse-23.webp", "images/purses/purse-24.webp", "images/purses/purse-25.webp", "images/purses/purse-26.webp", "images/purses/purse-27.webp", "images/purses/purse-28.webp", "images/purses/purse-29.webp", "images/purses/purse-30.webp", "images/purses/purse-31.webp", "images/purses/purse-32.webp", "images/purses/purse-33.webp", "images/bags/bag-1.webp", "images/bags/bag-2.webp", "images/bags/bag-3.webp", "images/bags/bag-4.webp"],
     gr2: ["images/gajrays/gajray-1.webp", "images/gajrays/gajray-9.webp", "images/gajrays/gajray-4.webp", "images/gajrays/gajray-5.webp", "images/gajrays/gajray-6.webp", "images/gajrays/gajray-8.webp", "images/gajrays/gajray-10.webp", "images/gajrays/gajray-11.webp", "images/gajrays/gajray-12.webp", "images/gajrays/gajray-13.webp", "images/gajrays/gajray-14.webp", "images/gajrays/gajray-15.webp", "images/gajrays/gajray-16.webp", "images/gajrays/gajray-17.webp"],
-    gr3: ["images/keychains/keychain-1.webp", "images/keychains/keychain-2.webp", "images/keychains/keychain-3.webp", "images/keychains/keychain-4.webp", "images/keychains/keychain-5.webp", "images/keychains/keychain-6.webp", "images/keychains/keychain-7.webp", "images/keychains/keychain-8.webp", "images/keychains/keychain-9.webp", "images/keychains/keychain-10.webp", "images/keychains/keychain-11.webp", "images/keychains/keychain-12.webp", "images/keychains/keychain-13.webp", "images/keychains/keychain-14.webp", "images/keychains/keychain-15.webp", "images/keychains/keychain-16.webp", "images/keychains/keychain-17.webp", "images/keychains/keychain-18.webp", "images/keychains/keychain-19.webp", "images/keychains/keychain-20.webp"],
-    gr4: ["images/bags/bag-1.webp", "images/bags/bag-2.webp", "images/bags/bag-3.webp", "images/bags/bag-4.webp"],
-    gr5: ["images/jewellery/jewellery-1.webp", "images/jewellery/jewellery-2.webp", "images/jewellery/jewellery-3.webp", "images/jewellery/jewellery-4.webp", "images/jewellery/jewellery-5.webp", "images/jewellery/jewellery-6.webp", "images/jewellery/jewellery-7.webp", "images/jewellery/jewellery-8.webp", "images/jewellery/jewellery-9.webp"],
-    gr6: ["images/headbands/headband-1.webp", "images/headbands/headband-2.webp", "images/headbands/headband-3.webp"],
-    gr7: ["images/bouquets/bouquet-1.webp", "images/bouquets/bouquet-2.webp", "images/bouquets/bouquet-3.webp", "images/bouquets/bouquet-4.webp", "images/bouquets/bouquet-5.webp", "images/bouquets/bouquet-6.webp", "images/bouquets/bouquet-7.webp"],
-    /* Gifts holds subcategories, and the shirt keychains are not photographed
-       yet, so the seed entry is deliberately image-less: the card falls back to
-       the "picture will be uploaded soon" slot and its price stays unquoted. */
-    gr8: ["images/gifts/shirt-keychain-1.webp"]
+    gr3: ["images/jewellery/jewellery-1.webp", "images/jewellery/jewellery-2.webp", "images/jewellery/jewellery-3.webp", "images/jewellery/jewellery-4.webp", "images/jewellery/jewellery-5.webp", "images/jewellery/jewellery-6.webp", "images/jewellery/jewellery-7.webp", "images/jewellery/jewellery-8.webp", "images/jewellery/jewellery-9.webp"],
+    gr4: ["images/headbands/headband-1.webp", "images/headbands/headband-2.webp", "images/headbands/headband-3.webp"],
+    gr5: ["images/bouquets/bouquet-1.webp", "images/bouquets/bouquet-2.webp", "images/bouquets/bouquet-3.webp", "images/bouquets/bouquet-4.webp", "images/bouquets/bouquet-5.webp", "images/bouquets/bouquet-6.webp", "images/bouquets/bouquet-7.webp"],
+    gr6: ["images/keychains/keychain-1.webp", "images/keychains/keychain-2.webp", "images/keychains/keychain-3.webp", "images/keychains/keychain-4.webp", "images/keychains/keychain-5.webp", "images/keychains/keychain-6.webp", "images/keychains/keychain-7.webp", "images/keychains/keychain-8.webp", "images/keychains/keychain-9.webp", "images/keychains/keychain-10.webp", "images/keychains/keychain-11.webp", "images/keychains/keychain-12.webp", "images/keychains/keychain-13.webp", "images/keychains/keychain-14.webp", "images/keychains/keychain-15.webp", "images/keychains/keychain-16.webp", "images/keychains/keychain-17.webp", "images/keychains/keychain-18.webp", "images/keychains/keychain-19.webp", "images/keychains/keychain-20.webp"]
   };
 
-  var ITEM_NAME  = { gr1: "Purse",    gr2: "Gajray",    gr3: "Keychain", gr4: "Bag",      gr5: "Jewellery", gr6: "Headband", gr7: "Bouquet", gr8: "Shirt Keychain" };
-  var BASE_PRICE = { gr1: 850, gr2: 400, gr3: 350, gr4: 1400, gr5: 550, gr6: 450, gr7: 1999, gr8: 450 };
+  var ITEM_NAME  = { gr1: "Purse", gr2: "Gajray", gr3: "Jewellery", gr4: "Headband", gr5: "Bouquet", gr6: "Keychain" };
+  var BASE_PRICE = { gr1: 850, gr2: 400, gr3: 550, gr4: 450, gr5: 1999, gr6: 350 };
 
   var REAL_PRODUCTS = {
     "seed_gr4_1": { name: "Bag 1", price: 1599 },
