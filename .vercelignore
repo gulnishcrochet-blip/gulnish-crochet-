@@ -5,3 +5,9 @@ supabase-v20.sql
 .gitignore
 .gitattributes
 *.md
+
+# Never upload local env files. `vercel link` writes a .env.local holding a
+# VERCEL_OIDC_TOKEN into the project root, and a root file is published as a
+# static asset - without this it would be readable at /.env.local.
+.env*
+.vercel/

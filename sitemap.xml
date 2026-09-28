@@ -1,49 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://gulnish-crochet.vercel.app/</loc>
+    <loc>https://gulnish-crochet-eight.vercel.app/</loc>
     <lastmod>2026-09-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://gulnish-crochet.vercel.app/products</loc>
+    <loc>https://gulnish-crochet-eight.vercel.app/products</loc>
     <lastmod>2026-09-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://gulnish-crochet.vercel.app/about</loc>
+    <loc>https://gulnish-crochet-eight.vercel.app/about</loc>
     <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://gulnish-crochet.vercel.app/contact</loc>
+    <loc>https://gulnish-crochet-eight.vercel.app/contact</loc>
     <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://gulnish-crochet.vercel.app/track</loc>
+    <loc>https://gulnish-crochet-eight.vercel.app/track</loc>
     <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
-    <loc>https://gulnish-crochet.vercel.app/privacy</loc>
+    <loc>https://gulnish-crochet-eight.vercel.app/privacy</loc>
     <lastmod>2026-09-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://gulnish-crochet.vercel.app/terms</loc>
+    <loc>https://gulnish-crochet-eight.vercel.app/terms</loc>
     <lastmod>2026-09-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://gulnish-crochet.vercel.app/refund</loc>
+    <loc>https://gulnish-crochet-eight.vercel.app/refund</loc>
     <lastmod>2026-09-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
