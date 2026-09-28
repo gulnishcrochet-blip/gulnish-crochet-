@@ -271,12 +271,6 @@
     gr6: ["keychain", "keyring", "small gift", "cute", "handmade", "gift", "wholesale"]
   };
 
-  /* Seed products whose subcategory is fixed rather than positional. Anything
-     not listed falls back to the first subcategory of its category. */
-  var PRODUCT_SUBCATEGORY = {
-    "seed_gr8_1": "sg1"
-  };
-
   function defaultProducts() {
     var settings = defaultSettings();
     var cats = settings.categories;
