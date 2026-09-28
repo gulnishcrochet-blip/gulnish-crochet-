@@ -365,9 +365,10 @@
 
         var old = lsGet(key, []);
         if (!Array.isArray(old)) continue;
-        /* Rows saved under v46 used the Wedding Gift layout, v45 the six
-           category one, and anything older the original eight - where the same
-           gr key meant something completely different. */
+        /* Rows saved under v46 and v47 used the layout where Headband and Gifts
+           were separate top-level categories, v45 the six category one, and
+           anything older the original eight - where the same gr key meant
+           something completely different. */
         var version = parseInt(String(key).replace(/^gulnish-products-v/, ""), 10);
         var map = version >= 46
           ? LEGACY_CATEGORY_MAP
