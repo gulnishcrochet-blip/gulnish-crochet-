@@ -315,11 +315,19 @@
     pencilbox: ["pencil box", "pencil case", "pen holder", "pouch"]
   };
 
-  /* Two older layouts have to be recognised, and they disagree about what the
-     same gr key means, so the map is chosen by which stored version the rows
+  /* Three older layouts have to be recognised, and they disagree about what
+     the same gr key means, so the map is chosen by which stored version the rows
      came from rather than by the key alone. */
   var LEGACY_CATEGORY_MAP = {
-    /* v45 and older: six categories, keychains already under Gifts. */
+    /* v46: the first Wedding Gift layout. gr1-gr4 are unchanged here, and the
+       Wedding Gift subcategory keys are the same, so this is the identity. */
+    gr1: { category: "gr1", subcategory: "" },
+    gr2: { category: "gr2", subcategory: "" },
+    gr3: { category: "gr3", subcategory: "" },
+    gr4: { category: "gr4", subcategory: "" }
+  };
+  var LEGACY_CATEGORY_MAP_SIX = {
+    /* v45: six categories, keychains already under Gifts. */
     gr1: { category: "gr1", subcategory: "" },           /* Purse/Bags -> Purse/Bags  */
     gr2: { category: "gr2", subcategory: "sg1" },        /* Gajrays    -> Wedding Gift */
     gr3: { category: "gr2", subcategory: "sg2" },        /* Jewellery  -> Wedding Gift */
