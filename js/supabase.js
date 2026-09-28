@@ -141,9 +141,9 @@
     gr2: ["images/bouquets/bouquet-1.webp", "images/bouquets/bouquet-4.webp", "images/bouquets/bouquet-5.webp", "images/jewellery/jewellery-1.webp", "images/jewellery/jewellery-4.webp"],
     /* Small Gifts: the keychain shots, then the headband shots. */
     gr3: ["images/keychains/keychain-1.webp", "images/keychains/keychain-2.webp", "images/headbands/headband-1.webp", "images/headbands/headband-2.webp"],
-    /* School Items: a geometry box leads, then the pencil shots, so the home
+    /* School Items: the geometry shots lead, then the pencils, so the home
        card no longer shows the photo-pending slot. */
-    gr4: ["images/geometrybox/geometrybox-1.webp", "images/geometrybox/geometrybox-2.webp", "images/geometrybox/geometrybox-6.webp", "images/pencil/pencil-1.webp", "images/pencil/pencil-5.webp"]
+    gr4: ["images/geometry/geometry-1.webp", "images/geometry/geometry-2.webp", "images/geometry/geometry-5.webp", "images/pencil/pencil-1.webp", "images/pencil/pencil-5.webp"]
   };
 
   /* Keys may be a whole group (gajrays) or a single product id. A product with
