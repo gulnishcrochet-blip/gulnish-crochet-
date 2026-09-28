@@ -381,7 +381,11 @@
       });
       s.subcategories = sb2;
     }
-    if (base.categoryImages && typeof base.categoryImages === "object") {
+    /* Category images are keyed by grN too, so they are only reusable while
+       the layout is unchanged - otherwise a saved keychain photo would end up
+       on whatever now sits at gr3. A re-laid-out shop falls back to the
+       bundled defaults and the owner re-uploads from the admin panel. */
+    if (sameTaxonomy && base.categoryImages && typeof base.categoryImages === "object") {
       var ci = {};
       s.categories.forEach(function (_, i) {
         var k = "gr" + (i + 1);
