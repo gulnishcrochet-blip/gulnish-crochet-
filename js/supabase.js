@@ -82,9 +82,28 @@
   var _onOrdersChanged = null;
 
   /* ---------- default settings (mirrors original) ---------- */
-  var DEFAULT_COUNT = 7;
+  /* Categories are positional: the key for the category at index i is
+     "gr" + (i + 1), and every product stores that key verbatim. New categories
+     are therefore always APPENDED - inserting one would silently re-point
+     every existing product at the wrong category. */
+  var DEFAULT_COUNT = 8;
   var DEFAULT_NAMES = ["Purses", "Gajrays", "Keychains"];
-  var EXTRA_CATEGORY_NAMES = { 4: "Bags", 5: "Jewellery", 6: "Headband", 7: "Bouquet" };
+  var EXTRA_CATEGORY_NAMES = { 4: "Bags", 5: "Jewellery", 6: "Headband", 7: "Bouquet", 8: "Gifts" };
+
+  /* Subcategories are positional inside their parent, so the key is "sg" +
+     (index + 1) and is only ever read alongside the product's own category.
+     A blank entry list means "no subcategories" - most categories are flat. */
+  var EXTRA_SUBCATEGORY_NAMES = { 8: ["Shirt Keychain"] };
+
+  function subKey(i) { return "sg" + (i + 1); }
+  function subIndexOf(key) { return parseInt(String(key || "").replace("sg", ""), 10) - 1; }
+  function defaultSubcategories() {
+    var out = {};
+    for (var i = 0; i < DEFAULT_COUNT; i += 1) {
+      out["gr" + (i + 1)] = (EXTRA_SUBCATEGORY_NAMES[i + 1] || []).slice();
+    }
+    return out;
+  }
 
   var CATEGORY_IMAGE_SETS = {
     gr1: ["images/purses/purse-1.webp", "images/purses/purse-2.webp", "images/purses/purse-23.webp", "images/purses/purse-24.webp"],
@@ -93,7 +112,8 @@
     gr4: ["images/bags/bag-1.webp", "images/bags/bag-2.webp"],
     gr5: ["images/jewellery/jewellery-1.webp", "images/jewellery/jewellery-2.webp", "images/jewellery/jewellery-3.webp", "images/jewellery/jewellery-4.webp", "images/jewellery/jewellery-5.webp", "images/jewellery/jewellery-6.webp", "images/jewellery/jewellery-7.webp", "images/jewellery/jewellery-8.webp", "images/jewellery/jewellery-9.webp"],
     gr6: ["images/headbands/headband-1.webp", "images/headbands/headband-2.webp"],
-    gr7: ["images/bouquets/bouquet-1.webp", "images/bouquets/bouquet-2.webp", "images/bouquets/bouquet-3.webp", "images/bouquets/bouquet-4.webp", "images/bouquets/bouquet-5.webp", "images/bouquets/bouquet-6.webp", "images/bouquets/bouquet-7.webp"]
+    gr7: ["images/bouquets/bouquet-1.webp", "images/bouquets/bouquet-2.webp", "images/bouquets/bouquet-3.webp", "images/bouquets/bouquet-4.webp", "images/bouquets/bouquet-5.webp", "images/bouquets/bouquet-6.webp", "images/bouquets/bouquet-7.webp"],
+    gr8: []
   };
 
   /* Keys may be a whole category (gr2) or a single product id. A product with
