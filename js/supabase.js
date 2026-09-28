@@ -330,7 +330,7 @@
     bouquets: ["bouquet", "flowers", "rose", "bride"],
     keychains: ["keychain", "keyring", "key holder", "wholesale"],
     headbands: ["headband", "head band", "hairband", "hair band", "hair accessory", "girl"],
-    geometrybox: ["geometry box", "geometry", "maths box", "maths kit", "drafter"],
+    geometry: ["geometry", "geometry box", "maths box", "maths kit", "drafter"],
     pencil: ["pencil", "pencils", "colour pencil", "color pencil", "writing"],
     pencilbox: ["pencil box", "pencil case", "pen holder", "pouch"]
   };
