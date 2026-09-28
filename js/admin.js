@@ -274,6 +274,7 @@
     };
 
     if (GC.saveProduct) await GC.saveProduct(product);
+    if (subcategoryWarn && GC.subcategoryColumnMissing) subcategoryWarn.hidden = false;
     resetForm();
     renderList();
   }
@@ -313,6 +314,7 @@
     cancelEditBtn.hidden = false;
     deleteProductBtn.hidden = false;
     fillCategorySelect(getSettings(), product.category);
+    fillSubCategorySelect(getSettings(), pCategory.value, product.subcategory || "");
     if (imageData) {
       pImagePreview.src = imageData;
       pImagePreview.hidden = false;
