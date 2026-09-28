@@ -352,7 +352,15 @@
     var base = raw && typeof raw === "object" ? raw : {};
     var s = defaultSettings();
 
-    var cats = Array.isArray(base.categories) ? base.categories : null;
+    /* Saved settings written against an older taxonomy keep their category
+       names only while the layout is unchanged. Once the categories are
+       merged, re-ordered or removed, the saved names describe keys that no
+       longer mean what they used to, so the new structure wins - but the
+       WhatsApp number, bank details and delivery times below are still kept,
+       which is the part the owner actually typed. */
+    var sameTaxonomy = base.taxonomyVersion === TAXONOMY_VERSION;
+
+    var cats = sameTaxonomy && Array.isArray(base.categories) ? base.categories : null;
     if (cats && cats.length) {
       /* A save made before a category existed holds fewer names than
          DEFAULT_COUNT. Keep those names and pad the rest with the defaults,
@@ -362,7 +370,7 @@
         .slice(0, DEFAULT_COUNT);
       s.categories = s.categories.map(function (fallback, i) { return saved[i] || fallback; });
     }
-    if (base.subcategories && typeof base.subcategories === "object") {
+    if (sameTaxonomy && base.subcategories && typeof base.subcategories === "object") {
       var sb2 = {};
       s.categories.forEach(function (_, i) {
         var k = "gr" + (i + 1);
