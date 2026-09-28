@@ -301,14 +301,14 @@
     "seed_pencil_4": 799,
     "seed_pencil_5": 799,
     "seed_pencil_6": 799,
-    "seed_geometrybox_1": 2499,
-    "seed_geometrybox_2": 2499,
-    "seed_geometrybox_3": 2499,
-    "seed_geometrybox_4": 2499,
-    "seed_geometrybox_5": 2499,
-    "seed_geometrybox_6": 2499,
-    "seed_geometrybox_7": 2499,
-    "seed_geometrybox_8": 2499
+    "seed_geometry_1": 2499,
+    "seed_geometry_2": 2499,
+    "seed_geometry_3": 2499,
+    "seed_geometry_4": 2499,
+    "seed_geometry_5": 2499,
+    "seed_geometry_6": 2499,
+    "seed_geometry_7": 2499,
+    "seed_geometry_8": 2499
   };
   var PRODUCT_KEYWORDS = {
     "seed_purses_3": ["3d rose purse", "rose purse", "3d rose", "rose handbag", "crochet rose"]
