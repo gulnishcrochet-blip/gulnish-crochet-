@@ -197,7 +197,7 @@
     pencilbox: { category: "gr4", subcategory: "sg3" }
   };
 
-  var ITEM_NAME  = { purses: "Purse", bags: "Bag", gajrays: "Gajray", jewellery: "Jewellery", headbands: "Headband", bouquets: "Bouquet", keychains: "Keychain", geometrybox: "Geometry Box", pencil: "Pencil", pencilbox: "Pencil Box" };
+  var ITEM_NAME  = { purses: "Purse", bags: "Bag", gajrays: "Gajray", jewellery: "Jewellery", headbands: "Headband", bouquets: "Bouquet", keychains: "Keychain", geometry: "Geometry", pencil: "Pencil", pencilbox: "Pencil Box" };
   var BASE_PRICE = { purses: 850, bags: 1500, gajrays: 400, jewellery: 550, headbands: 450, bouquets: 1999, keychains: 350 };
 
   var REAL_PRODUCTS = {
