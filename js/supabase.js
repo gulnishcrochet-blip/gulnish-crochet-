@@ -192,7 +192,7 @@
     bouquets: { category: "gr2", subcategory: "sg3" },
     headbands: { category: "gr3", subcategory: "sg2" },
     keychains: { category: "gr3", subcategory: "sg1" },
-    geometrybox: { category: "gr4", subcategory: "sg1" },
+    geometry: { category: "gr4", subcategory: "sg1" },
     pencil: { category: "gr4", subcategory: "sg2" },
     pencilbox: { category: "gr4", subcategory: "sg3" }
   };
