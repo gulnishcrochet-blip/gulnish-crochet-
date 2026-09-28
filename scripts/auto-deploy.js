@@ -66,7 +66,7 @@ function aheadCount() {
   }
 }
 
-/* netlify.toml serves /css and /js as `max-age=300, stale-while-revalidate=600`,
+/* vercel.json serves /css and /js as `max-age=300, stale-while-revalidate=600`,
    so the asset URL's ?v= query is what makes a new build reach an
    already-visited browser - Bump it whenever a css/js file changed,
    otherwise a style fix could sit invisible in browsers for a year.
@@ -186,8 +186,27 @@ function autopush() {
    serves it separately, and that side can fail or stall with no signal here.
    Confirm the site actually serves the version we just pushed, so a stale
    deploy is reported instead of silently assumed to be fine. */
+/* Where the site claims to live, read out of index.html's canonical link.
+   Hard-coding it here would mean every account move or domain change had to
+   edit this file as well as the pages, and a miss would silently verify one
+   host while another is what visitors actually get. scripts/set-origin.js
+   keeps both in step. */
+function liveOrigin() {
+  try {
+    const html = fs.readFileSync(path.join(ROOT, "index.html"), "utf8");
+    const m = html.match(/<link rel="canonical" href="(https:\/\/[^/"]+)/);
+    return m ? m[1] : null;
+  } catch (err) {
+    return null;
+  }
+}
+
 function verifyDeploy() {
-  const live = process.env.LIVE_URL || "https://gulnish-crochet.netlify.app";
+  const live = process.env.LIVE_URL || liveOrigin();
+  if (!live) {
+    console.error("[auto-deploy] no canonical origin in index.html - skipping deploy check");
+    return;
+  }
   let expected = null;
   try {
     const html = fs.readFileSync(path.join(ROOT, "index.html"), "utf8");
