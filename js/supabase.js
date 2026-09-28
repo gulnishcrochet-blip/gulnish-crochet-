@@ -362,21 +362,26 @@
     var subs = settings.subcategories;
     var out = [];
     Object.keys(RAW_IMAGES).forEach(function (key) {
-      var catIdx = parseInt(key.replace("gr", ""), 10) - 1;
+      var place = SEED_PLACEMENT[key];
+      if (!place) return;
+      var catIdx = parseInt(place.category.replace("gr", ""), 10) - 1;
       var label = cats[catIdx] || ITEM_NAME[key] || "Item";
       var name = ITEM_NAME[key] || label;
-      var parentSubs = subs[key] || [];
+      /* Keywords come from the category the product lands in, so a search for
+         "wedding gift" finds all three Wedding Gift branches, plus the terms
+         unique to this group of photos. */
+      var kw = (CATEGORY_KEYWORDS[place.category] || [label.toLowerCase()]).slice();
+      if (GROUP_KEYWORDS[key]) kw = kw.concat(GROUP_KEYWORDS[key]);
       RAW_IMAGES[key].forEach(function (img, i) {
         var id = "seed_" + key + "_" + (i + 1);
         var real = REAL_PRODUCTS[id];
-        var kw = (CATEGORY_KEYWORDS[key] || [label.toLowerCase()]).slice();
         if (PRODUCT_KEYWORDS[id]) kw = kw.concat(PRODUCT_KEYWORDS[id]);
         out.push({
           id: id,
           name: real ? real.name : name + " " + (i + 1),
           price: PRODUCT_PRICES[id] || (real ? real.price : (BASE_PRICE[key] || 500) + (i % 4) * 50),
-          category: key,
-          subcategory: parentSubs.length ? subKey(0) : "",
+          category: place.category,
+          subcategory: place.subcategory,
           image: HIDE_PRODUCT_IMAGES[key] || HIDE_PRODUCT_IMAGES[id] ? "" : img,
           keywords: kw,
           colors: [],
