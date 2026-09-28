@@ -271,6 +271,53 @@
     gr6: ["keychain", "keyring", "small gift", "cute", "handmade", "gift", "wholesale"]
   };
 
+  /* Where each category sat before the Purse/Bags + Gifts/Keychains re-layout.
+     Anything the owner filed by hand under the old keys moves to its new home;
+     unknown keys are left alone rather than guessed at. */
+  var LEGACY_CATEGORY_MAP = {
+    gr1: { category: "gr1", subcategory: "" },           /* Purses  -> Purse/Bags */
+    gr2: { category: "gr2", subcategory: "" },           /* Gajrays -> Gajrays     */
+    gr3: { category: "gr6", subcategory: "sg1" },        /* Keychains -> Gifts    */
+    gr4: { category: "gr1", subcategory: "" },           /* Bags    -> Purse/Bags  */
+    gr5: { category: "gr3", subcategory: "" },           /* Jewellery -> Jewellery*/
+    gr6: { category: "gr4", subcategory: "" },           /* Headband -> Headband  */
+    gr7: { category: "gr5", subcategory: "" },           /* Bouquet -> Bouquet    */
+    gr8: { category: "gr6", subcategory: "" }            /* Gifts   -> Gifts      */
+  };
+
+  /* Pull owner-created products out of any older gulnish-products-v* store and
+     re-file them on the current categories. Seed rows (ids like seed_gr1_1) are
+     skipped because the current seed is generated fresh. */
+  function migrateCustomProducts() {
+    var carried = [];
+    try {
+      for (var i = 0; i < localStorage.length; i++) {
+        var key = localStorage.key(i);
+        if (!key || key === LOCAL_PRODUCTS) continue;
+        if (!/^gulnish-products-v\d+$/.test(key)) continue;
+
+        var old = lsGet(key, []);
+        if (!Array.isArray(old)) continue;
+        old.forEach(function (raw) {
+          if (!raw || typeof raw !== "object") return;
+          if (String(raw.id || "").indexOf("seed_") === 0) return;
+
+          var target = LEGACY_CATEGORY_MAP[raw.category];
+          var p = normalizeProduct(raw);
+          if (target) {
+            p.category = target.category;
+            p.subcategory = target.subcategory;
+            /* Keep the label in step with the category it just moved to. */
+            p.name = p.name || "Untitled product";
+          }
+          if (carried.some(function (c) { return c.id === p.id; })) return;
+          carried.push(p);
+        });
+      }
+    } catch (e) { /* ignore */ }
+    return carried;
+  }
+
   function defaultProducts() {
     var settings = defaultSettings();
     var cats = settings.categories;
