@@ -398,6 +398,56 @@
     });
   }
 
+  /* Sub-filters only exist for categories that actually have subcategories, so
+     the row is empty (and hidden) for the flat ones. The active parent decides
+     what it offers, which keeps one row instead of a nested tree. */
+  function buildSubFilters(catKey) {
+    if (!subFilterWrap) return;
+    subFilterWrap.innerHTML = "";
+    var subs = subcategoriesOf(catKey);
+    if (!subs.length || catKey === "all") {
+      subFilterWrap.hidden = true;
+      activeSubFilter = "all";
+      return;
+    }
+    var products = getProducts().filter(function (p) { return p.category === catKey; });
+    var makeBtn = function (filter, label, active) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "filter-btn filter-btn--sub" + (active ? " active" : "");
+      btn.dataset.subFilter = filter;
+      btn.textContent = label;
+      return btn;
+    };
+    subFilterWrap.appendChild(makeBtn("all", "All " + (categoryLabelOf(catKey) || "items"), true));
+    subs.forEach(function (label, i) {
+      var key = "sg" + (i + 1);
+      if (!products.some(function (p) { return p.subcategory === key; })) return;
+      subFilterWrap.appendChild(makeBtn(key, label, false));
+    });
+    /* Every subcategory was empty, so there is nothing to narrow down. */
+    subFilterWrap.hidden = subFilterWrap.childElementCount < 2;
+    if (subFilterWrap.hidden) activeSubFilter = "all";
+  }
+
+  function activeCategoryKey() {
+    var btn = filterWrap && filterWrap.querySelector(".filter-btn.active");
+    return (btn && btn.dataset.filter) || "all";
+  }
+
+  function activeSubcategoryKey() {
+    var btn = subFilterWrap && subFilterWrap.querySelector(".filter-btn.active");
+    return (btn && btn.dataset.subFilter) || "all";
+  }
+
+  function setSubFilterUI(key) {
+    activeSubFilter = key || "all";
+    if (!subFilterWrap) return;
+    subFilterWrap.querySelectorAll(".filter-btn").forEach(function (b) {
+      b.classList.toggle("active", b.dataset.subFilter === activeSubFilter);
+    });
+  }
+
   var cards = [];
   var INITIAL_VISIBLE = 8;
   var SHOW_STEP = 8;
