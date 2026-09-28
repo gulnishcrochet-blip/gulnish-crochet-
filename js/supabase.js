@@ -17,7 +17,7 @@
 
   /* Bump LOCAL_PRODUCTS version whenever the seed catalog changes so
      returning visitors' browsers re-sync products (offline/localStorage mode). */
-  var LOCAL_PRODUCTS = "gulnish-products-v48";
+  var LOCAL_PRODUCTS = "gulnish-products-v49";
   var LOCAL_SETTINGS = "gulnish-settings-v2";
   var LOCAL_ORDERS = "gulnish-orders";
   var LOCAL_ADMIN_SESSION = "gulnish-admin-session";
@@ -326,7 +326,7 @@
      whatever the product already had", which is what the two layouts that
      already had subcategories need. */
   var LEGACY_CATEGORY_MAP = {
-    /* v46, v47 and v48: Headband was a top-level gr3 and Gifts was gr4. The
+    /* v46-v48: Headband was a top-level gr3 and Gifts was gr4. The
        two are now one Small Gifts at gr3, so gr4 has to land there too. */
     gr1: { category: "gr1", subcategory: "", guess: guessPurseOrBag },  /* Purse/Bags  */
     gr2: { category: "gr2", subcategory: null },          /* Wedding Gift (sg keys same) */
