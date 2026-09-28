@@ -545,6 +545,29 @@
     get products() { return products; },
     get settings() { return settings; },
     get orders() { return orders; },
+    /* True once a save has proved the products table has no subcategory
+       column, so the admin panel can show the migration notice. */
+    get subcategoryColumnMissing() { return subcategoryColumnMissing; },
+
+    /* ---- categories & subcategories ---- */
+    categoryKey: function (index) { return "gr" + (index + 1); },
+    subcategoryKey: subKey,
+    /* Labels a category's subcategories; [] for a flat category. */
+    subcategoriesOf: function (catKey) {
+      var map = (GC.settings || {}).subcategories || {};
+      var list = map[catKey];
+      return Array.isArray(list) ? list.slice() : [];
+    },
+    /* "Shirt Keychain" for ("gr8", "sg1"); "" when the pair is not set. */
+    subcategoryLabelOf: function (catKey, subKeyVal) {
+      var list = GC.subcategoriesOf(catKey);
+      var i = subIndexOf(subKeyVal);
+      return i >= 0 && list[i] ? list[i] : "";
+    },
+    /* First non-empty subcategory key of a category, or "". */
+    firstSubcategoryKeyOf: function (catKey) {
+      return GC.subcategoriesOf(catKey).length ? subKey(0) : "";
+    },
 
     /* ---- boot ---- */
     init: function () {
