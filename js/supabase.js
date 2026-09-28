@@ -188,10 +188,13 @@
     jewellery: { category: "gr2", subcategory: "sg2" },
     bouquets: { category: "gr2", subcategory: "sg3" },
     headbands: { category: "gr3", subcategory: "" },
-    keychains: { category: "gr4", subcategory: "sg1" }
+    keychains: { category: "gr4", subcategory: "sg1" },
+    geometrybox: { category: "gr5", subcategory: "sg1" },
+    pencil: { category: "gr5", subcategory: "sg2" },
+    pencilbox: { category: "gr5", subcategory: "sg3" }
   };
 
-  var ITEM_NAME  = { purses: "Purse", bags: "Bag", gajrays: "Gajray", jewellery: "Jewellery", headbands: "Headband", bouquets: "Bouquet", keychains: "Keychain" };
+  var ITEM_NAME  = { purses: "Purse", bags: "Bag", gajrays: "Gajray", jewellery: "Jewellery", headbands: "Headband", bouquets: "Bouquet", keychains: "Keychain", geometrybox: "Geometry Box", pencil: "Pencil", pencilbox: "Pencil Box" };
   var BASE_PRICE = { purses: 850, bags: 1500, gajrays: 400, jewellery: 550, headbands: 450, bouquets: 1999, keychains: 350 };
 
   var REAL_PRODUCTS = {
