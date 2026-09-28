@@ -302,14 +302,15 @@
   var CATEGORY_KEYWORDS = {
     gr1: ["handbag", "purse", "crochet bag", "tote", "shopper bag", "handmade", "gift", "woolen"],
     gr2: ["wedding gift", "wedding", "shaadi", "doli", "mehndi", "haldi", "bridal", "bride", "party", "gift"],
-    gr3: ["hairband", "hair accessory", "girl", "handmade", "gift"],
-    gr4: ["keychain", "keyring", "small gift", "cute", "handmade", "gift", "wholesale"],
-    gr5: ["school", "school supplies", "stationery", "back to school", "student", "pencil", "pencil box", "geometry box", "maths", "handmade"]
+    gr3: ["small gift", "keychain", "keyring", "headband", "hairband", "hair accessory", "cute", "handmade", "gift", "wholesale"],
+    gr4: ["school", "school supplies", "stationery", "back to school", "student", "pencil", "pencil box", "geometry box", "maths", "handmade"]
   };
   var GROUP_KEYWORDS = {
     gajrays: ["gajray", "gajra", "hair", "eid", "flowers", "party"],
     jewellery: ["jewellery", "jewelry", "necklace", "earrings", "accessory"],
     bouquets: ["bouquet", "flowers", "rose", "bride"],
+    keychains: ["keychain", "keyring", "key holder", "wholesale"],
+    headbands: ["headband", "head band", "hairband", "hair band", "hair accessory", "girl"],
     geometrybox: ["geometry box", "geometry", "maths box", "maths kit", "drafter"],
     pencil: ["pencil", "pencils", "colour pencil", "color pencil", "writing"],
     pencilbox: ["pencil box", "pencil case", "pen holder", "pouch"]
