@@ -116,7 +116,7 @@
     1: ["Purses", "Bags"],
     2: ["Gajrays", "Jewellery", "Bouquet"],
     3: ["Keychains", "Headband"],
-    4: ["Geometry Box", "Pencil", "Pencil Box"]
+    4: ["Geometry", "Pencil", "Pencil Box"]
   };
 
   /* Bump whenever the category list, their order, or their subcategories
