@@ -81,8 +81,7 @@
   var _orderSubscriptions = [];
   var _onOrdersChanged = null;
 
-  /* ---------- default settings (mirrors original) ---------- */
-  /* Categories are positional: the key for the category at index i is
+  /* ---------- default settings (mirrors original) ---------- */  /* Categories are positional: the key for the category at index i is
      "gr" + (i + 1), and every product stores that key verbatim. New categories
      are therefore always APPENDED - inserting one would silently re-point
      every existing product at the wrong category. */
