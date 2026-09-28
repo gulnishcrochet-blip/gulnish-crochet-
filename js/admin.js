@@ -505,7 +505,7 @@
   });
 
   function defaultCategoryNames() {
-    return ["Purse/Bags", "Wedding Gift", "Small Gifts", "School Items"];
+    return ["Purses/Bags", "Wedding Gift", "Small Gifts", "School Items"];
   }
 
   /* ---------- category images ---------- */

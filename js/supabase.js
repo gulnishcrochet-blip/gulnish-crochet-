@@ -107,7 +107,7 @@
      settings (localStorage or the settings table) to adopt the new shape
      instead of keeping names that now sit on the wrong products. */
   var DEFAULT_COUNT = 4;
-  var DEFAULT_NAMES = ["Purse/Bags", "Wedding Gift", "Small Gifts", "School Items"];
+  var DEFAULT_NAMES = ["Purses/Bags", "Wedding Gift", "Small Gifts", "School Items"];
 
   /* Subcategories are positional inside their parent, so the key is "sg" +
      (index + 1) and is only ever read alongside the product's own category.
@@ -122,7 +122,7 @@
   /* Bump whenever the category list, their order, or their subcategories
      change. Saved settings stamped with an older value keep their WhatsApp
      number, bank details and delivery times, but take the new taxonomy. */
-  var TAXONOMY_VERSION = 7;
+  var TAXONOMY_VERSION = 8;
 
   function subKey(i) { return "sg" + (i + 1); }
   function subIndexOf(key) { return parseInt(String(key || "").replace("sg", ""), 10) - 1; }
