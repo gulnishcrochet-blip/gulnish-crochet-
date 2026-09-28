@@ -139,7 +139,9 @@
        wedding-specific photos in the catalog and they are not hidden. */
     gr2: ["images/bouquets/bouquet-1.webp", "images/bouquets/bouquet-4.webp", "images/bouquets/bouquet-5.webp", "images/jewellery/jewellery-1.webp", "images/jewellery/jewellery-4.webp"],
     gr3: ["images/headbands/headband-1.webp", "images/headbands/headband-2.webp"],
-    gr4: ["images/keychains/keychain-1.webp", "images/keychains/keychain-2.webp"]
+    gr4: ["images/keychains/keychain-1.webp", "images/keychains/keychain-2.webp"],
+    /* No school photos yet, so the home card shows the photo-pending slot. */
+    gr5: []
   };
 
   /* Keys may be a whole group (gajrays) or a single product id. A product with
