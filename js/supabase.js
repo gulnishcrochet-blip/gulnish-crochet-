@@ -106,22 +106,22 @@
      key moves, so TAXONOMY_VERSION below is how a layout change tells saved
      settings (localStorage or the settings table) to adopt the new shape
      instead of keeping names that now sit on the wrong products. */
-  var DEFAULT_COUNT = 5;
-  var DEFAULT_NAMES = ["Purse/Bags", "Wedding Gift", "Headband", "Small Gifts", "School Items"];
+  var DEFAULT_COUNT = 4;
+  var DEFAULT_NAMES = ["Purse/Bags", "Wedding Gift", "Small Gifts", "School Items"];
 
   /* Subcategories are positional inside their parent, so the key is "sg" +
      (index + 1) and is only ever read alongside the product's own category.
      A blank entry list means "no subcategories". */
   var EXTRA_SUBCATEGORY_NAMES = {
     2: ["Gajrays", "Jewellery", "Bouquet"],
-    4: ["Keychains"],
-    5: ["Geometry Box", "Pencil", "Pencil Box"]
+    3: ["Keychains", "Headband"],
+    4: ["Geometry Box", "Pencil", "Pencil Box"]
   };
 
   /* Bump whenever the category list, their order, or their subcategories
      change. Saved settings stamped with an older value keep their WhatsApp
      number, bank details and delivery times, but take the new taxonomy. */
-  var TAXONOMY_VERSION = 5;
+  var TAXONOMY_VERSION = 6;
 
   function subKey(i) { return "sg" + (i + 1); }
   function subIndexOf(key) { return parseInt(String(key || "").replace("sg", ""), 10) - 1; }
