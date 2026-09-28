@@ -984,6 +984,13 @@ em {
   gap: 0.55rem;
 }
 
+/* Second, narrower row that only appears for a category that has
+   subcategories. Sits flush under its parent pills. */
+.filters--sub {
+  padding-left: 0.85rem;
+  border-left: 2px solid var(--line-strong);
+}
+
 .filter-btn {
   font-family: var(--font-body);
   font-size: 0.84rem;
@@ -995,6 +1002,12 @@ em {
   padding: 0.45rem 1.05rem;
   cursor: pointer;
   transition: all 0.2s var(--ease);
+}
+
+.filter-btn--sub {
+  font-size: 0.78rem;
+  padding: 0.32rem 0.85rem;
+  background: var(--bg-soft);
 }
 
 .filter-btn:hover {
