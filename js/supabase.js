@@ -317,14 +317,16 @@
 
   /* Three older layouts have to be recognised, and they disagree about what
      the same gr key means, so the map is chosen by which stored version the rows
-     came from rather than by the key alone. */
+     came from rather than by the key alone.  A subcategory of null means "keep
+     whatever the product already had", which is what the two layouts that
+     already had subcategories need. */
   var LEGACY_CATEGORY_MAP = {
-    /* v46: the first Wedding Gift layout. gr1-gr4 are unchanged here, and the
-       Wedding Gift subcategory keys are the same, so this is the identity. */
+    /* v46: the first Wedding Gift layout. gr1-gr4 keep their meaning and the
+       Wedding Gift subcategory keys are unchanged, so this is the identity. */
     gr1: { category: "gr1", subcategory: "" },
-    gr2: { category: "gr2", subcategory: "" },
+    gr2: { category: "gr2", subcategory: null },
     gr3: { category: "gr3", subcategory: "" },
-    gr4: { category: "gr4", subcategory: "" }
+    gr4: { category: "gr4", subcategory: null }
   };
   var LEGACY_CATEGORY_MAP_SIX = {
     /* v45: six categories, keychains already under Gifts. */
@@ -333,10 +335,11 @@
     gr3: { category: "gr2", subcategory: "sg2" },        /* Jewellery  -> Wedding Gift */
     gr4: { category: "gr3", subcategory: "" },           /* Headband   -> Headband     */
     gr5: { category: "gr2", subcategory: "sg3" },        /* Bouquet    -> Wedding Gift */
-    gr6: { category: "gr4", subcategory: "" }            /* Gifts      -> Gifts        */
+    gr6: { category: "gr4", subcategory: null }          /* Gifts      -> Gifts        */
   };
   var LEGACY_CATEGORY_MAP_ORIGINAL = {
-    /* v44 and older: the original eight separate categories. */
+    /* v44 and older: the original eight separate categories, before
+       subcategories existed, so nothing here keeps an old sg key. */
     gr1: { category: "gr1", subcategory: "" },           /* Purses    -> Purse/Bags    */
     gr2: { category: "gr2", subcategory: "sg1" },        /* Gajrays   -> Wedding Gift  */
     gr3: { category: "gr4", subcategory: "sg1" },        /* Keychains -> Gifts         */
