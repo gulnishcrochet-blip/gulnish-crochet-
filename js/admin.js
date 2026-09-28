@@ -89,6 +89,7 @@
 
   /* ---------- category select ---------- */
   var pCategory = document.getElementById("pCategory");
+  var pSubCategory = document.getElementById("pSubCategory");
   function stockStatusOf(p) {
     var s = String((p && p.status) || "").trim().toLowerCase();
     if (s === "made to order" || s === "made-to-order") return "made to order";
@@ -103,6 +104,34 @@
       pCategory.appendChild(opt);
     });
     if (selected) pCategory.value = selected;
+    fillSubCategorySelect(settings, pCategory.value, "");
+  }
+
+  /* "None" is always offered and always means an empty subcategory key. */
+  function fillSubCategorySelect(settings, catKey, selected) {
+    if (!pSubCategory) return;
+    pSubCategory.innerHTML = "";
+    var none = document.createElement("option");
+    none.value = "";
+    none.textContent = "None (file under the category)";
+    pSubCategory.appendChild(none);
+    var subs = (settings && settings.subcategories && settings.subcategories[catKey]) || [];
+    subs.forEach(function (label, i) {
+      var opt = document.createElement("option");
+      opt.value = "sg" + (i + 1);
+      opt.textContent = label;
+      pSubCategory.appendChild(opt);
+    });
+    pSubCategory.value = selected || "";
+    /* A category with no subcategories cannot store one, so the control is
+       disabled rather than silently dropping the value on save. */
+    pSubCategory.disabled = !subs.length;
+  }
+
+  if (pCategory && pSubCategory) {
+    pCategory.addEventListener("change", function () {
+      fillSubCategorySelect(getSettings(), pCategory.value, "");
+    });
   }
 
   /* ---------- color rows ---------- */
