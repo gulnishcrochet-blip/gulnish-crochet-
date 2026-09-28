@@ -793,7 +793,13 @@
         ppPrice.textContent = displayPrice(p);
       }
     if (ppCategory) {
-      ppCategory.textContent = categoryLabelOf(p.category);
+      /* "Gifts · Shirt Keychain" reads better than the bare category once a
+         product is filed under a subcategory. */
+      var catLabel = categoryLabelOf(p.category);
+      var subLabel = subcategoryLabelOf(p.category, p.subcategory);
+      ppCategory.textContent = subLabel
+        ? catLabel + " \u00b7 " + subLabel
+        : catLabel;
     }
     if (ppStatus) {
       var s = stockStatus(p);
