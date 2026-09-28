@@ -399,10 +399,27 @@
   var catRows = document.getElementById("catRows");
   var addCategoryBtn = document.getElementById("addCategory");
 
-  function categoryRowHTML(label, index) {
+  function catSubRowHTML(label) {
+    return '<div class="cat-sub">' +
+      '<input type="text" class="cat-sub-name" value="' + escapeHtml(label) + '" placeholder="Subcategory name">' +
+      '<button type="button" class="cat-sub-remove" aria-label="Remove subcategory">&times;</button>' +
+      "</div>";
+  }
+
+  function catSubsHTML(subs) {
+    return '<div class="cat-subs">' +
+      (subs || []).map(catSubRowHTML).join("") +
+      '<button type="button" class="cat-sub-add">+ Subcategory</button>' +
+      "</div>";
+  }
+
+  function categoryRowHTML(label, index, subs) {
     return '<div class="cat-row">' +
+      '<div class="cat-row__main">' +
       '<input type="text" class="cat-name" value="' + escapeHtml(label) + '" placeholder="Category ' + (index + 1) + '">' +
       '<button type="button" class="cat-remove" aria-label="Remove category" hidden>&times;</button>' +
+      "</div>" +
+      catSubsHTML(subs) +
       "</div>";
   }
 
@@ -416,21 +433,41 @@
   }
 
   function renderCategoryInputs() {
-    var cats = getSettings().categories || [];
-    catRows.innerHTML = cats.map(categoryRowHTML).join("");
+    var settings = getSettings();
+    var cats = settings.categories || [];
+    var subs = settings.subcategories || {};
+    catRows.innerHTML = cats
+      .map(function (label, i) {
+        return categoryRowHTML(label, i, subs["gr" + (i + 1)]);
+      })
+      .join("");
     updateRemoveButtons();
   }
 
   addCategoryBtn.addEventListener("click", function () {
     var row = document.createElement("div");
     row.className = "cat-row";
-    row.innerHTML = categoryRowHTML("", catRows.querySelectorAll(".cat-row").length);
+    row.innerHTML = categoryRowHTML("", catRows.querySelectorAll(".cat-row").length, []);
     catRows.appendChild(row);
     updateRemoveButtons();
     row.querySelector(".cat-name").focus();
   });
 
   catRows.addEventListener("click", function (e) {
+    var addSubBtn = e.target.closest(".cat-sub-add");
+    if (addSubBtn) {
+      var holder = document.createElement("div");
+      holder.innerHTML = catSubRowHTML("");
+      var sub = holder.firstElementChild;
+      addSubBtn.parentNode.insertBefore(sub, addSubBtn);
+      sub.querySelector(".cat-sub-name").focus();
+      return;
+    }
+    var removeSubBtn = e.target.closest(".cat-sub-remove");
+    if (removeSubBtn) {
+      removeSubBtn.closest(".cat-sub").remove();
+      return;
+    }
     var removeBtn = e.target.closest(".cat-remove");
     if (!removeBtn) return;
     var rows = catRows.querySelectorAll(".cat-row");
@@ -441,11 +478,24 @@
 
   var saveCategoriesBtn = document.getElementById("saveCategories");
   saveCategoriesBtn.addEventListener("click", async function () {
-    var names = Array.from(catRows.querySelectorAll(".cat-name")).map(function (i) {
-      return i.value.trim();
+    var rows = Array.from(catRows.querySelectorAll(".cat-row"));
+    var names = rows.map(function (row) {
+      return row.querySelector(".cat-name").value.trim();
     });
+    /* The inputs are the source of truth: the grN keys are re-derived from the
+       row order on every save, so adding, removing or blanking a subcategory
+       needs no bookkeeping. Blank subcategory names are dropped rather than
+       saved as empty pills. */
+    var subcategories = {};
+    rows.forEach(function (row, i) {
+      subcategories["gr" + (i + 1)] = Array.from(row.querySelectorAll(".cat-sub-name"))
+        .map(function (input) { return input.value.trim(); })
+        .filter(Boolean);
+    });
+
     var settings = getSettings();
     settings.categories = names.length ? names : defaultCategoryNames();
+    settings.subcategories = subcategories;
     if (GC.saveSettings) await GC.saveSettings(settings);
     fillCategorySelect(getSettings(), pCategory.value);
     renderCategoryInputs();
@@ -455,7 +505,7 @@
   });
 
   function defaultCategoryNames() {
-    return ["Purses", "Gajrays", "Keychains", "Bags", "Jewellery", "Headband", "Bouquet"];
+    return ["Purses", "Gajrays", "Keychains", "Bags", "Jewellery", "Headband", "Bouquet", "Gifts"];
   }
 
   /* ---------- category images ---------- */
