@@ -386,6 +386,11 @@
           if (target) {
             p.category = target.category;
             if (target.subcategory != null) p.subcategory = target.subcategory;
+            /* Purse/Bags used to be one flat list, so the old row cannot say
+               which branch it belonged to. Fall back to the product's own
+               name: anything calling itself a bag goes to Bags, and the rest
+               to Purses, which is the far larger of the two. */
+            if (target.guess) p.subcategory = target.guess(p);
           }
           if (carried.some(function (c) { return c.id === p.id; })) return;
           carried.push(p);
