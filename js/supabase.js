@@ -136,11 +136,15 @@
     gr4: ["images/bags/bag-1.webp", "images/bags/bag-2.webp", "images/bags/bag-3.webp", "images/bags/bag-4.webp"],
     gr5: ["images/jewellery/jewellery-1.webp", "images/jewellery/jewellery-2.webp", "images/jewellery/jewellery-3.webp", "images/jewellery/jewellery-4.webp", "images/jewellery/jewellery-5.webp", "images/jewellery/jewellery-6.webp", "images/jewellery/jewellery-7.webp", "images/jewellery/jewellery-8.webp", "images/jewellery/jewellery-9.webp"],
     gr6: ["images/headbands/headband-1.webp", "images/headbands/headband-2.webp", "images/headbands/headband-3.webp"],
-    gr7: ["images/bouquets/bouquet-1.webp", "images/bouquets/bouquet-2.webp", "images/bouquets/bouquet-3.webp", "images/bouquets/bouquet-4.webp", "images/bouquets/bouquet-5.webp", "images/bouquets/bouquet-6.webp", "images/bouquets/bouquet-7.webp"]
+    gr7: ["images/bouquets/bouquet-1.webp", "images/bouquets/bouquet-2.webp", "images/bouquets/bouquet-3.webp", "images/bouquets/bouquet-4.webp", "images/bouquets/bouquet-5.webp", "images/bouquets/bouquet-6.webp", "images/bouquets/bouquet-7.webp"],
+    /* Gifts holds subcategories, and the shirt keychains are not photographed
+       yet, so the seed entry is deliberately image-less: the card falls back to
+       the "picture will be uploaded soon" slot and its price stays unquoted. */
+    gr8: ["images/gifts/shirt-keychain-1.webp"]
   };
 
-  var ITEM_NAME = { gr1: "Purse", gr2: "Gajray", gr3: "Keychain", gr4: "Bag", gr5: "Jewellery", gr6: "Headband", gr7: "Bouquet" };
-  var BASE_PRICE = { gr1: 850, gr2: 400, gr3: 350, gr4: 1400, gr5: 550, gr6: 450, gr7: 1999 };
+  var ITEM_NAME  = { gr1: "Purse",    gr2: "Gajray",    gr3: "Keychain", gr4: "Bag",      gr5: "Jewellery", gr6: "Headband", gr7: "Bouquet", gr8: "Shirt Keychain" };
+  var BASE_PRICE = { gr1: 850, gr2: 400, gr3: 350, gr4: 1400, gr5: 550, gr6: 450, gr7: 1999, gr8: 450 };
 
   var REAL_PRODUCTS = {
     "seed_gr4_1": { name: "Bag 1", price: 1599 },
