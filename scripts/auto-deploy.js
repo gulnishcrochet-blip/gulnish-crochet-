@@ -66,9 +66,9 @@ function aheadCount() {
   }
 }
 
-/* vercel.json serves /css and /js as `max-age=31536000, immutable`, so the
-   only thing that makes a new build reach an already-visited browser is the
-   ?v= query on the asset URL. Bump it whenever a css/js file changed -
+/* netlify.toml serves /css and /js as `max-age=300, stale-while-revalidate=600`,
+   so the asset URL's ?v= query is what makes a new build reach an
+   already-visited browser - Bump it whenever a css/js file changed,
    otherwise a style fix could sit invisible in browsers for a year.
    Rewriting the HTML re-triggers the watcher, but the second pass sees no
    css/js change and stops, so this cannot loop. */
@@ -187,7 +187,7 @@ function autopush() {
    Confirm the site actually serves the version we just pushed, so a stale
    deploy is reported instead of silently assumed to be fine. */
 function verifyDeploy() {
-  const live = process.env.LIVE_URL || "https://gulnish-crochet.vercel.app";
+  const live = process.env.LIVE_URL || "https://gulnish-crochet.netlify.app";
   let expected = null;
   try {
     const html = fs.readFileSync(path.join(ROOT, "index.html"), "utf8");
