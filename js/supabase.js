@@ -326,9 +326,9 @@
      whatever the product already had", which is what the two layouts that
      already had subcategories need. */
   var LEGACY_CATEGORY_MAP = {
-    /* v46 and v47: Headband was a top-level gr3 and Gifts was gr4. The two are
-       now one Small Gifts at gr3, so gr4 has to land there too. */
-    gr1: { category: "gr1", subcategory: "" },           /* Purse/Bags  -> Purse/Bags  */
+    /* v46, v47 and v48: Headband was a top-level gr3 and Gifts was gr4. The
+       two are now one Small Gifts at gr3, so gr4 has to land there too. */
+    gr1: { category: "gr1", subcategory: "", guess: guessPurseOrBag },  /* Purse/Bags  */
     gr2: { category: "gr2", subcategory: null },          /* Wedding Gift (sg keys same) */
     gr3: { category: "gr3", subcategory: "sg2" },         /* Headband    -> Headband     */
     gr4: { category: "gr3", subcategory: null },          /* Gifts       -> Small Gifts  */
@@ -336,7 +336,7 @@
   };
   var LEGACY_CATEGORY_MAP_SIX = {
     /* v45: six categories, keychains already under Gifts. */
-    gr1: { category: "gr1", subcategory: "" },           /* Purse/Bags -> Purse/Bags  */
+    gr1: { category: "gr1", subcategory: "", guess: guessPurseOrBag },  /* Purse/Bags  */
     gr2: { category: "gr2", subcategory: "sg1" },        /* Gajrays    -> Wedding Gift */
     gr3: { category: "gr2", subcategory: "sg2" },        /* Jewellery  -> Wedding Gift */
     gr4: { category: "gr3", subcategory: "sg2" },        /* Headband   -> Small Gifts  */
@@ -346,15 +346,23 @@
   var LEGACY_CATEGORY_MAP_ORIGINAL = {
     /* v44 and older: the original eight separate categories, before
        subcategories existed, so nothing here keeps an old sg key. */
-    gr1: { category: "gr1", subcategory: "" },           /* Purses    -> Purse/Bags    */
+    gr1: { category: "gr1", subcategory: "sg1" },        /* Purses    -> Purse/Bags    */
     gr2: { category: "gr2", subcategory: "sg1" },        /* Gajrays   -> Wedding Gift  */
     gr3: { category: "gr3", subcategory: "sg1" },        /* Keychains -> Small Gifts   */
-    gr4: { category: "gr1", subcategory: "" },           /* Bags      -> Purse/Bags    */
+    gr4: { category: "gr1", subcategory: "sg2" },        /* Bags      -> Purse/Bags    */
     gr5: { category: "gr2", subcategory: "sg2" },        /* Jewellery -> Wedding Gift  */
     gr6: { category: "gr3", subcategory: "sg2" },        /* Headband  -> Small Gifts   */
     gr7: { category: "gr2", subcategory: "sg3" },        /* Bouquet   -> Wedding Gift  */
     gr8: { category: "gr3", subcategory: "" }            /* Gifts     -> Small Gifts   */
   };
+
+  /* Used only by the migrations above: a flat Purse/Bags row is filed under
+     whichever branch its name points at. "bag" wins over "purse" only when the
+     name says bag and never purse, so "Purse Bag" stays a purse. */
+  function guessPurseOrBag(p) {
+    var n = String(p.name || "").toLowerCase();
+    return /bag/.test(n) && !/purse/.test(n) ? "sg2" : "sg1";
+  }
 
   /* Pull owner-created products out of any older gulnish-products-v* store and
      re-file them on the current categories. Seed rows (ids like seed_purses_1) are
