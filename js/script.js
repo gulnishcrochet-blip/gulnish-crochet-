@@ -354,7 +354,8 @@
       (p.image ? image : photoPendingHTML()) +
       "</div>";
     return (
-      '<article class="work-card" data-category="' + p.category + '">' +
+      '<article class="work-card" data-category="' + p.category + '"' +
+      (p.subcategory ? ' data-subcategory="' + p.subcategory + '"' : "") + ">" +
       media +
       '<div class="work-card__body">' +
       '<h3 class="work-card__name">' + escapeHtml(p.name) + "</h3>" +
