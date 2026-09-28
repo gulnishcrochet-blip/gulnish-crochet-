@@ -349,8 +349,16 @@
       return val;
     };
 
+    var subLabel = function (p) {
+      if (!p.subcategory) return "";
+      var list = (settings.subcategories && settings.subcategories[p.category]) || [];
+      var i = parseInt(p.subcategory.replace("sg", ""), 10) - 1;
+      return i >= 0 && list[i] ? list[i] : "";
+    };
+
     productList.innerHTML = products
       .map(function (p) {
+        var sub = subLabel(p);
         return (
           '<div class="admin-item">' +
           '<div class="admin-item__img">' + (p.image ? '<img src="' + p.image + '" alt="">' : "") + "</div>" +
@@ -358,6 +366,7 @@
           '<div class="admin-item__name">' + escapeHtml(p.name) + "</div>" +
           '<div class="admin-item__meta">' +
           (money(p.price) || "No price") + " &middot; " + escapeHtml(catLabel(p.category)) +
+          (sub ? " &middot; " + escapeHtml(sub) : "") +
           " &middot; " + (p.colors || []).length + " color(s)" +
           '</div><div class="admin-stock stock-' + stockStatusOf(p).replace(" ", "-") + '">' + stockLabel(p) + "</div></div>" +
           '<div class="admin-item__actions">' +
