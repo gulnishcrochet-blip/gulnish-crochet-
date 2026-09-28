@@ -686,7 +686,8 @@
           label || "Category " + (i + 1),
           items.length,
           imagesRaw,
-          key
+          key,
+          subcategoriesOf(key)
         )
       );
     });
