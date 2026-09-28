@@ -566,7 +566,7 @@
       var list = map[catKey];
       return Array.isArray(list) ? list.slice() : [];
     },
-    /* "Shirt Keychain" for ("gr8", "sg1"); "" when the pair is not set. */
+    /* "Keychains" for ("gr6", "sg1"); "" when the pair is not set. */
     subcategoryLabelOf: function (catKey, subKeyVal) {
       var list = GC.subcategoriesOf(catKey);
       var i = subIndexOf(subKeyVal);
