@@ -113,6 +113,7 @@
      (index + 1) and is only ever read alongside the product's own category.
      A blank entry list means "no subcategories". */
   var EXTRA_SUBCATEGORY_NAMES = {
+    1: ["Purses", "Bags"],
     2: ["Gajrays", "Jewellery", "Bouquet"],
     3: ["Keychains", "Headband"],
     4: ["Geometry Box", "Pencil", "Pencil Box"]
@@ -121,7 +122,7 @@
   /* Bump whenever the category list, their order, or their subcategories
      change. Saved settings stamped with an older value keep their WhatsApp
      number, bank details and delivery times, but take the new taxonomy. */
-  var TAXONOMY_VERSION = 6;
+  var TAXONOMY_VERSION = 7;
 
   function subKey(i) { return "sg" + (i + 1); }
   function subIndexOf(key) { return parseInt(String(key || "").replace("sg", ""), 10) - 1; }
