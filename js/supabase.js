@@ -17,7 +17,7 @@
 
   /* Bump LOCAL_PRODUCTS version whenever the seed catalog changes so
      returning visitors' browsers re-sync products (offline/localStorage mode). */
-  var LOCAL_PRODUCTS = "gulnish-products-v52";
+  var LOCAL_PRODUCTS = "gulnish-products-v53";
   var LOCAL_SETTINGS = "gulnish-settings-v2";
   var LOCAL_ORDERS = "gulnish-orders";
   var LOCAL_ADMIN_SESSION = "gulnish-admin-session";
@@ -301,6 +301,13 @@
     "seed_pencil_4": 799,
     "seed_pencil_5": 799,
     "seed_pencil_6": 799,
+    "seed_pencil_7": 799,
+    "seed_pencil_8": 799,
+    "seed_pencil_9": 799,
+    "seed_pencil_10": 799,
+    "seed_pencil_11": 799,
+    "seed_pencil_12": 799,
+    "seed_pencil_13": 799,
     "seed_geometry_1": 2499,
     "seed_geometry_2": 2499,
     "seed_geometry_3": 2499,
