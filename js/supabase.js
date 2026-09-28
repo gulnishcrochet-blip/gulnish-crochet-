@@ -389,7 +389,7 @@
       /* Keywords come from the category the product lands in, so a search for
          "wedding gift" finds all three Wedding Gift branches, plus the terms
          unique to this group of photos. */
-      var kw = (CATEGORY_KEYWORDS[place.category] || [label.tolowerCase()]).slice();
+      var kw = (CATEGORY_KEYWORDS[place.category] || [label.toLowerCase()]).slice();
       if (GROUP_KEYWORDS[key]) kw = kw.concat(GROUP_KEYWORDS[key]);
 
       /* A group with no photos yet still gets PLACEHOLDER_COUNTS products, so
