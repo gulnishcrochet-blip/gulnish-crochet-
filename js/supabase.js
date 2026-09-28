@@ -187,11 +187,11 @@
     gajrays: { category: "gr2", subcategory: "sg1" },
     jewellery: { category: "gr2", subcategory: "sg2" },
     bouquets: { category: "gr2", subcategory: "sg3" },
-    headbands: { category: "gr3", subcategory: "" },
-    keychains: { category: "gr4", subcategory: "sg1" },
-    geometrybox: { category: "gr5", subcategory: "sg1" },
-    pencil: { category: "gr5", subcategory: "sg2" },
-    pencilbox: { category: "gr5", subcategory: "sg3" }
+    headbands: { category: "gr3", subcategory: "sg2" },
+    keychains: { category: "gr3", subcategory: "sg1" },
+    geometrybox: { category: "gr4", subcategory: "sg1" },
+    pencil: { category: "gr4", subcategory: "sg2" },
+    pencilbox: { category: "gr4", subcategory: "sg3" }
   };
 
   var ITEM_NAME  = { purses: "Purse", bags: "Bag", gajrays: "Gajray", jewellery: "Jewellery", headbands: "Headband", bouquets: "Bouquet", keychains: "Keychain", geometrybox: "Geometry Box", pencil: "Pencil", pencilbox: "Pencil Box" };
