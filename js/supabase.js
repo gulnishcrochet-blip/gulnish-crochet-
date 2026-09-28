@@ -308,6 +308,8 @@
     gr4: ["school", "school supplies", "stationery", "back to school", "student", "pencil", "pencil box", "geometry box", "maths", "handmade"]
   };
   var GROUP_KEYWORDS = {
+    purses: ["purse", "handbag", "clutch", "hobo", "shoulder bag"],
+    bags: ["bag", "tote", "shopper", "carry bag", "travelling"],
     gajrays: ["gajray", "gajra", "hair", "eid", "flowers", "party"],
     jewellery: ["jewellery", "jewelry", "necklace", "earrings", "accessory"],
     bouquets: ["bouquet", "flowers", "rose", "bride"],
