@@ -122,7 +122,7 @@
   /* Bump whenever the category list, their order, or their subcategories
      change. Saved settings stamped with an older value keep their WhatsApp
      number, bank details and delivery times, but take the new taxonomy. */
-  var TAXONOMY_VERSION = 8;
+  var TAXONOMY_VERSION = 9;
 
   function subKey(i) { return "sg" + (i + 1); }
   function subIndexOf(key) { return parseInt(String(key || "").replace("sg", ""), 10) - 1; }
