@@ -202,11 +202,12 @@
     if (pStatus) pStatus.value = "in stock";
     if (pStock) pStock.value = "";
     if (pKeywords) pKeywords.value = "";
-    if (pGallery) pGallery.value = "";
+    if (pGallery)     pGallery.value = "";
     pImage.value = "";
     pImagePreview.hidden = true;
     pImagePreview.removeAttribute("src");
     pImageClear.hidden = true;
+    fillSubCategorySelect(getSettings(), pCategory.value, "");
     clearColorRows();
     addColorRow("", "#d9a5b0");
     formTitle.textContent = "Add product";
@@ -259,6 +260,7 @@
       name: name,
       price: parseFloat(pPrice.value) || 0,
       category: pCategory.value,
+      subcategory: pSubCategory ? pSubCategory.value : "",
       status: pStatus ? pStatus.value : "in stock",
       stock: pStock && pStock.value !== "" ? Math.max(0, parseInt(pStock.value, 10) || 0) : null,
       image: img,
