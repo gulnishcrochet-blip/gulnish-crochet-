@@ -333,11 +333,16 @@
 
         var old = lsGet(key, []);
         if (!Array.isArray(old)) continue;
+        /* Rows saved under v45 used the six-category layout; anything older
+           used the original eight, where the same gr key meant something else. */
+        var map = /^gulnish-products-v4[5-9]$|^gulnish-products-v[5-9]\d+$/.test(key)
+          ? LEGACY_CATEGORY_MAP
+          : LEGACY_CATEGORY_MAP_ORIGINAL;
         old.forEach(function (raw) {
           if (!raw || typeof raw !== "object") return;
           if (String(raw.id || "").indexOf("seed_") === 0) return;
 
-          var target = LEGACY_CATEGORY_MAP[raw.category];
+          var target = map[raw.category];
           var p = normalizeProduct(raw);
           if (target) {
             p.category = target.category;
