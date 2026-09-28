@@ -505,7 +505,7 @@
   });
 
   function defaultCategoryNames() {
-    return ["Purse/Bags", "Gajrays", "Jewellery", "Headband", "Bouquet", "Gifts"];
+    return ["Purse/Bags", "Wedding Gift", "Headband", "Gifts"];
   }
 
   /* ---------- category images ---------- */
