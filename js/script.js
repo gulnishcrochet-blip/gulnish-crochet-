@@ -911,9 +911,19 @@
   document.addEventListener("click", function (e) {
     var btn = e.target.closest(".filter-btn");
     if (!btn) return;
-    document
-      .querySelectorAll(".filter-btn")
-      .forEach(function (b) { b.classList.remove("active"); });
+    if (subFilterWrap && subFilterWrap.contains(btn)) {
+      setSubFilterUI(btn.dataset.subFilter);
+      applyFilters();
+      return;
+    }
+    /* Switching parent category starts a fresh sub-filter: the sub row is
+       rebuilt from scratch, so a stale "sg1" must not carry over. */
+    buildSubFilters(btn.dataset.filter);
+    if (filterWrap) {
+      filterWrap.querySelectorAll(".filter-btn").forEach(function (b) {
+        b.classList.remove("active");
+      });
+    }
     btn.classList.add("active");
     applyFilters();
   });
