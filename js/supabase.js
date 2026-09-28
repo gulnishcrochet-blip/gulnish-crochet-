@@ -378,7 +378,7 @@
           var p = normalizeProduct(raw);
           if (target) {
             p.category = target.category;
-            p.subcategory = target.subcategory;
+            if (target.subcategory != null) p.subcategory = target.subcategory;
           }
           if (carried.some(function (c) { return c.id === p.id; })) return;
           carried.push(p);
