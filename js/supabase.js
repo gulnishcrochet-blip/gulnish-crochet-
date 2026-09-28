@@ -389,26 +389,34 @@
       /* Keywords come from the category the product lands in, so a search for
          "wedding gift" finds all three Wedding Gift branches, plus the terms
          unique to this group of photos. */
-      var kw = (CATEGORY_KEYWORDS[place.category] || [label.toLowerCase()]).slice();
+      var kw = (CATEGORY_KEYWORDS[place.category] || [label.tolowerCase()]).slice();
       if (GROUP_KEYWORDS[key]) kw = kw.concat(GROUP_KEYWORDS[key]);
-      RAW_IMAGES[key].forEach(function (img, i) {
+
+      /* A group with no photos yet still gets PLACEHOLDER_COUNTS products, so
+         a brand new section is not empty. Those products carry no price: there
+         is nothing to quote until the real item and its cost are entered. */
+      var photos = RAW_IMAGES[key];
+      var count = photos.length || (PLACEHOLDER_COUNTS[key] || 0);
+      for (var i = 0; i < count; i += 1) {
         var id = "seed_" + key + "_" + (i + 1);
         var real = REAL_PRODUCTS[id];
         if (PRODUCT_KEYWORDS[id]) kw = kw.concat(PRODUCT_KEYWORDS[id]);
         out.push({
           id: id,
           name: real ? real.name : name + " " + (i + 1),
-          price: PRODUCT_PRICES[id] || (real ? real.price : (BASE_PRICE[key] || 500) + (i % 4) * 50),
+          price: photos.length
+            ? (PRODUCT_PRICES[id] || (real ? real.price : (BASE_PRICE[key] || 500) + (i % 4) * 50))
+            : 0,
           category: place.category,
           subcategory: place.subcategory,
-          image: HIDE_PRODUCT_IMAGES[key] || HIDE_PRODUCT_IMAGES[id] ? "" : img,
+          image: photos.length && !(HIDE_PRODUCT_IMAGES[key] || HIDE_PRODUCT_IMAGES[id]) ? photos[i] : "",
           keywords: kw,
           colors: [],
           status: "in stock",
           stock: null,
           gallery: []
         });
-      });
+      }
     });
     return out;
   }
