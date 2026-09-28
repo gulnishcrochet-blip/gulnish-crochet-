@@ -248,7 +248,14 @@
     gr4: ["handbag", "tote", "shopper bag", "handmade", "gift"],
     gr5: ["necklace", "earrings", "bridal", "wedding", "gift", "accessory"],
     gr6: ["hairband", "hair accessory", "girl", "handmade", "gift"],
-    gr7: ["bouquet", "flowers", "rose", "bride", "gift", "handmade"]
+    gr7: ["bouquet", "flowers", "rose", "bride", "gift", "handmade"],
+    gr8: ["gift", "shirt", "shirt keychain", "keychain", "keyring", "handmade", "small gift"]
+  };
+
+  /* Seed products whose subcategory is fixed rather than positional. Anything
+     not listed falls back to the first subcategory of its category. */
+  var PRODUCT_SUBCATEGORY = {
+    "seed_gr8_1": "sg1"
   };
 
   function defaultProducts() {
