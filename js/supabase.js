@@ -124,7 +124,8 @@
   var HIDE_PRODUCT_IMAGES = {
     gr2: true,
     "seed_gr1_6": true,
-    "seed_gr1_7": true
+    "seed_gr1_7": true,
+    "seed_gr8_1": true
   };
 
   /* ---------- placeholder product catalog ---------- */
