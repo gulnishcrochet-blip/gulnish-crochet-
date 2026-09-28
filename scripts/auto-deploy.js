@@ -5,6 +5,17 @@ const path = require("path");
 const ROOT = path.resolve(__dirname, "..");
 const DEBOUNCE_MS = 1500;
 
+/* Every push to main is a fresh Vercel deployment, and every deployment keeps a
+   copy of the site, so the free tier's deployment storage is really
+   "number of pushes x size of the site". Saving files one at a time therefore
+   burns through the quota even though nothing visible changed. After a push,
+   hold every further trigger until this window has passed and send the lot as
+   one deployment: the site still updates within COALESCE_MS, but a burst of
+   saves costs one deployment instead of one per save. Override with
+   COALESCE_MS=0 to deploy on every change. */
+const COALESCE_MS = Number(process.env.COALESCE_MS || 5 * 60 * 1000);
+let quietUntil = 0;
+
 /* api/ holds the Vercel serverless functions. It has to be watched too:
    without it a change to a function sits uncommitted in the working tree and
    the deployed endpoint keeps serving the old code with no warning. */
@@ -146,6 +157,7 @@ function autopush() {
     const pushed = pushWithRecovery();
     if (pushed) {
       retries = 0;
+      quietUntil = Date.now() + COALESCE_MS;
       console.log(
         didCommit
           ? "[auto-deploy] committed & pushed to main -> Vercel deploying"
@@ -223,7 +235,11 @@ function verifyDeploy() {
 
 function schedule() {
   if (timer) clearTimeout(timer);
-  timer = setTimeout(autopush, DEBOUNCE_MS);
+  /* Inside the coalescing window the push waits for the window to end instead
+     of firing DEBOUNCE_MS later, so a run of saves becomes a single deploy. */
+  const now = Date.now();
+  const wait = Math.max(DEBOUNCE_MS, quietUntil - now) + (quietUntil > now ? DEBOUNCE_MS : 0);
+  timer = setTimeout(autopush, wait);
 }
 
 function onChange(eventType, filename) {

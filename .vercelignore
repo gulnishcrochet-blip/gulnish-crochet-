@@ -1,0 +1,7 @@
+# Dev-only files: the deploy uploads the site, not the local toolchain.
+# Each of these was shipped on every one of the 1200+ deployments for nothing.
+scripts/
+supabase-v20.sql
+.gitignore
+.gitattributes
+*.md
