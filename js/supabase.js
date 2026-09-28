@@ -777,7 +777,17 @@
         stock: product.stock != null ? product.stock : null,
         gallery: product.gallery || []
       };
+      if (!subcategoryColumnMissing) row.subcategory = product.subcategory || "";
       var res = await sb.from("products").upsert(row, { onConflict: "id" });
+      if (res.error && isMissingSubcategoryColumn(res.error)) {
+        /* An un-migrated database rejects the whole row over the new column.
+           Drop it, remember that, and keep saving everything else rather than
+           losing the product edit. GC.subcategoryColumnMissing turns the admin
+           panel warning on. */
+        subcategoryColumnMissing = true;
+        delete row.subcategory;
+        res = await sb.from("products").upsert(row, { onConflict: "id" });
+      }
       return { ok: !res.error, error: res.error };
     },
 
