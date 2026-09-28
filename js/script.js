@@ -316,8 +316,12 @@
      checkout still use the real p.price (carried in data-price) so the order
      total still adds up. */
   function displayPrice(p) {
-    if (!p || !p.image) return "Rs. ...";
-    return parseFloat(p.price) > 0 ? money(p.price) : "";
+    if (!p) return "";
+    /* No price at all is a real state for products still being priced up, and
+       quoting "Rs. ..." for them would promise something. A photo-pending
+       product that does have a price keeps the "agreed on WhatsApp" hint. */
+    if (!(parseFloat(p.price) > 0)) return "";
+    return p.image ? money(p.price) : "Rs. ...";
   }
 
   function stockStatus(p) {
