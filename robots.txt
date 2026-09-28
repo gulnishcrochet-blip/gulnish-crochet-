@@ -7,4 +7,4 @@ Disallow: /admin
 Disallow: /checkout
 Disallow: /cart
 
-Sitemap: https://gulnish-crochet-eight.vercel.app/sitemap.xml
+Sitemap: https://gulnishcrochet.vercel.app/sitemap.xml
