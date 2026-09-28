@@ -317,6 +317,7 @@
     }
     return {
       categories: cats,
+      subcategories: defaultSubcategories(),
       categoryImages: CATEGORY_IMAGE_SETS,
       whatsapp: "03075729901",
       whatsappCountry: "92",
@@ -346,6 +347,17 @@
         .map(function (c) { return typeof c === "string" ? c.trim() : ""; })
         .slice(0, DEFAULT_COUNT);
       s.categories = s.categories.map(function (fallback, i) { return saved[i] || fallback; });
+    }
+    if (base.subcategories && typeof base.subcategories === "object") {
+      var sb2 = {};
+      s.categories.forEach(function (_, i) {
+        var k = "gr" + (i + 1);
+        var list = base.subcategories[k];
+        sb2[k] = Array.isArray(list)
+          ? list.map(function (n) { return typeof n === "string" ? n.trim() : ""; }).filter(Boolean)
+          : (s.subcategories[k] || []).slice();
+      });
+      s.subcategories = sb2;
     }
     if (base.categoryImages && typeof base.categoryImages === "object") {
       var ci = {};
