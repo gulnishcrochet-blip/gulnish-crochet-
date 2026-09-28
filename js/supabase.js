@@ -293,7 +293,13 @@
     "seed_keychains_17": 450,
     "seed_keychains_18": 450,
     "seed_keychains_19": 450,
-    "seed_keychains_20": 450
+    "seed_keychains_20": 450,
+    "seed_pencil_1": 799,
+    "seed_pencil_2": 799,
+    "seed_pencil_3": 799,
+    "seed_pencil_4": 799,
+    "seed_pencil_5": 799,
+    "seed_pencil_6": 799
   };
   var PRODUCT_KEYWORDS = {
     "seed_purses_3": ["3d rose purse", "rose purse", "3d rose", "rose handbag", "crochet rose"]
