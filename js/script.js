@@ -1448,10 +1448,11 @@ var bottomNavCart = document.getElementById("bottomNavCart");
     renderFeatured();
     renderProducts(getProducts());
     var urlCat = new URLSearchParams(location.search).get("cat");
+    var urlSub = new URLSearchParams(location.search).get("sub");
     var urlQ = (new URLSearchParams(location.search).get("q") || "").trim();
     if (searchInput && urlQ) searchInput.value = urlQ;
     if (productsView) {
-      showProducts(urlCat ? urlCat : "all");
+      showProducts(urlCat ? urlCat : "all", urlSub || "all");
     } else {
       showCategories();
     }
