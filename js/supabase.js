@@ -181,10 +181,11 @@
 
   /* Which category (and subcategory) each photo group is filed under. Gajrays,
      Jewellery and Bouquet are separate top-level categories no longer; they
-     are the three branches of Wedding Gift. */
+     are the three branches of Wedding Gift. The four bags used to be their own
+     category too, and are now the second branch of Purse/Bags. */
   var SEED_PLACEMENT = {
-    purses: { category: "gr1", subcategory: "" },
-    bags: { category: "gr1", subcategory: "" },
+    purses: { category: "gr1", subcategory: "sg1" },
+    bags: { category: "gr1", subcategory: "sg2" },
     gajrays: { category: "gr2", subcategory: "sg1" },
     jewellery: { category: "gr2", subcategory: "sg2" },
     bouquets: { category: "gr2", subcategory: "sg3" },
