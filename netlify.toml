@@ -1,0 +1,78 @@
+# =========================================================
+# Gulnish Crochet — Netlify configuration
+#
+# Translates vercel.json 1:1: same security headers, same CSP,
+# same cache lifetimes, same redirects.
+# =========================================================
+
+[build]
+  publish = "."
+  command = ""
+
+# ---- Redirects -----------------------------------------------------------
+
+# cleanUrls equivalent: /index.html serves the site root.
+[[redirects]]
+  from = "/index.html"
+  to = "/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/shop"
+  to = "/products"
+  status = 301
+
+# Serverless function. On Vercel a file in /api/ became an endpoint at
+# /api/<name> automatically; Netlify functions live in netlify/functions
+# and are served from /.netlify/functions/<name>, so keep the old public
+# path working with a rewrite.
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# ---- Security headers (all paths) ---------------------------------------
+
+[[headers]]
+  for = "/*"
+
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-DNS-Prefetch-Control = "on"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+    Content-Security-Policy = "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' https://cdn.jsdelivr.net https://www.googletagmanager.com https://connect.facebook.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://www.google-analytics.com https://analytics.google.com https://connect.facebook.net https://www.facebook.com; frame-src https://www.facebook.com; manifest-src 'self'; upgrade-insecure-requests"
+
+# ---- Cache lifetimes -----------------------------------------------------
+
+[[headers]]
+  for = "/css/*"
+
+  [headers.values]
+    Cache-Control = "public, max-age=300, stale-while-revalidate=600"
+
+[[headers]]
+  for = "/js/*"
+
+  [headers.values]
+    Cache-Control = "public, max-age=300, stale-while-revalidate=600"
+
+[[headers]]
+  for = "/fonts/*"
+
+  [headers.values]
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=2592000"
+
+[[headers]]
+  for = "/images/*"
+
+  [headers.values]
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=2592000"
+
+[[headers]]
+  for = "/api/*"
+
+  [headers.values]
+    Cache-Control = "no-store"
