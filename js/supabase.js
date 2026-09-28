@@ -141,8 +141,9 @@
     gr2: ["images/bouquets/bouquet-1.webp", "images/bouquets/bouquet-4.webp", "images/bouquets/bouquet-5.webp", "images/jewellery/jewellery-1.webp", "images/jewellery/jewellery-4.webp"],
     /* Small Gifts: the keychain shots, then the headband shots. */
     gr3: ["images/keychains/keychain-1.webp", "images/keychains/keychain-2.webp", "images/headbands/headband-1.webp", "images/headbands/headband-2.webp"],
-    /* No school photos yet, so the home card shows the photo-pending slot. */
-    gr4: []
+    /* School Items: the pencil shots, so the home card no longer shows the
+       photo-pending slot now that the group has photos. */
+    gr4: ["images/pencil/pencil-1.webp", "images/pencil/pencil-2.webp", "images/pencil/pencil-5.webp"]
   };
 
   /* Keys may be a whole group (gajrays) or a single product id. A product with
