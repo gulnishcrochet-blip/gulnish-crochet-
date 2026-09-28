@@ -321,7 +321,7 @@
   };
 
   /* Pull owner-created products out of any older gulnish-products-v* store and
-     re-file them on the current categories. Seed rows (ids like seed_gr1_1) are
+     re-file them on the current categories. Seed rows (ids like seed_purses_1) are
      skipped because the current seed is generated fresh. */
   function migrateCustomProducts() {
     var carried = [];
