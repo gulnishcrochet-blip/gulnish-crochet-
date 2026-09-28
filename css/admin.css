@@ -400,7 +400,8 @@ h1, h2, h3 {
 
 .cat-row {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
   gap: 0.7rem;
   background: var(--surface);
   border: 1px solid var(--line);
@@ -409,9 +410,73 @@ h1, h2, h3 {
   box-shadow: var(--shadow-sm);
 }
 
+.cat-row__main {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
 .cat-row input.cat-name {
   flex: 1;
   min-width: 120px;
+}
+
+/* Subcategories sit indented under their parent category. */
+.cat-subs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding-left: 0.9rem;
+  border-left: 2px solid var(--line-strong);
+}
+
+.cat-sub {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cat-sub input.cat-sub-name {
+  flex: 1;
+  min-width: 100px;
+  font-size: 0.9rem;
+}
+
+.cat-sub-remove {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: var(--bg-soft);
+  color: var(--muted);
+  font-size: 0.95rem;
+  cursor: pointer;
+  flex: none;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.cat-sub-remove:hover {
+  background: var(--danger);
+  color: #fff;
+}
+
+.cat-sub-add {
+  align-self: flex-start;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--primary-deep);
+  background: none;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-pill);
+  padding: 0.3rem 0.85rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.cat-sub-add:hover {
+  border-color: var(--primary);
+  background: var(--primary-light);
 }
 
 .cat-remove,
