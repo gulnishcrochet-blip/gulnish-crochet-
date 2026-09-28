@@ -331,6 +331,7 @@
     return {
       categories: cats,
       subcategories: defaultSubcategories(),
+      taxonomyVersion: TAXONOMY_VERSION,
       categoryImages: CATEGORY_IMAGE_SETS,
       whatsapp: "03075729901",
       whatsappCountry: "92",
