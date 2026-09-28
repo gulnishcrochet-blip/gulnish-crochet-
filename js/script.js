@@ -291,6 +291,18 @@
     return GC.settings || {};
   }
 
+  /* Subcategory keys are the positional "sgN" inside the product's own
+     category, so both halves are needed to read one. */
+  function subcategoriesOf(catKey) {
+    if (!GC || !GC.subcategoriesOf) return [];
+    return GC.subcategoriesOf(catKey) || [];
+  }
+
+  function subcategoryLabelOf(catKey, subKey) {
+    if (!GC || !GC.subcategoryLabelOf) return "";
+    return GC.subcategoryLabelOf(catKey, subKey) || "";
+  }
+
   function money(value) {
     var n = parseFloat(value) || 0;
     var str = String(Math.round(n * 100) / 100);
@@ -323,6 +335,8 @@
   /* ---------- Build shop UI ---------- */
   var productGrid = document.getElementById("productGrid");
   var filterWrap = document.getElementById("filters");
+  var subFilterWrap = document.getElementById("subFilters");
+  var activeSubFilter = "all";
   var noProducts = document.getElementById("noProducts");
   var searchInput = document.getElementById("searchInput");
   var noResults = document.getElementById("noResults");
