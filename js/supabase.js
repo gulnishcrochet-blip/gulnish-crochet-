@@ -281,27 +281,43 @@
   var PRODUCT_KEYWORDS = {
     "seed_purses_3": ["3d rose purse", "rose purse", "3d rose", "rose handbag", "crochet rose"]
   };
+  /* Search terms per category, plus a per-group list for the subcategories of
+     Wedding Gift so "gajray" or "bouquet" still finds the right product even
+     though none of them is a category of its own any more. */
   var CATEGORY_KEYWORDS = {
     gr1: ["handbag", "purse", "crochet bag", "tote", "shopper bag", "handmade", "gift", "woolen"],
-    gr2: ["wedding", "eid", "hair", "flowers", "party", "gift"],
-    gr3: ["necklace", "earrings", "bridal", "wedding", "gift", "accessory"],
-    gr4: ["hairband", "hair accessory", "girl", "handmade", "gift"],
-    gr5: ["bouquet", "flowers", "rose", "bride", "gift", "handmade"],
-    gr6: ["keychain", "keyring", "small gift", "cute", "handmade", "gift", "wholesale"]
+    gr2: ["wedding gift", "wedding", "shaadi", "doli", "mehndi", "haldi", "bridal", "bride", "party", "gift"],
+    gr3: ["hairband", "hair accessory", "girl", "handmade", "gift"],
+    gr4: ["keychain", "keyring", "small gift", "cute", "handmade", "gift", "wholesale"]
+  };
+  var GROUP_KEYWORDS = {
+    gajrays: ["gajray", "gajra", "hair", "eid", "flowers", "party"],
+    jewellery: ["jewellery", "jewelry", "necklace", "earrings", "accessory"],
+    bouquets: ["bouquet", "flowers", "rose", "bride"]
   };
 
-  /* Where each category sat before the Purse/Bags + Gifts/Keychains re-layout.
-     Anything the owner filed by hand under the old keys moves to its new home;
-     unknown keys are left alone rather than guessed at. */
+  /* Two older layouts have to be recognised, and they disagree about what the
+     same gr key means, so the map is chosen by which stored version the rows
+     came from rather than by the key alone. */
   var LEGACY_CATEGORY_MAP = {
-    gr1: { category: "gr1", subcategory: "" },           /* Purses  -> Purse/Bags */
-    gr2: { category: "gr2", subcategory: "" },           /* Gajrays -> Gajrays     */
-    gr3: { category: "gr6", subcategory: "sg1" },        /* Keychains -> Gifts    */
-    gr4: { category: "gr1", subcategory: "" },           /* Bags    -> Purse/Bags  */
-    gr5: { category: "gr3", subcategory: "" },           /* Jewellery -> Jewellery*/
-    gr6: { category: "gr4", subcategory: "" },           /* Headband -> Headband  */
-    gr7: { category: "gr5", subcategory: "" },           /* Bouquet -> Bouquet    */
-    gr8: { category: "gr6", subcategory: "" }            /* Gifts   -> Gifts      */
+    /* v45 and older: six categories, keychains already under Gifts. */
+    gr1: { category: "gr1", subcategory: "" },           /* Purse/Bags -> Purse/Bags  */
+    gr2: { category: "gr2", subcategory: "sg1" },        /* Gajrays    -> Wedding Gift */
+    gr3: { category: "gr2", subcategory: "sg2" },        /* Jewellery  -> Wedding Gift */
+    gr4: { category: "gr3", subcategory: "" },           /* Headband   -> Headband     */
+    gr5: { category: "gr2", subcategory: "sg3" },        /* Bouquet    -> Wedding Gift */
+    gr6: { category: "gr4", subcategory: "" }            /* Gifts      -> Gifts        */
+  };
+  var LEGACY_CATEGORY_MAP_ORIGINAL = {
+    /* v44 and older: the original eight separate categories. */
+    gr1: { category: "gr1", subcategory: "" },           /* Purses    -> Purse/Bags    */
+    gr2: { category: "gr2", subcategory: "sg1" },        /* Gajrays   -> Wedding Gift  */
+    gr3: { category: "gr4", subcategory: "sg1" },        /* Keychains -> Gifts         */
+    gr4: { category: "gr1", subcategory: "" },           /* Bags      -> Purse/Bags    */
+    gr5: { category: "gr2", subcategory: "sg2" },        /* Jewellery -> Wedding Gift  */
+    gr6: { category: "gr3", subcategory: "" },           /* Headband  -> Headband      */
+    gr7: { category: "gr2", subcategory: "sg3" },        /* Bouquet   -> Wedding Gift  */
+    gr8: { category: "gr4", subcategory: "" }            /* Gifts     -> Gifts         */
   };
 
   /* Pull owner-created products out of any older gulnish-products-v* store and
