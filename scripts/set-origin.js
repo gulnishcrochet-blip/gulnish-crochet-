@@ -32,7 +32,9 @@ function currentOrigin() {
   return canonical[1];
 }
 
-/* Every root .html page, plus the two files search engines read. The *.html
+/* Every root .html page, plus the two files search engines read, plus the
+   dev tools in scripts/ - fix-meta.js matches on the old host by string, so
+   leaving it behind would make it quietly re-insert a stale origin. The *.html
    sweep covers the shared <head> that each page carries a copy of. */
 function targetFiles() {
   const files = fs
@@ -42,6 +44,12 @@ function targetFiles() {
   for (const f of ["sitemap.xml", "robots.txt"]) {
     const p = path.join(ROOT, f);
     if (fs.existsSync(p)) files.push(p);
+  }
+  const scriptsDir = path.join(ROOT, "scripts");
+  if (fs.existsSync(scriptsDir)) {
+    for (const f of fs.readdirSync(scriptsDir).filter((f) => f.endsWith(".js"))) {
+      files.push(path.join(scriptsDir, f));
+    }
   }
   return files;
 }
