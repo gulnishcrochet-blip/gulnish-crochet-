@@ -649,6 +649,18 @@ em {
   white-space: nowrap;
 }
 
+.category-card__subs {
+  padding: 0 0.25rem;
+  margin-top: -0.5rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.category-card__subsep {
+  margin: 0 0.4rem;
+  color: var(--line-strong);
+}
+
 /* ============ PRODUCT GRID & CARDS ============ */
 .image-grid {
   display: grid;
