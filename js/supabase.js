@@ -81,7 +81,26 @@
   var _orderSubscriptions = [];
   var _onOrdersChanged = null;
 
-  /* ---------- default settings (mirrors original) ---------- */  /* Categories are positional: the key for the category at index i is
+  /* products.subcategory arrived after the rest of the products table, so a
+     database that has not run supabase-v20.sql rejects the entire upsert with
+     PGRST204. Rather than lose the edit, we detect that once, drop the column
+     from the row and flag it so the admin panel can say so out loud. */
+  var subcategoryColumnMissing = false;
+  function isMissingSubcategoryColumn(err) {
+    if (!err) return false;
+    var text = [err.code, err.message, err.details, err.hint]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+    return text.indexOf("subcategory") !== -1 &&
+      (text.indexOf("could not find") !== -1 ||
+        text.indexOf("pgrst204") !== -1 ||
+        text.indexOf("does not exist") !== -1);
+  }
+
+  /* ---------- default settings (mirrors original) ---------- */
+
+  /* Categories are positional: the key for the category at index i is
      "gr" + (i + 1), and every product stores that key verbatim. New categories
      are therefore always APPENDED - inserting one would silently re-point
      every existing product at the wrong category. */
