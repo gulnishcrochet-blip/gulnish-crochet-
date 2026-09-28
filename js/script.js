@@ -594,7 +594,7 @@
   var categoryView = document.getElementById("categoryView");
   var productsView = document.getElementById("productsView");
 
-  function categoryCardHTML(label, count, images, catKey) {
+  function categoryCardHTML(label, count, images, catKey, subs) {
     var slides = (images || []).filter(Boolean).map(function (s) { return displayImage(s); });
     var img = slides.length
       ? '<img src="' + slides[0] + '"' + imgSrcset((images || []).filter(Boolean)[0], "(max-width: 760px) 44vw, 260px") + ' alt="' + escapeHtml(label) + '" loading="lazy" decoding="async" data-slides="' +
@@ -606,7 +606,13 @@
       '<span class="category-card__body">' +
       '<span class="category-card__name">' + escapeHtml(label) + "</span>" +
       '<span class="category-card__count">' + count + " item" + (count === 1 ? "" : "s") + "</span>" +
-      "</span></button>"
+      "</span>" +
+      ((subs && subs.length)
+        ? '<span class="category-card__subs">' +
+          subs.map(escapeHtml).join('<span class="category-card__subsep" aria-hidden="true">&middot;</span>') +
+          "</span>"
+        : "") +
+      "</button>"
     );
   }
 
