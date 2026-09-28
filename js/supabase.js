@@ -360,11 +360,13 @@
 
         var old = lsGet(key, []);
         if (!Array.isArray(old)) continue;
-        /* Rows saved under v45 used the six-category layout; anything older
-           used the original eight, where the same gr key meant something else. */
-        var map = /^gulnish-products-v4[5-9]$|^gulnish-products-v[5-9]\d+$/.test(key)
+        /* Rows saved under v46 used the Wedding Gift layout, v45 the six
+           category one, and anything older the original eight - where the same
+           gr key meant something completely different. */
+        var version = parseInt(String(key).replace(/^gulnish-products-v/, ""), 10);
+        var map = version >= 46
           ? LEGACY_CATEGORY_MAP
-          : LEGACY_CATEGORY_MAP_ORIGINAL;
+          : (version === 45 ? LEGACY_CATEGORY_MAP_SIX : LEGACY_CATEGORY_MAP_ORIGINAL);
         old.forEach(function (raw) {
           if (!raw || typeof raw !== "object") return;
           if (String(raw.id || "").indexOf("seed_") === 0) return;
