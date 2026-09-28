@@ -797,7 +797,7 @@
         ppPrice.textContent = displayPrice(p);
       }
     if (ppCategory) {
-      /* "Gifts · Keychains" reads better than the bare category once a
+      /* "Small Gifts · Keychains" reads better than the bare category once a
          product is filed under a subcategory. */
       var catLabel = categoryLabelOf(p.category);
       var subLabel = subcategoryLabelOf(p.category, p.subcategory);
