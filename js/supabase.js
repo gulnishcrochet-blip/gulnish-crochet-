@@ -259,12 +259,15 @@
   };
 
   function defaultProducts() {
-    var cats = defaultSettings().categories;
+    var settings = defaultSettings();
+    var cats = settings.categories;
+    var subs = settings.subcategories;
     var out = [];
     Object.keys(RAW_IMAGES).forEach(function (key) {
       var catIdx = parseInt(key.replace("gr", ""), 10) - 1;
       var label = cats[catIdx] || ITEM_NAME[key] || "Item";
       var name = ITEM_NAME[key] || label;
+      var parentSubs = subs[key] || [];
       RAW_IMAGES[key].forEach(function (img, i) {
         var id = "seed_" + key + "_" + (i + 1);
         var real = REAL_PRODUCTS[id];
@@ -275,6 +278,7 @@
           name: real ? real.name : name + " " + (i + 1),
           price: PRODUCT_PRICES[id] || (real ? real.price : (BASE_PRICE[key] || 500) + (i % 4) * 50),
           category: key,
+          subcategory: PRODUCT_SUBCATEGORY[id] || (parentSubs.length ? subKey(0) : ""),
           image: HIDE_PRODUCT_IMAGES[key] || HIDE_PRODUCT_IMAGES[id] ? "" : img,
           keywords: kw,
           colors: [],
@@ -296,7 +300,12 @@
     var gal = Array.isArray(p && p.gallery)
       ? p.gallery.filter(function (x) { return typeof x === "string" && x.trim(); })
       : [];
-    return Object.assign({}, p, { status: status, stock: st, gallery: gal });
+    /* subcategory is the positional "sgN" key inside the product's own
+       category, so an empty string simply means "this product is filed
+       straight under its category". */
+    var sub = p && typeof p.subcategory === "string" ? p.subcategory.trim() : "";
+    if (sub && subIndexOf(sub) < 0) sub = "";
+    return Object.assign({}, p, { status: status, stock: st, gallery: gal, subcategory: sub });
   }
 
   /* ---------- v<19>.sql also mirrors this catalog ---------- */
