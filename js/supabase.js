@@ -322,33 +322,34 @@
      whatever the product already had", which is what the two layouts that
      already had subcategories need. */
   var LEGACY_CATEGORY_MAP = {
-    /* v46: the first Wedding Gift layout. gr1-gr4 keep their meaning and the
-       Wedding Gift subcategory keys are unchanged, so this is the identity. */
-    gr1: { category: "gr1", subcategory: "" },
-    gr2: { category: "gr2", subcategory: null },
-    gr3: { category: "gr3", subcategory: "" },
-    gr4: { category: "gr4", subcategory: null }
+    /* v46 and v47: Headband was a top-level gr3 and Gifts was gr4. The two are
+       now one Small Gifts at gr3, so gr4 has to land there too. */
+    gr1: { category: "gr1", subcategory: "" },           /* Purse/Bags  -> Purse/Bags  */
+    gr2: { category: "gr2", subcategory: null },          /* Wedding Gift (sg keys same) */
+    gr3: { category: "gr3", subcategory: "sg2" },         /* Headband    -> Headband     */
+    gr4: { category: "gr3", subcategory: null },          /* Gifts       -> Small Gifts  */
+    gr5: { category: "gr4", subcategory: null }           /* School Items-> School Items */
   };
   var LEGACY_CATEGORY_MAP_SIX = {
     /* v45: six categories, keychains already under Gifts. */
     gr1: { category: "gr1", subcategory: "" },           /* Purse/Bags -> Purse/Bags  */
     gr2: { category: "gr2", subcategory: "sg1" },        /* Gajrays    -> Wedding Gift */
     gr3: { category: "gr2", subcategory: "sg2" },        /* Jewellery  -> Wedding Gift */
-    gr4: { category: "gr3", subcategory: "" },           /* Headband   -> Headband     */
+    gr4: { category: "gr3", subcategory: "sg2" },        /* Headband   -> Small Gifts  */
     gr5: { category: "gr2", subcategory: "sg3" },        /* Bouquet    -> Wedding Gift */
-    gr6: { category: "gr4", subcategory: null }          /* Gifts      -> Gifts        */
+    gr6: { category: "gr3", subcategory: null }          /* Gifts      -> Small Gifts  */
   };
   var LEGACY_CATEGORY_MAP_ORIGINAL = {
     /* v44 and older: the original eight separate categories, before
        subcategories existed, so nothing here keeps an old sg key. */
     gr1: { category: "gr1", subcategory: "" },           /* Purses    -> Purse/Bags    */
     gr2: { category: "gr2", subcategory: "sg1" },        /* Gajrays   -> Wedding Gift  */
-    gr3: { category: "gr4", subcategory: "sg1" },        /* Keychains -> Gifts         */
+    gr3: { category: "gr3", subcategory: "sg1" },        /* Keychains -> Small Gifts   */
     gr4: { category: "gr1", subcategory: "" },           /* Bags      -> Purse/Bags    */
     gr5: { category: "gr2", subcategory: "sg2" },        /* Jewellery -> Wedding Gift  */
-    gr6: { category: "gr3", subcategory: "" },           /* Headband  -> Headband      */
+    gr6: { category: "gr3", subcategory: "sg2" },        /* Headband  -> Small Gifts   */
     gr7: { category: "gr2", subcategory: "sg3" },        /* Bouquet   -> Wedding Gift  */
-    gr8: { category: "gr4", subcategory: "" }            /* Gifts     -> Gifts         */
+    gr8: { category: "gr3", subcategory: "" }            /* Gifts     -> Small Gifts   */
   };
 
   /* Pull owner-created products out of any older gulnish-products-v* store and
