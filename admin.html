@@ -60,6 +60,12 @@
         <button class="btn btn--ghost btn--small" type="button" id="adminSignOut">Sign out</button>
       </div>
 
+      <p class="admin-warn" id="subcategoryWarn" hidden>
+        <strong>Subcategories are not being saved to the database yet.</strong>
+        Run <code>supabase-v20.sql</code> once in Supabase &rarr; SQL Editor to add the
+        <code>products.subcategory</code> column. Everything else saves normally until you do.
+      </p>
+
       <!-- ============ SHOP SETTINGS ============ -->
       <section class="admin-card">
         <h2>Shop settings</h2>
