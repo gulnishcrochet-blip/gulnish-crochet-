@@ -486,7 +486,15 @@
       products.length = 0;
       var fallbackProducts = lsGet(LOCAL_PRODUCTS, defaultProducts());
       (fallbackProducts || []).forEach(function (p) { products.push(normalizeProduct(p)); });
-      if (!localStorage.getItem(LOCAL_PRODUCTS)) lsSet(LOCAL_PRODUCTS, products);
+      if (!localStorage.getItem(LOCAL_PRODUCTS)) {
+        /* First visit on this seed version. Keep anything the owner added by
+           hand in the admin panel, moved onto the current categories, so
+           bumping the key re-seeds the catalogue without eating their work.
+           Only non-seed rows are carried over: the seed list is rebuilt from
+           RAW_IMAGES below, and a stale copy would fight it. */
+        migrateCustomProducts().forEach(function (p) { products.push(p); });
+        lsSet(LOCAL_PRODUCTS, products);
+      }
       settings = normalizeSettings(lsGet(LOCAL_SETTINGS, null));
       orders.length = 0;
       (lsGet(LOCAL_ORDERS, []) || []).forEach(function (o) { orders.push(o); });
