@@ -291,7 +291,7 @@
           name: real ? real.name : name + " " + (i + 1),
           price: PRODUCT_PRICES[id] || (real ? real.price : (BASE_PRICE[key] || 500) + (i % 4) * 50),
           category: key,
-          subcategory: PRODUCT_SUBCATEGORY[id] || (parentSubs.length ? subKey(0) : ""),
+          subcategory: parentSubs.length ? subKey(0) : "",
           image: HIDE_PRODUCT_IMAGES[key] || HIDE_PRODUCT_IMAGES[id] ? "" : img,
           keywords: kw,
           colors: [],
