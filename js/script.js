@@ -470,8 +470,12 @@
 
   function isFiltering() {
     var term = searchInput ? searchInput.value.trim() : "";
-    var activeBtn = document.querySelector(".filter-btn.active");
-    return term !== "" || (activeBtn && activeBtn.dataset.filter !== "all");
+    var activeBtn = filterWrap && filterWrap.querySelector(".filter-btn.active");
+    return (
+      term !== "" ||
+      (activeBtn && activeBtn.dataset.filter !== "all") ||
+      activeSubcategoryKey() !== "all"
+    );
   }
 
   function updateShowMoreBtn() {
@@ -484,14 +488,18 @@
   function applyFilters() {
     var term =
       (searchInput ? searchInput.value.trim().toLowerCase() : "") || "";
-    var activeBtn = document.querySelector(".filter-btn.active");
-    var target = (activeBtn && activeBtn.dataset.filter) || "all";
+    var target = activeCategoryKey();
+    var subTarget = activeSubcategoryKey();
     var filtering = isFiltering();
 
     var visible = 0;
     cards.forEach(function (card, index) {
       var inRange = filtering || index < visibleCount;
       var categoryMatch = target === "all" || card.dataset.category === target;
+      var subMatch =
+        target === "all" ||
+        subTarget === "all" ||
+        card.dataset.subcategory === subTarget;
 
       var addBtn = card.querySelector(".add-btn");
       var nameEl = card.querySelector(".work-card__name");
@@ -506,10 +514,11 @@
         name += " " + ((prod.keywords && prod.keywords.join) ? prod.keywords.join(" ") : "");
         name += " " + ((prod.colors || []).map(function (c) { return c.name; }).join(" "));
         name += " " + (categoryLabelOf(prod.category) || "");
+        name += " " + (subcategoryLabelOf(prod.category, prod.subcategory) || "");
       }
 
       var termMatch = !term || name.indexOf(term) !== -1;
-      var show = inRange && categoryMatch && termMatch;
+      var show = inRange && categoryMatch && subMatch && termMatch;
       card.classList.toggle("is-hidden", !show);
       if (show) visible += 1;
     });
