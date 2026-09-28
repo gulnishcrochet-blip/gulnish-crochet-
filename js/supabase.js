@@ -546,7 +546,7 @@
       var ci = {};
       s.categories.forEach(function (_, i) {
         var k = "gr" + (i + 1);
-        ci[k] = Array.isArray(base.categoryImages[k])
+        ci[k] = Array.isArray(base.categoryImages[k]) && base.categoryImages[k].length
           ? base.categoryImages[k].slice(0, 5)
           : CATEGORY_IMAGE_SETS[k] || [];
       });
