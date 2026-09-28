@@ -416,7 +416,7 @@
   function defaultSettings() {
     var cats = [];
     for (var i = 0; i < DEFAULT_COUNT; i += 1) {
-      cats.push(DEFAULT_NAMES[i] || EXTRA_CATEGORY_NAMES[i + 1] || "Category " + (i + 1));
+      cats.push(DEFAULT_NAMES[i] || "Category " + (i + 1));
     }
     return {
       categories: cats,
