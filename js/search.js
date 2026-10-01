@@ -167,11 +167,7 @@
         var id = hit.dataset.id;
         close();
         if (id) {
-          if (location.pathname === '/products' && window.showProduct) {
-            window.showProduct(id);
-          } else {
-            location.href = '/products?q=' + encodeURIComponent(id);
-          }
+          openProductById(id);
         }
       }
     });
