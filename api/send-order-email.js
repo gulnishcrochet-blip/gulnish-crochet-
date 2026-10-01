@@ -151,7 +151,7 @@ function cleanOrder(order) {
     items: items,
     total: Math.round(num(order.total) * 100) / 100,
     customer: { name: str(customer.name, 80), email: str(customer.email, 120) },
-    payment: { method: str(payment.method, 40) || "Cash on delivery" },
+    payment: { method: str(payment.method, 40) || "Bank transfer" },
     estDelivery: order.estDelivery
   };
 }
@@ -176,7 +176,7 @@ function emailBody(order) {
   const lines = [
     "Hi " + (plain(c.name) || "there") + ",",
     "",
-    "Thank you for your order with Gulnish Crochet. We've received it and will confirm delivery and payment with you on WhatsApp shortly.",
+    "Thank you for your order with Gulnish Crochet. We've received it and will send our payment details and confirm delivery with you on WhatsApp shortly.",
     "",
     "Order number: " + plain(order.id),
     "",
@@ -191,7 +191,7 @@ function emailBody(order) {
 
   lines.push("");
   lines.push("Total: " + total);
-  lines.push("Payment: " + (plain(order.payment && order.payment.method) || "Cash on delivery"));
+  lines.push("Payment: " + (plain(order.payment && order.payment.method) || "Bank transfer"));
   if (order.estDelivery) {
     try {
       lines.push("Estimated delivery: " + new Date(order.estDelivery).toDateString());
@@ -211,7 +211,7 @@ function emailBody(order) {
     }).join("\n") +
     "\n  </table>\n" +
     "  <p><strong>Total: " + money(order.total || 0) + "</strong><br>" +
-    "Payment: " + escapeHtml((order.payment && order.payment.method) || "Cash on delivery") + "</p>\n" +
+    "Payment: " + escapeHtml((order.payment && order.payment.method) || "Bank transfer") + "</p>\n" +
     "  <p style=\"color:#68706b;font-size:13px\">For updates on your order, message us on WhatsApp at +92 307 5729901.</p>";
 
   return {
@@ -223,7 +223,7 @@ function emailBody(order) {
       '<div style="font-family:Georgia,serif;max-width:560px;margin:auto;color:#1b211d">' +
       '<h1 style="color:#a87e2c">Gulnish Crochet</h1>' +
       '<p>Hi ' + escapeHtml(c.name || "there") + ',</p>' +
-      '<p>Thank you for your order! We\'ve received it and will confirm delivery and payment with you on WhatsApp shortly.</p>' +
+      '<p>Thank you for your order! We\'ve received it and will send our payment details and confirm delivery with you on WhatsApp shortly.</p>' +
       rowHtml +
       '</div>'
   };
