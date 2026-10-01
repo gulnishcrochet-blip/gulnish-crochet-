@@ -210,7 +210,7 @@
       view.href = '/products?q=' + encodeURIComponent(p.id);
       view.className = 'wl-mini';
       view.textContent = 'View';
-      view.dataset.wl-view = p.id;
+      view.dataset.wlView = p.id;
       row.appendChild(addc);
       row.appendChild(view);
       b.appendChild(nm);
