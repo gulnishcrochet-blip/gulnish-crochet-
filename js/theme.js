@@ -12,11 +12,32 @@
   var GC = window.GC;
 
   var TOPBAR_KEY = "gulnish-topbar-dismissed";
+  /* Delivery is never free, so the announcement must not promise it is.
+     buildTopbar fills the delivery slot from the admin setting once the
+     catalogue has loaded; the placeholder keeps the bar from rendering
+     empty in the meantime. */
   var ANNOUNCEMENTS = [
-    { icon: "truck", html: "Free delivery on orders over <b>Rs. 3,000</b> across Pakistan" },
-    { icon: "sparkles", html: "Every piece is <b>handmade to order</b> — send us your idea" },
+    { icon: "truck", html: "Delivery charge confirmed on WhatsApp", slot: "delivery" },
+    { icon: "sparkles", html: "Every piece is <b>handmade to order</b> &mdash; send us your idea" },
     { icon: "whatsapp", html: "Order on WhatsApp: <a class='topbar__link' href='https://wa.me/923075729901'>+92 307 5729901</a>" }
   ];
+
+  function announcementHTML(item) {
+    if (item.slot === "delivery") {
+      var label = (window.GC && GC.deliveryLabel) ? GC.deliveryLabel() : item.html;
+      return escapeHTML(label);
+    }
+    return item.html;
+  }
+
+  function escapeHTML(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
 
   function escapeHtml(str) {
     return String(str || "")
