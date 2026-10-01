@@ -337,6 +337,11 @@
   }
 
   /* ---------- Build shop UI ---------- */
+  /* Wishlist state lives in js/wishlist.js. Exposing addToCart lets the
+     wishlist panel and quick view reuse the exact same path (badge bump,
+     toast, fly animation) instead of re-implementing the cart write. */
+  window.addToCart = addToCart;
+
   var productGrid = document.getElementById("productGrid");
   var filterWrap = document.getElementById("filters");
   var subFilterWrap = document.getElementById("subFilters");
