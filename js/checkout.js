@@ -401,9 +401,10 @@
     var done = function () {
       if (success) {
         if (successNo) successNo.textContent = order.id;
-        if (successCopy) successCopy.textContent = order.payment.method === "Cash on delivery"
-          ? "We've received your order and will message you on WhatsApp shortly to confirm the delivery charge and date."
-          : "We've received your order and will contact you on WhatsApp to confirm payment, delivery charge and date.";
+        if (successCopy) successCopy.textContent = PREPAID_METHODS.indexOf(order.payment.method) > -1
+          ? "We've received your order. Send your " + order.payment.method.toLowerCase() +
+            " payment and the delivery charge, and we'll confirm on WhatsApp before we start stitching."
+          : "We've received your order and will message you on WhatsApp with payment and delivery options.";
         if (waLinkEl) {
           waLinkEl.href = orderWaLink || orderWaShortLink;
           waLinkEl.hidden = !orderWaLink;
