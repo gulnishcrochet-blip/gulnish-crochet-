@@ -397,7 +397,7 @@
     var btn = e.target.closest('[data-open-search]');
     if (btn) {
       e.preventDefault();
-      open();
+      open(btn);
       return;
     }
   });
