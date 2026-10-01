@@ -199,8 +199,23 @@
     nameEl.textContent = p.name || '';
     priceEl.textContent = parseFloat(p.price) > 0 ? money(p.price) : '';
     var s = String((p.status || '')).toLowerCase();
-    statusEl.textContent = (s === 'made to order' || s === 'made-to-order') ? 'Made to order · ~5 days' : '';
-    statusEl.hidden = !statusEl.textContent;
+    /* A product can reach the admin panel with a "sold out" status (older
+       rows, or a status written straight into Supabase). A card already
+       badges those as Sold Out, so the modal must not offer a working
+       Add to Cart — that is the one place a shopper would actually commit
+       to buying. */
+    var isSoldOut = (s === 'sold out' || s === 'sold-out') ||
+      (p.stock != null && parseInt(p.stock, 10) === 0);
+    if (isSoldOut) {
+      statusEl.textContent = 'Sold out — message us and we can make one for you';
+      statusEl.hidden = false;
+    } else {
+      statusEl.textContent = (s === 'made to order' || s === 'made-to-order') ? 'Made to order · ~5 days' : '';
+      statusEl.hidden = !statusEl.textContent;
+    }
+    addBtn.disabled = isSoldOut;
+    addBtn.textContent = isSoldOut ? 'Sold Out' : 'Add to Cart';
+    addBtn.classList.toggle('btn--disabled', isSoldOut);
 
     // colors
     colorsEl.innerHTML = '<span class="qv-colors-label">Colors</span>';
