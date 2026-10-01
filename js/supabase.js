@@ -1073,11 +1073,11 @@
         : [{ status: order.status || "Pending", at: order.placedAt || new Date().toISOString() }];
       if (typeof order.payment === "string" || !order.payment) {
         order.payment = {
-          method: typeof order.payment === "string" ? order.payment : "Cash on delivery",
+          method: typeof order.payment === "string" ? order.payment : GC.paymentDefault,
           status: "Pending"
         };
       }
-      if (!order.payment.method) order.payment.method = "Cash on delivery";
+      if (!order.payment.method) order.payment.method = GC.paymentDefault;
       if (!order.payment.status) order.payment.status = "Pending";
       order.estDelivery = order.estDelivery || GC.deliveryEstimate(order.placedAt);
       order.updatedAt = order.placedAt || new Date().toISOString();
@@ -1143,7 +1143,7 @@
     markOrderPaid: async function (id) {
       var o = orders.find(function (x) { return x.id === id; });
       if (!o) return { ok: true };
-      if (!o.payment) o.payment = { method: "Cash on delivery", status: "Pending" };
+      if (!o.payment) o.payment = { method: GC.paymentDefault, status: "Pending" };
       o.payment.status = "Paid";
       o.updatedAt = new Date().toISOString();
 
@@ -1327,7 +1327,7 @@
   function orderToRow(o) {
     var c = o.customer || {};
     var pay = o.payment || {};
-    var method = typeof o.payment === "string" ? o.payment : (pay.method || "Cash on delivery");
+    var method = typeof o.payment === "string" ? o.payment : (pay.method || GC.paymentDefault);
     return {
       id: o.id,
       phone: String(c.phone || "").replace(/[^\d]/g, "").replace(/^0+/, ""),
@@ -1354,7 +1354,7 @@
   }
 
   function orderFromRow(r) {
-    var method = r.payment_method || r.payment || "Cash on delivery";
+    var method = r.payment_method || r.payment || GC.paymentDefault;
     var history = Array.isArray(r.status_history) && r.status_history.length
       ? r.status_history
       : [{ status: r.status || "Pending", at: r.placed_at || r.created_at || new Date().toISOString(), note: "" }];
