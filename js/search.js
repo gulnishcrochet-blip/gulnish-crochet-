@@ -180,8 +180,17 @@
     });
   }
 
-  function open() {
+  function open(trigger) {
     buildOverlay();
+    /* Remember the trigger so close() can restore focus to it. Guard against
+       clobbering a good value with a body/undefined activeElement when the
+       overlay is opened from the keyboard shortcut instead of a button. */
+    if (trigger) {
+      returnFocusTo = trigger;
+    } else if (!returnFocusTo || !returnFocusTo.isConnected) {
+      var active = document.activeElement;
+      returnFocusTo = active && active !== document.body ? active : null;
+    }
     isOpen = true;
     overlay.classList.add('is-open');
     overlay.setAttribute('aria-hidden', 'false');
