@@ -6586,6 +6586,17 @@ body.has-topbar .site-header { top: 0; }
   .mobile-search input {
     min-height: 44px;
   }
+
+  /* Breadcrumb links measured 38x23 on a phone. */
+  .breadcrumbs a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .breadcrumbs li {
+    gap: 0.25rem;
+  }
 }
 
 /* --- 5. Fixed bottom bar covered the last of the page ---------------
