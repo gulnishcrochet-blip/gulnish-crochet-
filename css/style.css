@@ -316,6 +316,21 @@ em {
   padding: 0.45rem 0;
 }
 
+/* Tuck-away on scroll-down. Driven from js/script.js's single rAF scroll
+   handler so the header never lags a frame behind the content. */
+.site-header.is-tucked {
+  transform: translateY(-100%);
+  transition: transform 0.32s var(--ease), box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.site-header:not(.is-tucked) {
+  transition: transform 0.32s var(--ease), box-shadow 0.3s ease, background 0.3s ease;
+}
+
+/* Ignore the header height for anchor targets while it is tucked, otherwise
+   an in-page jump lands under the bar. */
+body.has-topbar { scroll-padding-top: 132px; }
+
 .header-inner {
   display: flex;
   align-items: center;
