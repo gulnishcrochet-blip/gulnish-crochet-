@@ -111,7 +111,7 @@
       var item = ANNOUNCEMENTS[idx % ANNOUNCEMENTS.length];
       msg.classList.add("topbar__fade");
       window.setTimeout(function () {
-        msg.innerHTML = (ICONS[item.icon] || "") + "<span>" + item.html + "</span>";
+        msg.innerHTML = (ICONS[item.icon] || "") + "<span>" + announcementHTML(item) + "</span>";
         msg.classList.remove("is-out");
         msg.classList.remove("topbar__fade");
       }, 260);
