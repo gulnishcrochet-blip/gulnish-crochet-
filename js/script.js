@@ -396,8 +396,11 @@
         parseFloat(p.price) > 0
           ? '<div class="work-card__price">' + displayPrice(p) + "</div>"
           : "";
+    /* Use stockStatus(), not a raw status read: a product with a tracked
+       stock of 0 is sold out even when its status text still says
+       "in stock", and the overlay has to agree with the button below. */
     var soldOut =
-      String((p.status || "")).toLowerCase() === "sold out"
+      stockStatus(p) === "sold out"
         ? '<div class="work-card__soldout"><span>Sold Out</span></div>'
         : "";
     var media =
