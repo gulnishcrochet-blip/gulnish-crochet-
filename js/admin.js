@@ -634,6 +634,12 @@
       settings.bankIBAN = (shopBankIBANInput.value || "").trim();
       settings.jazzcashNumber = (shopJazzcashInput.value || "").trim();
       settings.easypaisaNumber = (shopEasypaisaInput.value || "").trim();
+      /* Blank means "quote it on WhatsApp"; anything else is published. */
+      settings.shippingFee = (shopShippingFeeInput.value || "").trim();
+      settings.deliveryNote = (shopDeliveryNoteInput.value || "").trim();
+      /* The old free-delivery threshold is retired: this shop does not
+         offer free delivery, so a stale value must not resurface. */
+      settings.freeDeliveryMin = 0;
       if (GC.saveSettings) await GC.saveSettings(settings);
       alert("Shop settings saved.");
     });
