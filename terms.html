@@ -238,6 +238,14 @@
   <script src="js/analytics.js?v=172" defer></script>
   <script src="js/supabase.js?v=172" defer></script>
   <script src="js/script.js?v=172" defer></script>
+
+<!-- Storefront modules. Order matters: script.js publishes the cart
+     write (window.addToCart) and the product markup these read. -->
+<script src="js/search.js?v=172" defer></script>
+<script src="js/quickview.js?v=172" defer></script>
+<script src="js/wishlist.js?v=172" defer></script>
+<script src="js/newsletter.js?v=172" defer></script>
+<script src="js/theme.js?v=172" defer></script>
 <script src="js/sw-register.js?v=172" defer></script>
 </body>
 </html>
