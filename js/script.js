@@ -923,6 +923,12 @@
   if (ppAdd) {
     ppAdd.addEventListener("click", function () {
       if (!currentProduct) return;
+      /* Matches the card and quick-view rule: a sold-out product is not
+         purchasable from any surface. */
+      if (ppAdd.disabled) {
+        showToast("This piece is sold out — message us on WhatsApp.");
+        return;
+      }
       var swatch = ppColors
         ? ppColors.querySelector(".color-swatch.selected")
         : null;
