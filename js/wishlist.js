@@ -273,15 +273,17 @@
       if (window.addToCart) {
         window.addToCart({ id: pf.id, name: pf.name || '', price: parseFloat(pf.price) || 0, image: pf.image || '' });
       }
-      remove(pid);
+      /* Kept in the list on purpose: the button reads "Add to Cart", not
+         "Move to Cart", so dropping the item here would delete data the
+         shopper never asked to lose. It is one click to remove. */
+      showToast('Added to cart — still saved to your wishlist');
       return;
     }
     var v = e.target.closest('[data-wl-view]');
     if (v) {
+      /* The anchor already points at the product; just get the panel out of
+         the way so the navigation is not hidden behind a scrim. */
       close();
-      if (location.pathname !== '/products' && window.GulnishQuickView) {
-        // go to products or quick view not needed
-      }
       return;
     }
   });
