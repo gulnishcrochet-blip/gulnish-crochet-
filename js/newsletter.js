@@ -18,8 +18,21 @@
       .replace(/"/g, "&quot;");
   }
 
+  /* The status line sits *below* the input pill, not inside it, so it is a
+     sibling of the form rather than a child. Scoping the lookup to the
+     form would silently return null and the shopper would never see
+     confirmation. Resolve it per-form once and reuse. */
+  function noteFor(form) {
+    if (!form.__nlNote) {
+      form.__nlNote =
+        form.querySelector('[data-newsletter-note]') ||
+        (form.parentElement && form.parentElement.querySelector('[data-newsletter-note]'));
+    }
+    return form.__nlNote;
+  }
+
   function setNote(form, msg, type) {
-    var note = form.querySelector('[data-newsletter-note]');
+    var note = noteFor(form);
     if (!note) return;
     note.textContent = msg || "";
     note.classList.remove('is-ok', 'is-err');
