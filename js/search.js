@@ -19,6 +19,23 @@
       .replace(/"/g, "&quot;");
   }
 
+  /* True on the catalogue page. Vercel serves /products via cleanUrls, but a
+     plain static host (or file://) leaves the .html in the path — and the
+     .html variant is also what a local preview uses, so matching only
+     /products sent search hits to a full page reload instead of opening the
+     product in place. */
+  function onProductsPage() {
+    return /\/products(\.html)?\/?$/.test(location.pathname);
+  }
+
+  function openProductById(id) {
+    if (onProductsPage() && window.showProduct) {
+      window.showProduct(id);
+    } else {
+      location.href = '/products?q=' + encodeURIComponent(id);
+    }
+  }
+
   function money(v) {
     var n = parseFloat(v) || 0;
     var str = String(Math.round(n * 100) / 100);
