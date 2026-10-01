@@ -1205,6 +1205,34 @@
       return cc + raw.replace(/^0+/, "");
     },
 
+    /* ---- delivery wording ----
+       Single source of truth for what the site says about delivery.
+       Delivery is NOT free here, so nothing may promise otherwise: the
+       wording either names the published courier charge or says plainly
+       that the charge is confirmed on WhatsApp. `deliveryNote` lets the
+       owner override the sentence entirely. */
+    deliveryFee: function () {
+      var raw = GC.settings.shippingFee;
+      if (raw == null || raw === "") return null;
+      var n = parseFloat(raw);
+      return isFinite(n) && n > 0 ? n : null;
+    },
+
+    deliveryLabel: function () {
+      var custom = String(GC.settings.deliveryNote || "").trim();
+      if (custom) return custom;
+      var fee = GC.deliveryFee();
+      return fee
+        ? "Flat delivery of Rs. " + fee + " across Pakistan"
+        : "Delivery charge confirmed on WhatsApp";
+    },
+
+    /* Short form for tight spots (mega-menu footer, trust chips). */
+    deliveryShort: function () {
+      var fee = GC.deliveryFee();
+      return fee ? "Rs. " + fee + " delivery" : "Delivery charge applies";
+    },
+
     /* Customer phone numbers are stored without the local trunk 0 (that's the
        form used to match repeat customers), so printing them with a bare "+"
        would hand out a broken number like "+3001234567". Put the country code
