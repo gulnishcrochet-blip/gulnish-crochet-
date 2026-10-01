@@ -1079,9 +1079,9 @@ var bottomNavCart = document.getElementById("bottomNavCart");
             : '<span class="cart-item__ph">&#128722;</span>') +
           "</div>" +
           '<div class="cart-item__info">' +
-          '<span class="cart-item__name">' + (item.name || "Item") + "</span>" +
+          '<span class="cart-item__name">' + escapeHtml(item.name || "Item") + "</span>" +
           '<span class="cart-item__price">' + money(cartUnitPrice(item)) + "</span>" +
-          (item.color ? '<span class="cart-item__color">' + item.color + "</span>" : "") +
+          (item.color ? '<span class="cart-item__color">' + escapeHtml(item.color) + "</span>" : "") +
           '<div class="qty">' +
           '<button class="qty__btn" data-action="minus" data-key="' + item.key + '" aria-label="Decrease">&#8722;</button>' +
           '<span class="qty__val">' + item.qty + "</span>" +
