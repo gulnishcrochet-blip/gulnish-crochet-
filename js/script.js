@@ -151,15 +151,25 @@
     headerInner.insertAdjacentElement("afterend", searchWrap);
   }
   var scrollTicking = false;
+  var lastScrollY = window.scrollY || 0;
   var onScroll = function () {
     if (!scrollTicking) {
       requestAnimationFrame(function () {
-        if (header) header.classList.toggle("scrolled", window.scrollY > 30);
+        var y = window.scrollY || 0;
+        if (header) header.classList.toggle("scrolled", y > 30);
+        /* Tuck the header away on scroll-down once past the hero, and bring
+           it straight back on any scroll-up. Without this the search and
+           wishlist buttons scroll out of reach on long product grids. */
+        if (header) {
+          if (y > 420 && y > lastScrollY + 4) header.classList.add("is-tucked");
+          else if (y < lastScrollY - 4 || y <= 420) header.classList.remove("is-tucked");
+        }
+        lastScrollY = y;
         if (progressBar) {
           var h = document.documentElement.scrollHeight - window.innerHeight;
-          progressBar.style.transform = "scaleX(" + (h > 0 ? window.scrollY / h : 0) + ")";
+          progressBar.style.transform = "scaleX(" + (h > 0 ? y / h : 0) + ")";
         }
-        if (backToTop) backToTop.classList.toggle("show", window.scrollY > 560);
+        if (backToTop) backToTop.classList.toggle("show", y > 560);
         if (fbGroup) {
           fbGroup.classList.toggle("fb-away", pageHero && pageHero.getBoundingClientRect().bottom > 0);
         }
