@@ -1226,6 +1226,13 @@
 
     var addBtn = e.target.closest(".add-btn");
     if (addBtn) {
+      /* The card button is marked disabled for sold-out products, but this
+         is a delegated handler, so the click still arrives here. Without
+         this guard a sold-out piece could be added to the cart. */
+      if (addBtn.disabled || addBtn.getAttribute("aria-disabled") === "true") {
+        showToast("This piece is sold out — message us on WhatsApp.");
+        return;
+      }
       var card = addBtn.closest(".work-card");
       var img = card ? card.querySelector(".work-card__media img") : null;
       var swatchEl = card ? card.querySelector(".color-swatch.selected") : null;
