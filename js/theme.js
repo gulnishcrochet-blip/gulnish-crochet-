@@ -135,6 +135,13 @@
     function stop() {
       if (timer) { window.clearInterval(timer); timer = null; }
     }
+    /* Lets the boot sequence repaint the delivery line once the admin
+       settings have loaded, without restarting the rotation. */
+    repaintTopbar = function () {
+      if (dismissed || bar.hidden) return;
+      var item = ANNOUNCEMENTS[idx % ANNOUNCEMENTS.length];
+      msg.innerHTML = (ICONS[item.icon] || "") + "<span>" + announcementHTML(item) + "</span>";
+    };
 
     header.parentNode.insertBefore(bar, header);
     document.body.classList.add("has-topbar");
