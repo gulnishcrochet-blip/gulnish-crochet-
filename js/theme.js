@@ -443,16 +443,18 @@
         ? note
         : "Tracked shipping across Pakistan, quoted on WhatsApp";
     }
-    /* Cart and checkout both said the charge is "confirmed on WhatsApp".
-       When a figure has been published in the admin panel, name it, so the
-       customer sees the same number everywhere. */
+    /* Cart and checkout both describe the payment terms. Nothing is
+       collected from the card here, but the order is paid for in advance,
+       so the copy must not imply payment happens on delivery. */
     var fee = GC.deliveryFee();
     var short = fee ? "Rs. " + fee : "";
     document.querySelectorAll("#cartDeliveryNote, #checkoutDeliveryNote, #checkoutDeliveryNote2")
       .forEach(function (el) {
         el.textContent = fee
-          ? "Nothing is charged now \u2014 delivery is " + short + ", confirmed on WhatsApp."
-          : "Nothing is charged now \u2014 delivery details will be confirmed on WhatsApp.";
+          ? "Pay in advance \u2014 we confirm your payment and the " + short +
+            " delivery charge on WhatsApp before we start stitching."
+          : "Pay in advance \u2014 we confirm your payment and the delivery " +
+            "charge on WhatsApp before we start stitching.";
       });
   }
 
