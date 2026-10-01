@@ -414,6 +414,27 @@
     });
   }
 
+  /* ---------- delivery wording on the home value strip ---------- */
+  /* The static HTML is a safe fallback; once the admin settings load the
+     title/text are replaced with whatever the owner configured. */
+  function paintDeliveryCopy() {
+    if (!(window.GC && GC.deliveryLabel)) return;
+    var title = document.querySelector("[data-delivery-title]");
+    var text = document.querySelector("[data-delivery-text]");
+    if (title) {
+      var fee = GC.deliveryFee();
+      title.textContent = fee
+        ? "Flat delivery Rs. " + fee
+        : "Delivery charge applies";
+    }
+    if (text) {
+      var note = String((GC.settings && GC.settings.deliveryNote) || "").trim();
+      text.textContent = note
+        ? note
+        : "Tracked shipping across Pakistan, quoted on WhatsApp";
+    }
+  }
+
   /* ---------- boot ---------- */
   function start() {
     buildTopbar();
@@ -422,6 +443,7 @@
     buildFooter();
     buildMobileNav();
     buildTrustRows();
+    paintDeliveryCopy();
     refreshMenus();
   }
 
