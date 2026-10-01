@@ -865,6 +865,10 @@
         ppStatus.hidden = false;
         ppStatus.className = "product-page__status status-made";
         ppStatus.textContent = "Made to order \u2014 takes about 5 days";
+      } else if (s === "sold out") {
+        ppStatus.hidden = false;
+        ppStatus.className = "product-page__status status-sold";
+        ppStatus.textContent = "Sold out \u2014 message us and we can make one for you";
       } else {
         ppStatus.hidden = true;
       }
@@ -872,8 +876,7 @@
     if (ppAdd) {
       /* Same sold-out rule as the card overlay and quick view: a product
          marked sold out must not be purchasable from any surface. */
-      var ppSoldOut = s === "sold out" || s === "sold-out" ||
-        (p.stock != null && parseInt(p.stock, 10) === 0);
+      var ppSoldOut = s === "sold out";
       ppAdd.disabled = ppSoldOut;
       ppAdd.textContent = ppSoldOut ? "Sold Out" : "Add to Cart";
       ppAdd.classList.toggle("is-disabled", ppSoldOut);
