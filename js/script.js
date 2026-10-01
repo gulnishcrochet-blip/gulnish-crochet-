@@ -341,6 +341,8 @@
      wishlist panel and quick view reuse the exact same path (badge bump,
      toast, fly animation) instead of re-implementing the cart write. */
   window.addToCart = addToCart;
+  window.showToast = showToast;
+  window.showProduct = showProduct;
 
   var productGrid = document.getElementById("productGrid");
   var filterWrap = document.getElementById("filters");
