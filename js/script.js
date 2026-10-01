@@ -337,6 +337,10 @@
   function stockStatus(p) {
     var s = String((p && p.status) || "").trim().toLowerCase();
     if (s === "made to order" || s === "made-to-order") return "made to order";
+    if (s === "sold out" || s === "sold-out") return "sold out";
+    /* A tracked stock of 0 means sold out even when the status text still
+       says "in stock" — the count is the more specific signal. */
+    if (p && p.stock != null && parseInt(p.stock, 10) === 0) return "sold out";
     return "in stock";
   }
 
