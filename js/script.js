@@ -1507,6 +1507,17 @@
     if (searchInput && urlQ) searchInput.value = urlQ;
     if (productsView) {
       showProducts(urlCat ? urlCat : "all", urlSub || "all");
+      /* The header search overlay and the wishlist both deep-link with
+         ?q=<product id>. Treat an exact id hit as "open this product" —
+         otherwise the id gets fed to the text filter and the shopper lands
+         on an empty grid. Anything else stays a normal text query. */
+      if (urlQ) {
+        var exact = getProducts().find(function (p) { return p.id === urlQ; });
+        if (exact) {
+          if (searchInput) searchInput.value = "";
+          showProduct(exact.id);
+        }
+      }
     } else {
       showCategories();
     }
