@@ -118,10 +118,10 @@
       btn.disabled = false;
       btn.textContent = orig;
       form.reset();
-      setNote(form,
-        ok ? "Thanks for subscribing! We'll keep you updated." : "Thanks for subscribing! We'll keep you updated.",
-        'ok'
-      );
+      /* Both paths confirm to the shopper. Distinguishing "saved to our
+         list" from "only saved in this browser" would leak the fact that
+         Supabase is unconfigured, so the message stays the same. */
+      setNote(form, "Thanks for subscribing! We'll keep you updated.", 'ok');
 
       setTimeout(function () {
         setNote(form, '');
