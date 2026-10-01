@@ -132,6 +132,14 @@
 
     addBtn.addEventListener('click', function () {
       if (!current) return;
+      /* Disabled attribute already blocks clicks, but a programmatic
+         .click() would still land here, so re-check the state. */
+      var st = String((current.status || '')).toLowerCase();
+      if (st === 'sold out' || st === 'sold-out' ||
+          (current.stock != null && parseInt(current.stock, 10) === 0)) {
+        if (window.showToast) window.showToast('This piece is sold out — message us on WhatsApp');
+        return;
+      }
       var sel = colorsEl.querySelector('.color-swatch.selected');
       var img = mediaEl.querySelector('img');
       if (window.addToCart) {
