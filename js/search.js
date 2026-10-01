@@ -116,7 +116,10 @@
       if (e.target === overlay) close();
     });
     closeBtn.addEventListener('click', close);
-    input.addEventListener('input', debounce(render, 160));
+    /* Pass the value explicitly. A bare `debounce(render, 160)` would hand
+       render() the InputEvent, so every query would stringify to
+       "[object InputEvent]" and match nothing. */
+    input.addEventListener('input', debounce(function () { render(input.value); }, 160));
     input.addEventListener('keydown', onKey);
     document.addEventListener('keydown', function (e) {
       if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
