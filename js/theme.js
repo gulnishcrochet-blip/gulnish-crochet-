@@ -312,8 +312,11 @@
     if (window.GulnishWishlist) {
       var syncHearts = function () {
         document.querySelectorAll("[data-wishlist-toggle]").forEach(function (b) {
-          b.classList.toggle("is-on", window.GulnishWishlist.has(b.dataset.id));
-        });
+        var on = window.GulnishWishlist.has(b.dataset.id);
+        b.classList.toggle("is-on", on);
+        b.setAttribute("aria-pressed", on ? "true" : "false");
+        b.setAttribute("aria-label", on ? "Remove from wishlist" : "Save to wishlist");
+      });
       };
       syncHearts();
       var grids = document.getElementById("productGrid");
