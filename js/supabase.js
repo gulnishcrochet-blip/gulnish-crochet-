@@ -515,7 +515,13 @@
       jazzcashNumber: "",
       easypaisaNumber: "",
       shippingFee: "",
-      freeDeliveryMin: 2500,
+      /* Gulnish Crochet does not offer free delivery: the courier charge
+         always applies and the exact figure is agreed on WhatsApp. A
+         numeric shippingFee (set in the admin panel) publishes the amount
+         up front instead. `freeDeliveryMin` is only kept so older saved
+         settings still load cleanly - nothing reads it any more. */
+      deliveryNote: "",
+      freeDeliveryMin: 0,
       version: 4
     };
   }
