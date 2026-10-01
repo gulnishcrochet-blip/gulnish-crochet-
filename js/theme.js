@@ -12,6 +12,9 @@
   var GC = window.GC;
 
   var TOPBAR_KEY = "gulnish-topbar-dismissed";
+  /* Set by buildTopbar, called again after the catalogue loads so the
+     delivery line picks up the configured charge. */
+  var repaintTopbar = null;
   /* Delivery is never free, so the announcement must not promise it is.
      buildTopbar fills the delivery slot from the admin setting once the
      catalogue has loaded; the placeholder keeps the bar from rendering
