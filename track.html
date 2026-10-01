@@ -95,6 +95,13 @@
       </nav>
       <div class="header-actions">
         
+                <button type="button" class="icon-btn" data-open-search aria-label="Search products" aria-haspopup="dialog">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </button>
+                <button type="button" class="icon-btn icon-btn--wish" data-open-wishlist aria-label="Open wishlist" aria-haspopup="dialog">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                  <span class="icon-btn__badge" data-wl-count>0</span>
+                </button>
         <button type="button" class="cart-btn" id="cartToggle" aria-label="Open cart" aria-expanded="false" aria-controls="cartDrawer">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="9" cy="21" r="1"></circle>
@@ -140,7 +147,7 @@
     <div class="container footer-inner">
       <div class="footer-brand">
         <a href="/" class="logo"><picture><source srcset="images/logo/logo-112.webp" type="image/webp"><img src="images/logo/logo-112.png" width="56" height="56" alt="Gulnish Crochet" class="logo-img" decoding="async"></picture><span class="logo-name">Gulnish Crochet</span></a>
-        <p class="footer-brand-tag">Handmade crochet purses, bags, jewellery and gifts — made to order with love.</p>
+        <p class="footer-brand-tag">Handmade crochet purses, bags, jewellery, bouquets and gifts &mdash; made to order with love.</p>
         <div class="socials" role="group" aria-label="Social links">
           <a class="social-wa" href="https://wa.me/923075729901" title="WhatsApp" target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
@@ -151,19 +158,21 @@
             Instagram
           </a>
           <a class="social-fb" href="https://www.facebook.com/profile.php?id=61594481514536" title="Facebook" target="_blank" rel="noopener" aria-label="Follow us on Facebook">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 1 1 1-1h3z"/></svg>
             Facebook
           </a>
         </div>
       </div>
+
       <div class="footer-col">
         <h2>Shop</h2>
         <nav class="footer-links" aria-label="Shop links">
           <a href="/">Home</a>
-          <a href="/products">Products</a>
-          <a href="/about">About</a>
+          <a href="/products">All Products</a>
+          <a href="/about">About Us</a>
           <a href="/contact">Contact</a>
         </nav>
+        <div class="footer-shoplist" id="footerShopLinks" aria-label="Categories"></div>
       </div>
 
       <div class="footer-col">
@@ -174,6 +183,17 @@
           <a href="/refund">Refund Policy</a>
           <a href="/terms">Terms &amp; Conditions</a>
         </nav>
+      </div>
+
+      <div class="footer-col">
+        <h2>Get in Touch</h2>
+        <div class="footer-contact" id="footerContact"></div>
+        <div class="footer-pay">
+          <span class="footer-pay__label">Payment</span>
+          <span class="footer-pay__chip">Cash on Delivery</span>
+          <span class="footer-pay__chip">Easypaisa</span>
+          <span class="footer-pay__chip">JazzCash</span>
+        </div>
       </div>
 
       <div class="footer-bottom">
