@@ -9,7 +9,12 @@
   var GC = window.GC;
   var CART_KEY = "gulnish-cart";
 
-  var DEFAULT_PAYMENT = "Cash on delivery";
+  /* Cash on delivery is not offered: every order is paid for in advance
+     before stitching starts. Bank transfer is the primary method. */
+  var DEFAULT_PAYMENT = "Bank transfer";
+  /* Methods that mean "we have the money up front". Anything not in this
+     list is treated as still awaiting payment. */
+  var PREPAID_METHODS = ["Bank transfer", "JazzCash / EasyPaisa"];
 
   function money(value) {
     var n = parseFloat(value) || 0;
