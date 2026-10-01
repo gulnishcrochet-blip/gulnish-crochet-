@@ -199,6 +199,13 @@
     overlay.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
     cursor = -1;
+    /* Send focus back to whatever opened the overlay. Without this a
+       keyboard user is dropped at the top of the document after Esc, and
+       the next Tab starts again from the header. */
+    if (returnFocusTo && returnFocusTo.isConnected) {
+      try { returnFocusTo.focus({ preventScroll: true }); } catch (e) { returnFocusTo.focus(); }
+    }
+    returnFocusTo = null;
   }
 
   function getProducts() {
