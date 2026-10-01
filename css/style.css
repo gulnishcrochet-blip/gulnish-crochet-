@@ -1258,6 +1258,35 @@ body.has-topbar { scroll-padding-top: 132px; }
   aspect-ratio: 4 / 4.6;
 }
 
+/* Copy column of the story block. The heading and list already carry their
+   own type styles; this just keeps the two grid columns aligned. */
+.promo__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.9rem;
+}
+
+.promo__content .btn { margin-top: 0.3rem; }
+
+/* Visible to screen readers only. Used for the newsletter email label and
+   any other form control that would otherwise need a visible caption. */
+.sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Wishlist button reads warmer than search so the two header icons are
+   distinguishable at a glance. */
+.icon-btn--wish:hover { color: var(--danger); border-color: var(--danger); background: var(--danger-light); }
+
 .promo__eyebrow {
   font-size: 0.76rem;
   font-weight: 700;
