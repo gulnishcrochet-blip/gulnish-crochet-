@@ -205,9 +205,9 @@
       addc.type = 'button';
       addc.className = 'wl-mini wl-mini--primary';
       addc.textContent = 'Add to Cart';
-      addc.dataset.wl-add = p.id;
+      addc.dataset.wlAdd = p.id;
       var view = document.createElement('a');
-      view.href = '/products';
+      view.href = '/products?q=' + encodeURIComponent(p.id);
       view.className = 'wl-mini';
       view.textContent = 'View';
       view.dataset.wl-view = p.id;
