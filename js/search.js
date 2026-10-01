@@ -10,6 +10,7 @@
   var cursor = -1;
   var hitsCache = [];
   var firstFocusable;
+  var returnFocusTo;
 
   function escapeHtml(str) {
     return String(str || "")
