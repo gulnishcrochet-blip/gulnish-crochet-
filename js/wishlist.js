@@ -22,6 +22,9 @@
     localStorage.setItem(KEY, JSON.stringify(wishlist));
     updateBadges();
     renderPanel();
+    /* Cards re-render on every filter/search/pagination pass, so the heart
+       states have to be reapplied from outside too. */
+    document.dispatchEvent(new CustomEvent('gc:wishlist-change'));
   }
 
   function has(id) {
