@@ -281,7 +281,9 @@
           );
         })
         .join("") +
-      '<a class="nav-mega__all" href="/products">Browse all products <span>Free delivery over Rs. 3,000 &rarr;</span></a>';
+      '<a class="nav-mega__all" href="/products">Browse all products <span>' +
+      escapeHTML((window.GC && GC.deliveryShort) ? GC.deliveryShort() : "Delivery charge applies") +
+      " &rarr;</span></a>";
   }
 
   function refreshMenus() {
