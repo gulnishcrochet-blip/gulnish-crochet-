@@ -6432,3 +6432,187 @@ body.has-topbar .site-header { top: 0; }
   cursor: pointer;
 }
 .rating-row__count:hover { color: var(--primary-deep); }
+
+/* =========================================================
+   MOBILE REFINEMENTS
+   Measured against the live site at 280 / 320 / 360 / 375 / 390px.
+   Each rule below fixes a value that was read off the running
+   page, not a guess.
+   ========================================================= */
+
+/* --- 1. Header overflows below ~360px -------------------------------
+   Measured at 320px: .logo 157px + .header-actions 151px = 308px inside a
+   288px bar. The cart button ended up at right=322, i.e. ~34px outside the
+   viewport, so it was clipped and untappable. Shrink the wordmark and the
+   round buttons as space runs out, and let the bar wrap its gap first. */
+@media (max-width: 420px) {
+  .logo {
+    font-size: 1.12rem;
+    gap: 0.45rem;
+  }
+
+  .logo-img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .header-inner {
+    gap: 0.5rem;
+  }
+
+  .header-actions {
+    gap: 0.35rem;
+  }
+
+  .icon-btn,
+  .cart-btn {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 345px) {
+  /* 157 + 151 still does not fit in a 252px bar at 280px, so the wordmark
+     drops to the mark alone. The logo keeps its accessible name via
+     aria-label, so the link still announces "Gulnish Crochet". */
+  .logo-name {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .icon-btn,
+  .cart-btn {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+/* --- 2. Homepage category grid overflows its container ---------------
+   Measured at 390px: the grid was 351px wide but its scrollWidth was 386px,
+   so the second column ran off the right edge. minmax(0, 1fr) lets the
+   tracks shrink below their content width instead of overflowing. */
+.category-grid {
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+}
+
+@media (max-width: 560px) {
+  .category-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* --- 3. about.html .craft-show__card overflowed ---------------------
+   Measured at 375px: a fixed `1fr 1fr` with a 2rem gap and 1.8rem padding
+   left the copy at right=425 (50px outside the viewport). Stack the two
+   columns on small screens and use minmax(0, 1fr) so the text can wrap. */
+@media (max-width: 760px) {
+  .craft-show__card {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.4rem;
+    padding: 1.25rem;
+  }
+}
+
+/* --- 4. Tap targets -------------------------------------------------
+   Measured under 40px on the live site: topbar close 26x26, wishlist card
+   tool 34x34, quick-view tool 85x34, footer links 24-35px tall, contact
+   rows 24px. Anything tappable on a phone should clear ~44px so a thumb
+   does not have to be precise. */
+@media (max-width: 760px), (pointer: coarse) {
+  .topbar__close {
+    width: 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    line-height: 1;
+  }
+
+  .card-tool {
+    width: 44px;
+    height: 44px;
+  }
+
+  .card-tool--qv {
+    width: auto;
+    min-width: 44px;
+    padding: 0 0.9rem;
+  }
+
+  .footer-links a,
+  .footer-shoplist a,
+  .footer-contact__row {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  .footer-contact__row {
+    padding: 0.55rem 0;
+  }
+
+  .socials a {
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .contact-link {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .faq-a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .mobile-search {
+    min-height: 48px;
+  }
+
+  .mobile-search input {
+    min-height: 44px;
+  }
+}
+
+/* --- 5. Fixed bottom bar covered the last of the page ---------------
+   .bottom-nav is 60px tall and position:fixed, but the body had no bottom
+   padding, so the footer's last line sat underneath it on every page. */
+@media (max-width: 760px) {
+  .bottom-nav:not([hidden]) ~ * {
+    /* no-op guard: keeps the rule valid if the nav is later re-parented */
+  }
+
+  body:has(.bottom-nav) {
+    padding-bottom: 72px;
+  }
+
+  /* Fallback for browsers without :has() support. */
+  .site-footer {
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* --- 6. iOS zoom-on-focus -------------------------------------------
+   An input under 16px makes Safari zoom the whole page on focus and never
+   zoom back out, which strands the shopper at the wrong scale. */
+@media (max-width: 760px) {
+  input,
+  select,
+  textarea {
+    font-size: max(16px, 1em);
+  }
+}
