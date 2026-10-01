@@ -73,7 +73,7 @@
     var status = order.status || "Pending";
     var hist = order.statusHistory || [];
     var pay = order.payment || {};
-    var method = typeof order.payment === "string" ? order.payment : (pay.method || "Cash on delivery");
+    var method = typeof order.payment === "string" ? order.payment : (pay.method || GC.paymentDefault);
     var pStatus = typeof order.payment === "string" ? "Pending" : (pay.status || "Pending");
     return (
       '<div class="track-card">' +

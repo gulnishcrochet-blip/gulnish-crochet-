@@ -696,14 +696,15 @@
 
   function payBadge(o) {
     var pay = (o && o.payment) || {};
-    var method = pay.method || "Cash on delivery";
     if (String(pay.status || "").toLowerCase() === "paid") {
       return '<span class="pay-badge pay-badge--paid">Paid</span>';
     }
-    if (method.toLowerCase() === "cash on delivery") {
-      return '<span class="pay-badge pay-badge--pending">Awaiting payment</span>';
-    }
-    return '<span class="pay-badge pay-badge--pending">Awaiting payment</span>';
+    /* Every order is prepaid, so "awaiting payment" is the normal state
+       until the transfer is confirmed. Name the method so the owner knows
+       which account to expect the money in. */
+    var method = pay.method || GC.paymentDefault;
+    return '<span class="pay-badge pay-badge--pending" title="' + escapeHtml(method) +
+      '">Awaiting payment</span>';
   }
 
   var adminOrders = document.getElementById("adminOrders");
@@ -854,7 +855,7 @@
       '<div class="ad-order-grid-r">' +
       '<div class="ad-order-block">' +
       "<h4>Payment</h4>" +
-      '<p><strong>' + escapeHtml(pay.method || "Cash on delivery") + "</strong></p>" +
+      '<p><strong>' + escapeHtml(pay.method || GC.paymentDefault) + "</strong></p>" +
       payBadge(o) +
       (String(pay.status || "").toLowerCase() !== "paid"
         ? '<button class="btn btn--small" type="button" data-payorder="' + escapeHtml(o.id) + '">Mark as paid</button>'
@@ -1129,7 +1130,7 @@
       "</div>" +
       "<h2>Payment</h2>" +
       "<div class='meta'>" +
-      "<p><strong>" + escapeHtml(pay.method || "Cash on delivery") + "</strong> &mdash; " +
+      "<p><strong>" + escapeHtml(pay.method || GC.paymentDefault) + "</strong> &mdash; " +
       (String(pay.status || "").toLowerCase() === "paid" ? "<strong>Paid</strong>" : "Awaiting payment") + "</p>" +
       (o.estDelivery ? "<p>Estimated delivery: " + escapeHtml(friendlyDate(o.estDelivery)) + "</p>" : "") +
       "</div>" +

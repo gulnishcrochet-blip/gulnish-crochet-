@@ -406,7 +406,7 @@
   /* ---------- Trust chips injected on cart + checkout ---------- */
   function buildTrustRows() {
     var rows = [
-      { icon: "shield", title: "Cash on delivery", text: "Pay when your parcel arrives" },
+      { icon: "shield", title: "Pay in advance", text: "Bank transfer, JazzCash or EasyPaisa" },
       { icon: "truck", title: "2-5 day delivery", text: "Tracked across Pakistan" },
       { icon: "refresh", title: "Easy exchanges", text: "7-day return on unused pieces" }
     ];
