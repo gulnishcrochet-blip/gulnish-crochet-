@@ -349,12 +349,7 @@
       els[cursor].click();
     } else if (hitsCache[0]) {
       close();
-      var id = hitsCache[0].id;
-      if (location.pathname === '/products' && window.showProduct) {
-        window.showProduct(id);
-      } else {
-        location.href = '/products?q=' + encodeURIComponent(id);
-      }
+      openProductById(hitsCache[0].id);
     }
   }
 
