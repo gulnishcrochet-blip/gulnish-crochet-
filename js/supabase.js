@@ -1116,7 +1116,36 @@
             "apikey": cfg.supabaseAnonKey,
             "Authorization": "Bearer " + cfg.supabaseAnonKey,
             "Prefer": "resolution=merge-duplicates,return=minimal"
-          },
+    },
+
+    /* ---- delivery wording ----
+       Single source of truth for what the site says about delivery.
+       Delivery is NOT free here, so nothing may promise otherwise: the
+       wording either names the published courier charge or says plainly
+       that the charge is confirmed on WhatsApp. `deliveryNote` lets the
+       owner override the sentence entirely. */
+    deliveryFee: function () {
+      var raw = GC.settings.shippingFee;
+      if (raw == null || raw === "") return null;
+      var n = parseFloat(raw);
+      return isFinite(n) && n > 0 ? n : null;
+    },
+
+    deliveryNote: function () {
+      var custom = String(GC.settings.deliveryNote || "").trim();
+      if (custom) return custom;
+      var fee = GC.deliveryFee();
+      return fee
+        ? "Flat delivery of Rs. " + fee + " across Pakistan"
+        : "Delivery charge confirmed on WhatsApp";
+    },
+
+    /* Short form for tight spots (mega-menu footer, trust chips). */
+    deliveryShort: function () {
+      var fee = GC.deliveryFee();
+      return fee ? "Rs. " + fee + " delivery" : "Delivery charge applies";
+    },
+
           body: JSON.stringify(row)
         }).catch(function () {});
       } catch (e) { /* non-fatal: the local mirror already has the order */ }
