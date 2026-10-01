@@ -287,37 +287,43 @@
   }
 
   /* ---------- Header: sticky state + scroll progress ---------- */
+  /* ---------- Header + sticky-affordance upkeep ---------- */
+  /* The scroll listener itself lives in js/script.js (it already drives the
+     progress bar and back-to-top). Here we only patch over the gaps on pages
+     where that file's UI bundle did not attach, so the header never ends up
+     without its scrolled state. */
   function buildHeaderBehaviour() {
     var header = document.querySelector(".site-header");
+    if (!header) return;
+    if (header.dataset.themeScrollBound === "1") return;
+    header.dataset.themeScrollBound = "1";
+
     var progress = document.getElementById("scrollProgress");
-    if (!header && !progress) return;
-
-    var lastY = 0;
-    function onScroll() {
-      var y = window.pageYOffset || document.documentElement.scrollTop || 0;
-
-      if (header) {
-        header.classList.toggle("scrolled", y > 12);
-        /* Past a full viewport, tuck the header away on scroll-down and
-           bring it back on any scroll-up — the mobile pattern shoppers
-           already expect from a store app. */
-        if (y > 320) {
-          if (y > lastY + 4) header.classList.add("is-tucked");
-          else if (y < lastY - 4) header.classList.remove("is-tucked");
-        } else {
-          header.classList.remove("is-tucked");
-        }
-      }
-      lastY = y;
-
-      if (progress) {
-        var h = document.documentElement.scrollHeight - window.innerHeight;
-        progress.style.width = (h > 0 ? Math.min(100, (y / h) * 100) : 0) + "%";
-      }
+    if (progress && !progress.dataset.themeBound) {
+      progress.dataset.themeBound = "1";
+      /* script.js animates this with scaleX; match that so the two never
+         fight over the same property. */
+      progress.style.transformOrigin = "left center";
+      progress.style.width = "100%";
     }
 
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
+    /* Card wishlist hearts need their saved state applied whenever the grid
+       is re-rendered (filters, search, pagination all rewrite innerHTML). */
+    if (window.GulnishWishlist) {
+      var syncHearts = function () {
+        document.querySelectorAll("[data-wishlist-toggle]").forEach(function (b) {
+          b.classList.toggle("is-on", window.GulnishWishlist.has(b.dataset.id));
+        });
+      };
+      syncHearts();
+      var grids = document.getElementById("productGrid");
+      var featured = document.getElementById("featuredGrid");
+      [grids, featured].forEach(function (g) {
+        if (!g || typeof MutationObserver === "undefined") return;
+        new MutationObserver(syncHearts).observe(g, { childList: true, subtree: true });
+      });
+      document.addEventListener("gc:wishlist-change", syncHearts);
+    }
   }
 
   /* ---------- Footer: current year + contact block ---------- */
