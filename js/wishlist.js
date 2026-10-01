@@ -248,7 +248,10 @@
       if (id) {
         var p = find(id) || { id: id };
         add(p);
-        t.classList.toggle('is-on', has(id));
+        var on = has(id);
+        t.classList.toggle('is-on', on);
+        t.setAttribute('aria-pressed', on ? 'true' : 'false');
+        t.setAttribute('aria-label', on ? 'Remove from wishlist' : 'Save to wishlist');
       }
       return;
     }
