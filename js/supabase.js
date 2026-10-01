@@ -762,6 +762,13 @@
       return bootPromise;
     },
 
+    /* Direct table access for features that are not part of the catalogue
+       model (js/newsletter.js). Kept off the catalogue methods on purpose:
+       those are all about products/settings/orders. */
+    table: function (name) {
+      return sb && configured ? sb.from(name) : null;
+    },
+
     /* ---- auth ---------- */
     signInAdmin: async function (email, password) {
       if (configured) {
