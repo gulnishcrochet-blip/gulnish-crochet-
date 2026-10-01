@@ -605,6 +605,8 @@
   var shopBankIBANInput = document.getElementById("shopBankIBAN");
   var shopJazzcashInput = document.getElementById("shopJazzcash");
   var shopEasypaisaInput = document.getElementById("shopEasypaisa");
+  var shopShippingFeeInput = document.getElementById("shopShippingFee");
+  var shopDeliveryNoteInput = document.getElementById("shopDeliveryNote");
   var saveShopSettingsBtn = document.getElementById("saveShopSettings");
 
   function renderShopSettings() {
@@ -617,6 +619,8 @@
     if (shopBankIBANInput) shopBankIBANInput.value = s.bankIBAN || "";
     if (shopJazzcashInput) shopJazzcashInput.value = s.jazzcashNumber || "";
     if (shopEasypaisaInput) shopEasypaisaInput.value = s.easypaisaNumber || "";
+    if (shopShippingFeeInput) shopShippingFeeInput.value = s.shippingFee != null ? s.shippingFee : "";
+    if (shopDeliveryNoteInput) shopDeliveryNoteInput.value = s.deliveryNote || "";
   }
 
   if (saveShopSettingsBtn) {
