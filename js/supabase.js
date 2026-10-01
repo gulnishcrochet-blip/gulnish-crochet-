@@ -1211,6 +1211,21 @@
        wording either names the published courier charge or says plainly
        that the charge is confirmed on WhatsApp. `deliveryNote` lets the
        owner override the sentence entirely. */
+    /* ---- payment wording ----
+       Cash on delivery is NOT offered. Every order is paid for in advance
+       before stitching starts, so no default or fallback here may ever
+       reintroduce "pay when it arrives". Historic orders saved with a
+       COD method string still display that string, so old records are not
+       rewritten, but nothing new can default to it. */
+    paymentDefault: "Bank transfer",
+
+    /* Methods that mean the money is already in hand. Anything else
+       (e.g. the "Decide on WhatsApp" option) still needs a transfer. */
+    paymentPrepaid: function (method) {
+      var m = String(method || "").trim().toLowerCase();
+      return m === "bank transfer" || m === "jazzcash / easypaisa" || m === "paid";
+    },
+
     deliveryFee: function () {
       var raw = GC.settings.shippingFee;
       if (raw == null || raw === "") return null;
