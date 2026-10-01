@@ -104,7 +104,20 @@
             <span>EasyPaisa number</span>
             <input type="tel" id="shopEasypaisa" placeholder="e.g. 03xx xxxxxxx">
           </label>
+          <label>
+            <span>Delivery charge (Rs.) <small>— leave blank if you quote it on WhatsApp</small></span>
+            <input type="number" id="shopShippingFee" min="0" step="1" placeholder="e.g. 250">
+          </label>
+          <label>
+            <span>Delivery wording <small>— optional, overrides the sentence shown to customers</small></span>
+            <input type="text" id="shopDeliveryNote" placeholder="e.g. Free delivery inside Lahore only">
+          </label>
         </div>
+        <p class="admin-hint">
+          Delivery is <strong>not free</strong>. The announcement bar, mega menu and home page all read
+          these two fields, so changing the charge here updates the whole site. Never leave a
+          &ldquo;free delivery&rdquo; claim in the wording field &mdash; it would contradict checkout.
+        </p>
         <div class="admin-actions">
           <button class="btn" type="button" id="saveShopSettings">Save settings</button>
         </div>
