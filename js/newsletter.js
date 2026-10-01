@@ -38,7 +38,9 @@
   }
 
   async function subscribeToSupabase(email, name, source) {
-    if (!window.GC || !GC.supabase || !GC.supabase.from) return false;
+    if (!window.GC || !GC.table) return false;
+    var table = GC.table('newsletter_subscribers');
+    if (!table) return false;
     try {
       var payload = {
         email: email,
@@ -47,9 +49,7 @@
         consent: true,
         consent_at: new Date().toISOString()
       };
-      var { error } = await GC.supabase
-        .from('newsletter_subscribers')
-        .upsert(payload, { onConflict: 'email' });
+      var { error } = await table.upsert(payload, { onConflict: 'email' });
       if (error) {
         console.warn('Newsletter upsert error:', error);
         return false;
