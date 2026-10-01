@@ -866,9 +866,13 @@
       }
     }
     if (ppAdd) {
-      ppAdd.disabled = false;
-      ppAdd.textContent = "Add to Cart";
-      ppAdd.classList.remove("is-disabled");
+      /* Same sold-out rule as the card overlay and quick view: a product
+         marked sold out must not be purchasable from any surface. */
+      var ppSoldOut = s === "sold out" || s === "sold-out" ||
+        (p.stock != null && parseInt(p.stock, 10) === 0);
+      ppAdd.disabled = ppSoldOut;
+      ppAdd.textContent = ppSoldOut ? "Sold Out" : "Add to Cart";
+      ppAdd.classList.toggle("is-disabled", ppSoldOut);
     }
     if (ppColors) {
       ppColors.setAttribute(
