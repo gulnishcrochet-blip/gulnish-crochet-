@@ -867,7 +867,7 @@
         ppStatus.textContent = "Made to order \u2014 takes about 5 days";
       } else if (s === "sold out") {
         ppStatus.hidden = false;
-        ppStatus.className = "product-page__status status-sold";
+        ppStatus.className = "product-page__status status-out";
         ppStatus.textContent = "Sold out \u2014 message us and we can make one for you";
       } else {
         ppStatus.hidden = true;
