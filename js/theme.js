@@ -443,6 +443,17 @@
         ? note
         : "Tracked shipping across Pakistan, quoted on WhatsApp";
     }
+    /* Cart and checkout both said the charge is "confirmed on WhatsApp".
+       When a figure has been published in the admin panel, name it, so the
+       customer sees the same number everywhere. */
+    var fee = GC.deliveryFee();
+    var short = fee ? "Rs. " + fee : "";
+    document.querySelectorAll("#cartDeliveryNote, #checkoutDeliveryNote, #checkoutDeliveryNote2")
+      .forEach(function (el) {
+        el.textContent = fee
+          ? "Nothing is charged now \u2014 delivery is " + short + ", confirmed on WhatsApp."
+          : "Nothing is charged now \u2014 delivery details will be confirmed on WhatsApp.";
+      });
   }
 
   /* ---------- boot ---------- */
