@@ -972,9 +972,9 @@
   var cartBar = document.getElementById("cartBar");
   var cartBarCount = document.getElementById("cartBarCount");
   var cartBarTotal = document.getElementById("cartBarTotal");
-var cartBarBtn = document.getElementById("cartBarBtn");
-var bottomNavCount = document.getElementById("bottomNavCount");
-var bottomNavCart = document.getElementById("bottomNavCart");
+  var cartBarBtn = document.getElementById("cartBarBtn");
+  var bottomNavCount = document.getElementById("bottomNavCount");
+  var bottomNavCart = document.getElementById("bottomNavCart");
 
 
   function loadCart() {
