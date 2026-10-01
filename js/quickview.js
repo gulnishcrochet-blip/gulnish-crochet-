@@ -245,7 +245,7 @@
     // wa
     /* Same resolution as script.js: admin can change the number in the
        panel, and this link must follow it. */
-    var waNum = (GC && GC.shopWhatsApp ? GC.shopWhatsApp() : "") || '92307529901';
+    var waNum = (GC && GC.shopWhatsApp ? GC.shopWhatsApp() : "") || '923075729901';
     var intl = waNum.replace(/^\+/, '');
     var lines = [];
     lines.push('Hi Gulnish Crochet, I\'d like to order:');
