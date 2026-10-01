@@ -220,7 +220,10 @@
     descEl.textContent = p.description || (p.keywords ? p.keywords.slice(0, 6).join(', ') : '');
 
     // wa
-    var waNum = (window.GC_CONFIG && GC_CONFIG.waNumber) || '+923075729901';
+    /* Same resolution as script.js: admin can change the number in the
+       panel, and this link must follow it. */
+    var waNum = (GC && GC.shopWhatsApp ? GC.shopWhatsApp() : "") || '92307529901';
+    var intl = waNum.replace(/^\+/, '');
     var lines = [];
     lines.push('Hi Gulnish Crochet, I\'d like to order:');
     lines.push('• ' + (p.name || ''));
@@ -228,7 +231,7 @@
     if (parseFloat(p.price) > 0) lines.push('Price: ' + money(p.price));
     lines.push('');
     lines.push('Is it available?');
-    waBtn.href = 'https://wa.me/' + encodeURIComponent(waNum) + '?text=' + encodeURIComponent(lines.join('\n'));
+    waBtn.href = 'https://wa.me/' + intl + '?text=' + encodeURIComponent(lines.join('\n'));
 
     modal.classList.add('is-open');
     modal.setAttribute('aria-hidden', 'false');
