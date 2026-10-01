@@ -223,7 +223,7 @@
       rm.className = 'wl-item__remove';
       rm.setAttribute('aria-label', 'Remove');
       rm.innerHTML = '&times;';
-      rm.dataset.wl-remove = p.id;
+      rm.dataset.wlRemove = p.id;
       it.appendChild(rm);
 
       itemsEl.appendChild(it);
