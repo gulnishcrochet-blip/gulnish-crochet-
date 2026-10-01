@@ -173,29 +173,35 @@
 
     renderMega(panel);
 
-    /* Desktop: open on hover and keyboard focus. Touch: tap the link to
-       expand instead of navigating, so the subcategories are reachable. */
-    var isTouch = window.matchMedia("(hover: none)").matches;
-    if (!isTouch) {
-      li.addEventListener("mouseenter", function () { li.classList.add("is-open"); });
-      li.addEventListener("mouseleave", function () { li.classList.remove("is-open"); });
-      li.addEventListener("focusin", function () { li.classList.add("is-open"); });
-      li.addEventListener("focusout", function (e) {
-        if (!li.contains(e.relatedTarget)) li.classList.remove("is-open");
-      });
-    } else {
-      shopLink.addEventListener("click", function (e) {
-        if (!panel.childElementCount) return;
-        if (!li.classList.contains("is-open")) {
-          e.preventDefault();
-          li.classList.add("is-open");
-          panel.scrollIntoView({ block: "nearest" });
-        }
-      });
-      panel.addEventListener("click", function (e) {
-        if (e.target.closest("a")) li.classList.remove("is-open");
-      });
-    }
+    /* Both input modes are wired up rather than picked between with
+       matchMedia("(hover: none)").
+       - Hover/focus listeners are inert on a real touch device, where no
+         mouseenter ever fires.
+       - The click handler only intercepts the *first* tap while the panel
+         is closed, which is exactly the tap-to-expand affordance touch
+         needs. Once open, the link navigates as normal.
+       Gating on the media query was wrong: hybrid devices (touchscreen
+       laptops) and some embedded webviews report `hover: none` while still
+       having a real mouse, and the menu then became unreachable by hover. */
+
+    li.addEventListener("mouseenter", function () { li.classList.add("is-open"); });
+    li.addEventListener("mouseleave", function () { li.classList.remove("is-open"); });
+    li.addEventListener("focusin", function () { li.classList.add("is-open"); });
+    li.addEventListener("focusout", function (e) {
+      if (!li.contains(e.relatedTarget)) li.classList.remove("is-open");
+    });
+
+    shopLink.addEventListener("click", function (e) {
+      if (!panel.childElementCount) return;
+      if (!li.classList.contains("is-open")) {
+        e.preventDefault();
+        li.classList.add("is-open");
+        panel.scrollIntoView({ block: "nearest" });
+      }
+    });
+    panel.addEventListener("click", function (e) {
+      if (e.target.closest("a")) li.classList.remove("is-open");
+    });
   }
 
   function renderMega(panel) {
