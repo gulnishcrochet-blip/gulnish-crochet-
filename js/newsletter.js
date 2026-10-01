@@ -62,7 +62,18 @@
         consent: true,
         consent_at: new Date().toISOString()
       };
-      var { error } = await table.upsert(payload, { onConflict: 'email' });
+      /* ignoreDuplicates sends `ON CONFLICT (email) DO NOTHING`, not
+         `DO UPDATE`. That matters because the table's RLS grants the
+         anonymous role INSERT only — a plain upsert would compile to
+         DO UPDATE, get rejected with a permission error, and every repeat
+         subscriber would silently fall through to the localStorage
+         fallback. DO NOTHING needs only the INSERT policy, and a
+         re-subscribing address is already recorded, so there is nothing
+         to overwrite. */
+      var { error } = await table.upsert(payload, {
+        onConflict: 'email',
+        ignoreDuplicates: true
+      });
       if (error) {
         console.warn('Newsletter upsert error:', error);
         return false;
