@@ -446,7 +446,7 @@
        cannot be added from the grid either. */
     if (stockStatus(p) === "sold out") {
       return (
-        '<button class="add-btn is-disabled" disabled aria-disabled="true"' +
+        '<button class="add-btn add-btn--sold is-disabled" disabled aria-disabled="true"' +
         common +
         ">Sold Out</button>"
       );
