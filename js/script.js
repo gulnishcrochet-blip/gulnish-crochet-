@@ -359,9 +359,17 @@
     var imgSrc = displayImage(p.image);
     var isFirst = typeof index === "number" && index === 0;
     var image = imgSrc
-      ? '<img src="' + imgSrc + '"' + imgSrcset(p.image) + ' alt="' + escapeHtml(p.name) + '"' +
+      ? '<img class="work-card__main" src="' + imgSrc + '"' + imgSrcset(p.image) + ' alt="' + escapeHtml(p.name) + '"' +
         (isFirst ? ' fetchpriority="high" decoding="async"' : ' loading="lazy" decoding="async"') + ">"
       : "";
+    /* Second gallery photo as the hover state. Same lazy tier as the main
+       image so a phone never pulls the 800px file just to hover. */
+    var altImage =
+      p.image && p.gallery && p.gallery.length
+        ? '<img class="work-card__alt" src="' + displayImage(p.gallery[0]) +
+          '"' + imgSrcset(p.gallery[0]) +
+          ' alt="" aria-hidden="true" loading="lazy" decoding="async">'
+        : "";
     var colors =
       p.colors && p.colors.length
         ? '<div class="work-card__colors" data-colors="' +
@@ -374,14 +382,33 @@
         parseFloat(p.price) > 0
           ? '<div class="work-card__price">' + displayPrice(p) + "</div>"
           : "";
+    var soldOut =
+      String((p.status || "")).toLowerCase() === "sold out"
+        ? '<div class="work-card__soldout"><span>Sold Out</span></div>'
+        : "";
     var media =
       '<div class="work-card__media js-product-view" data-view="' + p.id + '">' +
-      (p.image ? image : photoPendingHTML()) +
+      (p.image ? image + altImage : photoPendingHTML()) +
+      soldOut +
+      "</div>";
+    /* The two card tools sit outside .work-card__media on purpose: the media
+       is the click target for opening the product, so a button inside it
+       would have to stopPropagation to stay clickable. */
+    var tools =
+      '<div class="work-card__tools">' +
+      '<button type="button" class="card-tool card-tool--wish" data-wishlist-toggle data-id="' +
+        escapeHtml(p.id) + '" aria-label="Save to wishlist">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      '<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>' +
+      "</button>" +
+      '<button type="button" class="card-tool card-tool--qv" data-quick-view data-id="' +
+        escapeHtml(p.id) + '" aria-label="Quick view">Quick view</button>' +
       "</div>";
     return (
       '<article class="work-card" data-category="' + p.category + '"' +
       (p.subcategory ? ' data-subcategory="' + p.subcategory + '"' : "") + ">" +
       media +
+      tools +
       '<div class="work-card__body">' +
       '<h3 class="work-card__name">' + escapeHtml(p.name) + "</h3>" +
       price +
