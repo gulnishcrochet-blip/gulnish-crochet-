@@ -138,27 +138,106 @@
   </header>
 
   <main>
-    <!-- ============ HERO ============ -->
-    <section class="hero hero--split">
-            <div class="container hero-inner">
-        <div class="hero-copy">
-          <h1 class="reveal"><em>Crochet</em> Collections &amp; Handmade Gifts</h1>
-          <p class="hero__sub reveal">Discover one-of-a-kind bags, purses, jewellery, keychains, gajrays and bouquets &mdash; each piece crocheted stitch by stitch, exactly as you imagine it.</p>
-          <div class="hero__actions reveal">
-            <a href="/products" class="btn">Shop Collection</a>
-            <a href="/contact" class="btn btn--ghost">Request a Custom Piece</a>
-          </div>
-          <p class="hero__trust reveal">100% handmade in Pakistan &middot; custom orders welcome</p>
+    <!-- ============ HERO: category collage ============ -->
+    <section class="hero-collage">
+      <div class="container">
+        <div class="collage">
+          <a class="collage__panel collage__panel--hero" href="/products" aria-label="Shop all handmade crochet pieces">
+            <div class="collage__art">
+              <picture>
+                <source srcset="images/purses/purse-1-sm.webp" media="(max-width: 560px)" type="image/webp">
+                <img src="images/purses/purse-1.webp" width="597" height="800" alt="Handmade crochet purse from the Gulnish Crochet collection" fetchpriority="high" decoding="async">
+              </picture>
+            </div>
+            <span class="collage__chip">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3z"/></svg>
+              Made to order
+            </span>
+            <div class="collage__body">
+              <span class="collage__tag">New season</span>
+              <h1 class="collage__title">Crocheted by hand, <em>one stitch at a time</em></h1>
+              <p class="collage__text">Bags, purses, jewellery, keychains, gajrays and bouquets &mdash; every piece made to order in Pakistan, in the colours you choose.</p>
+              <span class="collage__cta">Shop the collection
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </span>
+            </div>
+          </a>
+
+          <a class="collage__panel collage__panel--a" href="/products?cat=gr1">
+            <div class="collage__art">
+              <img src="images/bags/bag-1.webp" width="600" height="600" alt="Crochet bags" loading="lazy" decoding="async">
+            </div>
+            <div class="collage__body">
+              <h2 class="collage__title">Bags &amp; <em>Purses</em></h2>
+            </div>
+          </a>
+
+          <a class="collage__panel collage__panel--b collage__panel--clay" href="/products?cat=gr3">
+            <div class="collage__art">
+              <img src="images/jewellery/jewellery-1.webp" width="600" height="600" alt="Crochet jewellery" loading="lazy" decoding="async">
+            </div>
+            <div class="collage__body">
+              <h2 class="collage__title">Jewellery</h2>
+            </div>
+          </a>
+
+          <a class="collage__panel collage__panel--c" href="/products?cat=gr4">
+            <div class="collage__art">
+              <img src="images/keychains/keychain-1.webp" width="600" height="600" alt="Crochet keychains" loading="lazy" decoding="async">
+            </div>
+            <div class="collage__body">
+              <h2 class="collage__title">Keychains</h2>
+            </div>
+          </a>
+
+          <a class="collage__panel collage__panel--d collage__panel--ink" href="/products?cat=gr5">
+            <div class="collage__art">
+              <img src="images/bouquets/bouquet-1.webp" width="600" height="600" alt="Crochet bouquets and gajrays" loading="lazy" decoding="async">
+            </div>
+            <div class="collage__body">
+              <h2 class="collage__title">Gajrays &amp; <em>Bouquets</em></h2>
+            </div>
+          </a>
         </div>
-        <div class="hero-media reveal">
-                    <div class="hero-media__frame">
-            <img src="images/purses/purse-1.webp" width="597" height="800" alt="Handmade crochet purse by Gulnish Crochet" fetchpriority="high" decoding="async">
+      </div>
+    </section>
+
+    <!-- ============ VALUE / TRUST STRIP ============ -->
+    <section class="value-strip" aria-label="Why shop with Gulnish Crochet">
+      <div class="container">
+        <div class="value-strip__inner">
+          <div class="value-item">
+            <span class="value-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3z"/></svg></span>
+            <div>
+              <div class="value-item__title">Handmade to order</div>
+              <div class="value-item__text">Stitched after you order, never mass-produced</div>
+            </div>
+          </div>
+          <div class="value-item">
+            <span class="value-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span>
+            <div>
+              <div class="value-item__title">Free delivery over Rs. 3,000</div>
+              <div class="value-item__text">Tracked shipping across Pakistan</div>
+            </div>
+          </div>
+          <div class="value-item">
+            <span class="value-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6.5l-10 6-10-6"/></svg></span>
+            <div>
+              <div class="value-item__title">Cash on delivery</div>
+              <div class="value-item__text">Pay when your parcel reaches you</div>
+            </div>
+          </div>
+          <div class="value-item">
+            <span class="value-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span>
+            <div>
+              <div class="value-item__title">Custom designs welcome</div>
+              <div class="value-item__text">Send a photo and we&rsquo;ll stitch it</div>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    
     <!-- ============ SHOP BY CATEGORY ============ -->
     <section class="section" id="shop">
       <div class="container">
@@ -186,7 +265,40 @@
       </div>
     </section>
 
-    
+    <!-- ============ DUAL PROMO BANNERS ============ -->
+    <section class="section">
+      <div class="container">
+        <div class="promo-pair">
+          <a class="promo-card promo-card--clay" href="/contact">
+            <div class="promo-card__art">
+              <img src="images/pencil/pencil-1.webp" width="600" height="600" alt="Custom crochet pencil holder" loading="lazy" decoding="async">
+            </div>
+            <div class="promo-card__body">
+              <span class="promo-card__eyebrow">Made just for you</span>
+              <h2 class="promo-card__title">Custom pieces &amp; bulk gifting</h2>
+              <p class="promo-card__text">Wedding favours, eid hampers, corporate gifts &mdash; send your colours and quantity, we&rsquo;ll quote it on WhatsApp.</p>
+              <span class="collage__cta">Request a quote
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </span>
+            </div>
+          </a>
+          <a class="promo-card promo-card--sage" href="/products">
+            <div class="promo-card__art">
+              <img src="images/gajrays/gajray-1.webp" width="600" height="600" alt="Crochet gajray set" loading="lazy" decoding="async">
+            </div>
+            <div class="promo-card__body">
+              <span class="promo-card__eyebrow">Ready to ship</span>
+              <h2 class="promo-card__title">Gajray sets &amp; gift bundles</h2>
+              <p class="promo-card__text">Pre-made sets ready to go &mdash; pair them with keychains and jewellery for a ready-to-gift bundle.</p>
+              <span class="collage__cta">Browse bundles
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
     <!-- ============ STORY / CUSTOM ============ -->
     <section class="section promo">
       <div class="container promo__grid">
@@ -212,6 +324,39 @@
             </li>
           </ul>
           <a href="/contact" class="btn btn--ghost">Request a custom design</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PROCESS ============ -->
+    <section class="section section--soft">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="section-eyebrow">How it works</span>
+          <h2 class="section-title">From <em>idea to doorstep</em></h2>
+          <p class="section-lead">Four simple steps, and you&rsquo;ll hear from us on WhatsApp at every one of them.</p>
+        </div>
+        <div class="process">
+          <div class="process-step reveal">
+            <div class="process-step__num" aria-hidden="true">1</div>
+            <h3 class="process-step__title">Pick or design your piece</h3>
+            <p class="process-step__text">Browse the collection, or message us with a photo, colour and size you have in mind.</p>
+          </div>
+          <div class="process-step reveal">
+            <div class="process-step__num" aria-hidden="true">2</div>
+            <h3 class="process-step__title">Confirm colours &amp; quote</h3>
+            <p class="process-step__text">We reply on WhatsApp with yarn options, an exact price and a delivery estimate before anything starts.</p>
+          </div>
+          <div class="process-step reveal">
+            <div class="process-step__num" aria-hidden="true">3</div>
+            <h3 class="process-step__title">We stitch it by hand</h3>
+            <p class="process-step__text">Your order goes into the queue. You&rsquo;ll get progress photos if you&rsquo;d like to see it as it comes together.</p>
+          </div>
+          <div class="process-step reveal">
+            <div class="process-step__num" aria-hidden="true">4</div>
+            <h3 class="process-step__title">Packed &amp; delivered</h3>
+            <p class="process-step__text">Wrapped with care, dispatched with tracking, and delivered to your door. Pay cash on delivery.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -256,6 +401,63 @@
                 <div class="testimonial__role">Keychain gifts</div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FAQ ============ -->
+    <section class="section section--soft" id="faq">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="section-eyebrow">FAQ</span>
+          <h2 class="section-title">Questions, <em>answered</em></h2>
+          <p class="section-lead">Everything shoppers ask us most. Still unsure? <a href="/contact">Message us on WhatsApp</a>.</p>
+        </div>
+        <div class="faq">
+          <details class="faq-item">
+            <summary class="faq-q">How long does delivery take?</summary>
+            <div class="faq-a">Ready-to-ship pieces usually arrive within 2&ndash;4 working days. Made-to-order and custom pieces take 4&ndash;10 days depending on size and complexity &mdash; we confirm the estimate before you pay. You&rsquo;ll get a tracking link by WhatsApp as soon as the parcel is dispatched.</div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-q">Do you offer cash on delivery?</summary>
+            <div class="faq-a">Yes. Cash on delivery is available across Pakistan. If you prefer to pay in advance we also accept bank transfer, Easypaisa and JazzCash &mdash; message us and we&rsquo;ll send the details.</div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-q">Can I request a custom design?</summary>
+            <div class="faq-a">That&rsquo;s the part we love most. Send a photo or a description with your colours, size and budget on <a href="/contact">the contact page</a> or on WhatsApp, and we&rsquo;ll come back with a design, a yarn quote and a timeline. There is no charge for the first concept.</div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-q">Can I change the colours or size?</summary>
+            <div class="faq-a">Yes, on anything that hasn&rsquo;t been stitched yet. Message us as soon as you place the order and we&rsquo;ll check what&rsquo;s still possible. Sizes and colours listed on a product page are the ones we can usually produce without extra time.</div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-q">How do I track my order?</summary>
+            <div class="faq-a">Use the <a href="/track">Track Order</a> page with your order number and the phone number you ordered with. You can also just ask us on WhatsApp &mdash; we&rsquo;ll check the courier status for you.</div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-q">What if something arrives damaged?</summary>
+            <div class="faq-a">Send us a photo on WhatsApp within 48 hours of delivery. If the damage happened in transit we&rsquo;ll remake and resend it at our cost, or refund you in full. Our full terms are on the <a href="/refund">Refund &amp; Exchange Policy</a>.</div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NEWSLETTER ============ -->
+    <section class="section">
+      <div class="container">
+        <div class="newsletter">
+          <div class="newsletter__art" aria-hidden="true"></div>
+          <div class="newsletter__inner">
+            <span class="newsletter__eyebrow">Stay in the loop</span>
+            <h2 class="newsletter__title">New drops, <em>first</em></h2>
+            <p class="newsletter__text">Join the list and hear about new pieces, custom slots and Eid &amp; wedding season openings before they go public.</p>
+            <form class="newsletter__form" data-newsletter-form novalidate>
+              <label class="sr-only" for="nlEmail">Email address</label>
+              <input class="newsletter__input" id="nlEmail" type="email" name="email" data-newsletter-email placeholder="you@example.com" autocomplete="email" required>
+              <button class="newsletter__submit" type="submit" data-newsletter-submit>Notify me</button>
+            </form>
+            <p class="newsletter__note" data-newsletter-note>No spam, ever. Unsubscribe any time.</p>
           </div>
         </div>
       </div>
