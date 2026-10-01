@@ -1412,7 +1412,7 @@
   /* ---------- Contact buttons: WhatsApp + Call (from settings) ---------- */
   function updateContactButtons() {
     var waNum = GC && GC.shopWhatsApp ? GC.shopWhatsApp() : "";
-    var intl = waNum || "92307529901";
+    var intl = waNum || "923075729901";
 
     /* Floating pill opens a WhatsApp chat. */
     document.querySelectorAll(".fb-wa").forEach(function (a) {
