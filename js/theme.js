@@ -463,6 +463,10 @@
        the header never depends on a network round trip. */
     GC.init().then(function () {
       buildMegaMenu();
+      /* Delivery wording comes from the admin settings, so the topbar and
+         the home value strip are repainted now that they are known. */
+      if (repaintTopbar) repaintTopbar();
+      paintDeliveryCopy();
       refreshMenus();
     });
     start();
