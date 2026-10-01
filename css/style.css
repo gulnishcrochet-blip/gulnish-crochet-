@@ -894,6 +894,23 @@ body.has-topbar { scroll-padding-top: 132px; }
   cursor: not-allowed;
 }
 
+/* Sold-out state also sets the native `disabled` attribute, which stops the
+   click but leaves the hover transition running. Cancel both so the button
+   cannot look live. */
+.add-btn.is-disabled,
+.add-btn:disabled {
+  opacity: 0.7;
+  pointer-events: none;
+  box-shadow: none;
+  transform: none;
+}
+
+.add-btn.is-disabled:hover,
+.add-btn:disabled:hover {
+  background: var(--bg-soft);
+  color: var(--muted);
+}
+
 /* ============ SHOP TOOLBAR ============ */
 .breadcrumbs {
   margin-bottom: 1.6rem;
