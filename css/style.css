@@ -6907,3 +6907,49 @@ body.has-topbar .site-header { top: 0; }
     font-size: max(16px, 1em);
   }
 }
+
+/* --- 6. Long contact strings overflowed the narrowest phones ------------
+   .footer-contact__row is a flex row, so its link would not shrink below its
+   content: "Email: gulnishcrochet@gmail.com" measured 266px wide starting at
+   x=64 and stuck 9px past a 320px viewport. min-width:0 lets the flex item
+   shrink, and anywhere gives the address somewhere to break. */
+@media (max-width: 760px) {
+  .footer-contact__row,
+  .contact-link {
+    min-width: 0;
+  }
+
+  .contact-link {
+    overflow-wrap: anywhere;
+  }
+}
+
+/* --- 7. Tablet range, 761px to 1024px ------------------------------------
+   Above the phone breakpoint these widths fall back to the desktop layout,
+   but iPads and Android tablets are still driven by touch, so the 44px targets
+   that stop at 760px left footer and contact links at 26px here. */
+@media (min-width: 761px) and (max-width: 1024px) {
+  .footer-links a,
+  .footer-shoplist a,
+  .footer-contact__row,
+  .contact-link {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  .footer-contact__row {
+    padding: 0.35rem 0;
+  }
+
+  /* The flyout is 660px wide and centred on its trigger, which sits right of
+     centre. At 768px that put the panel's centre at x=456 in a 768px viewport,
+     running 18px past the right edge where the header clipped it. Span the
+     available width with symmetric gutters instead of trusting the trigger. */
+  .nav-mega {
+    left: 1rem;
+    right: 1rem;
+    width: auto;
+    transform: translateY(8px);
+  }
+}
