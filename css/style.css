@@ -6285,12 +6285,6 @@ body.has-topbar .site-header { top: 0; }
     align-items: center;
   }
 
-  .faq-a {
-    min-height: 44px;
-    display: inline-flex;
-    align-items: center;
-  }
-
   .mobile-search {
     min-height: 48px;
   }
