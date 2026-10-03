@@ -466,6 +466,25 @@ body.has-topbar { scroll-padding-top: 132px; }
   display: none;
 }
 
+.nav-close {
+  display: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-close svg {
+  width: 20px;
+  height: 20px;
+}
+
 .mobile-search {
   display: none;
 }
