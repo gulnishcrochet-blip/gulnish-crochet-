@@ -676,6 +676,21 @@ setTimeout(function(){
 },500);
 },1800);});
 </script>
-<script>window.addEventListener("load",function(){setTimeout(function(){document.title="RESULT"+JSON.stringify({probe:1});},3200);});</script>
+
+<script>window.addEventListener("load",function(){setTimeout(function(){
+var r={};
+try{
+r.headerH=Math.round(document.querySelector(".site-header").getBoundingClientRect().height);
+r.hits=[];
+document.querySelectorAll(".header-actions .icon-btn,.header-actions .cart-btn").forEach(function(b){
+  var c=b.getBoundingClientRect(),cx=Math.round(c.left+c.width/2),cy=Math.round(c.top+c.height/2);
+  var p={box:Math.round(c.width)+"x"+Math.round(c.height)};
+  [["out-right",cx+21,cy],["out-left",cx-21,cy],["out-top",cx,cy-21],["out-bottom",cx,cy+21]].forEach(function(t){
+    var el=document.elementFromPoint(t[1],t[2]);
+    p[t[0]]=el?(el===b||b.contains(el)?"hit":"OTHER:"+(el.className||el.tagName)):"null";});
+  r.hits.push(p);
+});
+}catch(err){r.err=String(err);}
+document.title="RESULT"+JSON.stringify(r);},3200);});</script>
 </body>
 </html>
