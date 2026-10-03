@@ -5899,6 +5899,30 @@ body.has-topbar .site-header { top: 0; }
   padding: 0.15rem 0.4rem;
 }
 
+/* Never styled in CSS before, so it arrived with only an inline width of 34px.
+   As a flex item that is shrinkable, and once the input and hint were in the
+   row the button was squeezed to 11px wide - the one control with no reliable
+   way out of the overlay on a phone. */
+.search-panel__close {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 1.35rem;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+}
+
+.search-panel__close:hover {
+  color: var(--ink);
+  background: var(--bg-soft);
+}
+
 .search-panel__results { max-height: min(58vh, 520px); overflow-y: auto; }
 
 .search-suggest {
