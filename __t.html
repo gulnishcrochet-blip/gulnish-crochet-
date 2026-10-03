@@ -592,29 +592,35 @@
 <script src="js/theme.js?v=252" defer></script>
 <script src="js/sw-register.js?v=252" defer></script>
 <style>*{transition:none !important;animation:none !important}</style>
-<script>window.addEventListener("load",function(){setTimeout(function(){
-var r={},cs=function(e){return e?getComputedStyle(e):null;};
-r.hintDisp=cs(document.querySelector(".search-panel__hint")).display;
-r.footDisp=cs(document.querySelector(".search-panel__foot")).display;
-document.querySelector("[data-open-search]").click();
-setTimeout(function(){
-r.afterOpen_hint=cs(document.querySelector(".search-panel__hint")).display;
-r.afterOpen_foot=cs(document.querySelector(".search-panel__foot")).display;
-var cb=document.querySelector(".search-panel__close"),b=cb.getBoundingClientRect();
-r.closeBox=Math.round(b.width)+"x"+Math.round(b.height);
-r.inputBox=(function(){var i=document.querySelector(".search-panel__input").getBoundingClientRect();return Math.round(i.width)+"x"+Math.round(i.height);})();
-document.dispatchEvent(new KeyboardEvent("keydown",{key:"Escape",bubbles:true}));
-/* wishlist */
-document.querySelector("[data-open-wishlist]").click();
-setTimeout(function(){
-var pn=document.querySelector(".wl-panel"),ov=document.querySelector(".wl-overlay");
-r.wlPanel=pn?(getComputedStyle(pn).display+" "+Math.round(pn.getBoundingClientRect().width)+"x"+Math.round(pn.getBoundingClientRect().height)+" @"+Math.round(pn.getBoundingClientRect().top)):"MISSING";
-r.wlOverlay=ov?(getComputedStyle(ov).display+" vis="+getComputedStyle(ov).visibility):"MISSING";
-r.wlOpen=pn?pn.classList.contains("is-open"):null;
-if(pn&&pn.getBoundingClientRect().height){
-  var sm=[];pn.querySelectorAll("button,a").forEach(function(e){var b=e.getBoundingClientRect();if(b.height&&(b.height<40||b.width<40))sm.push(e.className.slice(0,18)+" "+Math.round(b.width)+"x"+Math.round(b.height));});
-  r.wlSmall=sm.slice(0,5);
-}
-document.title="RESULT"+JSON.stringify(r);},500);},400);},2500);});</script>
+<script>
+function D(sel){var e=document.querySelector(sel);return e?getComputedStyle(e).display:"MISSING";}
+function BX(sel){var e=document.querySelector(sel);if(!e)return "MISSING";var b=e.getBoundingClientRect();return Math.round(b.width)+"x"+Math.round(b.height)+" @"+Math.round(b.top);}
+window.addEventListener("load",function(){setTimeout(function(){
+var r={};
+try{
+ r.before_hint=D(".search-panel__hint"); r.before_foot=D(".search-panel__foot");
+ document.querySelector("[data-open-search]").click();
+ setTimeout(function(){try{
+  r.open_hint=D(".search-panel__hint"); r.open_foot=D(".search-panel__foot");
+  r.closeBox=BX(".search-panel__close"); r.inputBox=BX(".search-panel__input");
+  var p=document.querySelector(".search-panel"),b=p.getBoundingClientRect();
+  r.panelBox=Math.round(b.width)+"x"+Math.round(b.height);
+  r.resultsH=(function(){var e=document.querySelector(".search-panel__results");return e?Math.round(e.getBoundingClientRect().height):"none";})();
+  r.panelOverflow=p.scrollHeight>p.clientHeight?("SCROLLS "+p.scrollHeight+"/"+p.clientHeight):"fits";
+  document.dispatchEvent(new KeyboardEvent("keydown",{key:"Escape",bubbles:true}));
+  document.querySelector("[data-open-wishlist]").click();
+  setTimeout(function(){try{
+   var pn=document.querySelector(".wl-panel"),ov=document.querySelector(".wl-overlay");
+   r.wlPanelDisp=pn?getComputedStyle(pn).display:"MISSING";
+   r.wlPanelBox=pn?BX(".wl-panel"):"-";
+   r.wlIsOpen=pn?pn.classList.contains("is-open"):null;
+   r.wlOvDisp=ov?getComputedStyle(ov).display:"MISSING";
+   r.wlOvVis=ov?getComputedStyle(ov).visibility:"-";
+   var sm=[];if(pn)pn.querySelectorAll("button,a").forEach(function(e){var b=e.getBoundingClientRect();if(b.height&&(b.height<40||b.width<40))sm.push(String(e.className).slice(0,18)+" "+Math.round(b.width)+"x"+Math.round(b.height));});
+   r.wlSmall=sm.slice(0,5);
+  }catch(e3){r.wlErr=String(e3).slice(0,80);}
+  document.title="RESULT"+JSON.stringify(r);},500);
+ }catch(e2){r.sErr=String(e2).slice(0,80);document.title="RESULT"+JSON.stringify(r);}},450);
+}catch(e1){r.err=String(e1).slice(0,80);document.title="RESULT"+JSON.stringify(r);}},2500);});</script>
 </body>
 </html>
