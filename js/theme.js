@@ -222,12 +222,13 @@
       if (!li.contains(e.relatedTarget)) li.classList.remove("is-open");
     });
 
-    /* Below 980px the panel is already expanded inline inside the drawer, so
-       there is nothing to toggle. Interception there made the first tap on
-       Products a no-op - it set a class that CSS no longer honours and ate
-       the navigation, which read as a broken link. Check the breakpoint here
-       only, never the input type, so a narrow desktop window still collapses. */
-    var collapsedFlyout = window.matchMedia("(min-width: 980.02px)");
+    /* Below 760px the panel is already expanded inline inside the drawer, so there
+       is nothing to toggle. Interception there made the first tap on Products
+       a no-op - it set a class that CSS no longer honours and ate the
+       navigation, which read as a broken link. The threshold has to match the
+       block that flattens the panel, so this is a width check and never an
+       input-type check: a touch iPad still needs the tap-to-expand. */
+    var collapsedFlyout = window.matchMedia("(min-width: 760.02px)");
 
     shopLink.addEventListener("click", function (e) {
       if (!panel.childElementCount) return;
