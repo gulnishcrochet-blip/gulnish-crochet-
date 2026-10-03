@@ -270,6 +270,10 @@
     if (!groups.length) return;
 
     panel.innerHTML =
+      /* Only rendered visibly on narrow screens, where the panel sits inline
+         in the drawer under a dozen other links and needs a label to read as
+         a section. CSS keeps it hidden on the desktop flyout. */
+      '<div class="nav-mega__heading">Shop by category</div>' +
       groups
         .map(function (g) {
           var subs = g.subs.length
