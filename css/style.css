@@ -6932,7 +6932,8 @@ body.has-topbar .site-header { top: 0; }
   .footer-links a,
   .footer-shoplist a,
   .footer-contact__row,
-  .contact-link {
+  .contact-link,
+  .breadcrumbs a {
     min-height: 44px;
     display: flex;
     align-items: center;
