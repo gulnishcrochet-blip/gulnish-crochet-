@@ -114,13 +114,16 @@
 
   function closeMobileNav() {
     if (!mainNav) return;
+    var wasOpen = mainNav.classList.contains("open");
     if (navToggle) navToggle.setAttribute("aria-expanded", "false");
     mainNav.classList.remove("open");
     navOverlay.classList.remove("open");
     unlockScroll();
     /* Return focus to the button that opened the drawer, otherwise the next
-       Tab press lands back inside the now-collapsed menu. */
-    if (navToggle && navToggle.offsetParent !== null) navToggle.focus();
+       Tab press lands back inside the now-collapsed menu. Guarded on wasOpen
+       because Escape also runs this when the drawer was never opened, and it
+       must not yank focus away from whatever the user was actually using. */
+    if (wasOpen && navToggle) navToggle.focus();
   }
 
   function openMobileNav() {
