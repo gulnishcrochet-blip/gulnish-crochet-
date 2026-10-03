@@ -1546,7 +1546,10 @@ body.has-topbar { scroll-padding-top: 132px; }
   display: none;
 }
 
-body:has(.co-bar) .cart-bar {
+/* Matched on .show rather than mere presence: the bar ships in the markup
+   hidden, so :has(.co-bar) alone suppressed the view-cart bar on pages where
+   it was never going to appear. */
+body:has(.co-bar.show) .cart-bar {
   display: none !important;
 }
 
