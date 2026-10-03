@@ -677,23 +677,18 @@ setTimeout(function(){
 },1800);});
 </script>
 
-<script>var all=[];
-function walk(rules,media){for(var i=0;i<rules.length;i++){var r=rules[i];
- if(r.type===4){walk(r.cssRules,r.conditionText);continue;}
- if(!r.selectorText)continue;
- all.push({sel:r.selectorText,media:media||"-",idx:all.length,css:r.style?r.style.cssText:""});}}
-window.addEventListener("load",function(){setTimeout(function(){
+<style>*{transition:none !important;animation:none !important}</style>
+<script>window.addEventListener("load",function(){setTimeout(function(){
 var r={};
-try{
-for(var s=0;s<document.styleSheets.length;s++){try{walk(document.styleSheets[s].cssRules);}catch(e){}}
+var li=document.querySelector(".main-nav li.nav-item");
 var m=document.querySelector(".nav-mega");
-r.match=[];
-all.forEach(function(x){try{
-  if(x.sel.split(",").some(function(sel){try{return m.matches(sel.trim());}catch(e){return false;}})){
-    if(/opacity|visibility/.test(x.css))
-      r.match.push({i:x.idx,sel:x.sel.slice(0,60),media:x.media,css:x.css.slice(0,70)});
-  }}catch(e){}});
-}catch(e){r.ex=String(e);}
+r.closedState=getComputedStyle(m).opacity+"/"+getComputedStyle(m).visibility;
+li.classList.add("is-open");
+r.openState=getComputedStyle(m).opacity+"/"+getComputedStyle(m).visibility;
+r.pointerEvents=getComputedStyle(m).pointerEvents;
+r.transform=getComputedStyle(m).transform;
+li.classList.remove("is-open");
+r.reclosed=getComputedStyle(m).opacity+"/"+getComputedStyle(m).visibility;
 document.title="RESULT"+JSON.stringify(r);},3200);});</script>
 </body>
 </html>
