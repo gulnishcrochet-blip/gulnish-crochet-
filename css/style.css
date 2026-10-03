@@ -1319,8 +1319,8 @@ body.has-topbar { scroll-padding-top: 132px; }
 
 .promo__content .btn { margin-top: 0.3rem; }
 
-/* Visible to screen readers only. Used for the newsletter email label and
-   any other form control that would otherwise need a visible caption. */
+/* Visible to screen readers only. Used for any form control that would
+   otherwise need a visible caption. */
 .sr-only {
   position: absolute !important;
   width: 1px;
@@ -4865,7 +4865,7 @@ p.about-text {
    THEME v2 — layout, commerce chrome & merchandising blocks
    Announced structure follows knotches.pk but rebuilt for the
    Gulnish palette: mega-menu, collage hero, promo pair, trust
-   strip, process, FAQ, newsletter, wishlist, search, quick view.
+   strip, FAQ, search, quick view.
    ========================================================= */
 
 /* ============ ANNOUNCEMENT TOPBAR ============ */
