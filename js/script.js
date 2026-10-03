@@ -1502,9 +1502,6 @@
      "View Cart" call to action. Rather than hard-code bar heights, measure
      whichever bars are actually on screen and sit just above the tallest. */
   function positionFloatingActions() {
-    var group = document.querySelector(".fb-group");
-    if (!group) return;
-
     var stack = 0;
     FB_BARS.forEach(function (sel) {
       var el = document.querySelector(sel);
@@ -1513,8 +1510,20 @@
       var r = el.getBoundingClientRect();
       if (!r.height) return;
       /* distance from the viewport bottom up to the top of this bar */
-      stack = Math.max(stack, window.innerHeight - r.top);
+      stack = Math.max(stack, window.innerWidth && window.innerHeight - r.top);
     });
+
+    /* Publish the same measurement as --bar-stack so the body's bottom padding
+       reserves exactly as much room as the bars occupy. Guessing the height in
+       CSS was wrong: the checkout bar is taller than the value assumed there,
+       so the last line of the footer sat underneath it. */
+    document.documentElement.style.setProperty(
+      "--bar-stack",
+      stack ? Math.round(stack) + "px" : ""
+    );
+
+    var group = document.querySelector(".fb-group");
+    if (!group) return;
 
     group.style.setProperty(
       "--fb-bottom",
