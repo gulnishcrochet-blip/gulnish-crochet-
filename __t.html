@@ -629,17 +629,16 @@ document.title="RESULT"+JSON.stringify(r);
 <script>window.addEventListener("load",function(){setTimeout(function(){
 var R={};
 var cb=document.querySelector(".cart-bar");
-R.found=!!cb;R.hiddenAttr=cb?cb.hidden:null;R.cls=cb?cb.className:null;
+R.found=!!cb;R.hiddenAttr=cb.hidden;R.cls=cb.className;
 cb.classList.add("show");
 R.afterCls=getComputedStyle(cb).display;
 R.rectTop=Math.round(cb.getBoundingClientRect().top);
-R.barStackBefore=getComputedStyle(document.documentElement).getPropertyValue("--bar-stack");
+R.stackBefore=getComputedStyle(document.documentElement).getPropertyValue("--bar-stack");
 setTimeout(function(){
-R.barStackObs=getComputedStyle(document.documentElement).getPropertyValue("--bar-stack");
+R.stackAfterObs=getComputedStyle(document.documentElement).getPropertyValue("--bar-stack");
 window.dispatchEvent(new Event("resize"));
 setTimeout(function(){
-R.barStackAfterResize=getComputedStyle(document.documentElement).getPropertyValue("--bar-stack");
-R.megaInfo=(function(){var m=document.querySelector(".nav-mega");return m?m.offsetHeight:null;})();
-document.title="RESULT"+JSON.stringify(R);},400);},700);},1500);});</script>
+R.stackAfterResize=getComputedStyle(document.documentElement).getPropertyValue("--bar-stack");
+document.title="RESULT"+JSON.stringify(R);},500);},800);},1500);});</script>
 </body>
 </html>
