@@ -3271,7 +3271,7 @@ html.js .reveal.revealed {
     height: 100dvh;
     width: min(330px, 86vw);
     background: var(--bg);
-z-index: 170;
+    z-index: 170;
     /* Top inset keeps the heading clear of the notch; the bottom inset and the
        extra padding keep the last link above the home-indicator bar. */
     padding: calc(4.4rem + env(safe-area-inset-top, 0px)) 1.6rem
