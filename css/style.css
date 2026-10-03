@@ -3485,9 +3485,9 @@ html.js .reveal.revealed {
     height: 18px;
     padding: 0 4px;
     border-radius: var(--radius-pill);
-    background: var(--primary);
+    background: var(--primary-deep);
     color: #fff;
-    font-size: 0.66rem;
+    font-size: 0.72rem;
     line-height: 18px;
     text-align: center;
     display: none;
@@ -4994,9 +4994,9 @@ body.has-topbar .site-header { top: 0; }
   height: 20px;
   padding: 0 5px;
   border-radius: var(--radius-pill);
-  background: var(--primary);
+  background: var(--primary-deep);
   color: #fff;
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   font-weight: 700;
   line-height: 1;
   display: none;
@@ -5068,7 +5068,7 @@ body.has-topbar .site-header { top: 0; }
   grid-column: 1 / -1;
   display: none;
   margin: 0.2rem 0 0.35rem;
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -5279,7 +5279,7 @@ body.has-topbar .site-header { top: 0; }
 
 .collage__tag {
   display: inline-block;
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -6041,7 +6041,7 @@ body.has-topbar .site-header { top: 0; }
 
 .search-panel__foot kbd {
   font-family: var(--font-body);
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   border: 1px solid var(--line-strong);
   border-bottom-width: 2px;
   border-radius: 5px;
