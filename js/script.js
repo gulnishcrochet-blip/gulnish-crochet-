@@ -1510,7 +1510,7 @@
       var r = el.getBoundingClientRect();
       if (!r.height) return;
       /* distance from the viewport bottom up to the top of this bar */
-      stack = Math.max(stack, window.innerWidth && window.innerHeight - r.top);
+      stack = Math.max(stack, window.innerHeight - r.top);
     });
 
     /* Publish the same measurement as --bar-stack so the body's bottom padding
