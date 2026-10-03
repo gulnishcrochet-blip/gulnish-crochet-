@@ -353,19 +353,19 @@ document.title="RESULT"+JSON.stringify(r);
 
 <script>window.addEventListener("load",function(){setTimeout(function(){
 var cb=document.getElementById("coBar");cb.removeAttribute("hidden");cb.classList.add("show");
+window.scrollTo(0,document.body.scrollHeight);
+setTimeout(function(){
 var r={},cs=function(e){return getComputedStyle(e);};
-var bn=document.querySelector(".bottom-nav");
-r.bottomNavDisp=cs(bn).display;
+r.barStack=getComputedStyle(document.documentElement).getPropertyValue("--bar-stack");
+r.bottomNavDisp=cs(document.querySelector(".bottom-nav")).display;
 r.bodyPadB=cs(document.body).paddingBottom;
-var footer=document.querySelector(".site-footer");r.footerPadB=cs(footer).paddingBottom;
 var b=cb.getBoundingClientRect();
-r.coBarBox=Math.round(b.top)+".."+Math.round(b.bottom)+" h="+Math.round(b.height);
-r.coBarZ=cs(cb).zIndex;
-// does footer content sit clear of the bar?
-var last=footer.lastElementChild.getBoundingClientRect();
+r.coBarTop=Math.round(b.top);r.coBarH=Math.round(b.height);
+var last=document.querySelector(".site-footer").lastElementChild.getBoundingClientRect();
 r.footerLastBottom=Math.round(last.bottom);
-r.footerClear=last.bottom<=b.top?"YES":"NO overlapped by "+(Math.round(last.bottom-b.top))+"px";
-r.fbPillBottom=document.querySelector(".fb")?cs(document.querySelector(".fb-group")).bottom:null;
-document.title="RESULT"+JSON.stringify(r);},1400);});</script>
+r.clear=last.bottom<=b.top+0.5?"YES":"NO by "+Math.round(last.bottom-b.top)+"px";
+r.pillBottom=cs(document.querySelector(".fb-group")).bottom;
+r.pillTopAboveBar=(document.querySelector(".fb-group").getBoundingClientRect().bottom<=b.top+0.5)?"YES":"NO";
+document.title="RESULT"+JSON.stringify(r);},600);},1400);});</script>
 </body>
 </html>
