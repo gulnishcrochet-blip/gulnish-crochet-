@@ -592,46 +592,27 @@
 <script src="js/theme.js?v=237" defer></script>
 <script src="js/sw-register.js?v=237" defer></script>
 <script>
-function cs(el){return el?getComputedStyle(el):null;}
 window.addEventListener("load",function(){setTimeout(function(){
-var out={};
-var toggle=document.getElementById("navToggle");
-var nav=document.getElementById("mainNav");
-var overlay=document.querySelector(".nav-overlay");
-var bn=document.querySelector(".bottom-nav");
-var r={};
-r.toggleExists=!!toggle;
-r.toggleDisplay=cs(toggle).display;
-r.toggleBox=toggle?toggle.getBoundingClientRect().width+"x"+Math.round(toggle.getBoundingClientRect().height):null;
-r.navDisplay=cs(nav).display;
-r.navPos=cs(nav).position;
-r.overlayDisplay=cs(overlay).display;
-r.overlayZ=cs(overlay).zIndex;
-r.navZ=cs(nav).zIndex;
-r.navHeight=cs(nav).height;
-r.navPaddingTop=cs(nav).paddingTop;
-r.navPaddingBottom=cs(nav).paddingBottom;
-r.navOverflowY=cs(nav).overflowY;
-// drawer closed state
-r.navTransform=cs(nav).transform;
-r.navVis=cs(nav).visibility;
-// open it
-nav.classList.add("open"); overlay.classList.add("open");
-r.openTransform=cs(nav).transform;
-r.openVis=cs(nav).visibility;
-r.links=[];
+var r={},cs=function(e){return e?getComputedStyle(e):null;};
+var nav=document.getElementById("mainNav"),ov=document.querySelector(".nav-overlay");
+r.innerH=window.innerHeight; r.innerW=window.innerWidth;
+r.clientH=document.documentElement.clientHeight;
+r.navH=cs(nav).height;
+var bb=nav.getBoundingClientRect(); r.navRect=Math.round(bb.top)+".."+Math.round(bb.bottom);
+r.dvhSupported=CSS.supports("height","100dvh");
+nav.classList.add("open"); ov.classList.add("open");
+var small=[];
 nav.querySelectorAll("a").forEach(function(a){
-  var bb=a.getBoundingClientRect();
-  r.links.push(a.textContent.trim()+"|"+Math.round(bb.width)+"x"+Math.round(bb.height));
+  var b=a.getBoundingClientRect();
+  if(b.width===0) return;
+  if(b.height<44) small.push((a.textContent.trim().slice(0,22)||a.className)+"="+Math.round(b.height));
 });
-r.bodyPadBottom=cs(document.body).paddingBottom;
-r.bottomNavHeight=cs(bn).height;
-r.bottomNavFont=cs(bn.querySelector(".bottom-nav__item span")).fontSize;
-r.bottomNavItemH=Math.round(bn.querySelector(".bottom-nav__item").getBoundingClientRect().height);
-r.mainNavItemsCount=bn.querySelectorAll(".bottom-nav__item").length;
-r.horizontalOverflow=document.documentElement.scrollWidth>window.innerWidth?document.documentElement.scrollWidth+" > "+window.innerWidth:"none";
+r.smallTargets=small;
+r.navScrollable=nav.scrollHeight>nav.clientHeight?(nav.scrollHeight+"/"+nav.clientHeight):"fits";
+r.megaVisible=!!(document.querySelector(".nav-mega")&&document.querySelector(".nav-mega").offsetHeight>0);
+r.overflowX=document.documentElement.scrollWidth>window.innerWidth?document.documentElement.scrollWidth+">"+window.innerWidth:"none";
 document.title="RESULT"+JSON.stringify(r);
-},600);});
+},700);});
 </script>
 </body>
 </html>
