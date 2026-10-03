@@ -680,15 +680,22 @@ setTimeout(function(){
 <style>*{transition:none !important;animation:none !important}</style>
 <script>window.addEventListener("load",function(){setTimeout(function(){
 var r={};
-var li=document.querySelector(".main-nav li.nav-item");
-var m=document.querySelector(".nav-mega");
-r.closedState=getComputedStyle(m).opacity+"/"+getComputedStyle(m).visibility;
-li.classList.add("is-open");
-r.openState=getComputedStyle(m).opacity+"/"+getComputedStyle(m).visibility;
-r.pointerEvents=getComputedStyle(m).pointerEvents;
-r.transform=getComputedStyle(m).transform;
-li.classList.remove("is-open");
-r.reclosed=getComputedStyle(m).opacity+"/"+getComputedStyle(m).visibility;
+document.getElementById("navToggle").click();
+var nav=document.getElementById("mainNav"),ov=document.querySelector(".nav-overlay");
+var cs=function(e){return getComputedStyle(e);};
+r.navTransform=cs(nav).transform;
+r.navVisibility=cs(nav).visibility;
+r.navRect=(function(){var b=nav.getBoundingClientRect();return Math.round(b.left)+".."+Math.round(b.right)+" w="+Math.round(b.width);})();
+r.navHeight=Math.round(nav.getBoundingClientRect().height)+"/"+innerHeight;
+r.overlayOpacity=cs(ov).opacity;r.overlayVis=cs(ov).visibility;
+r.closeBtnVisible=cs(nav.querySelector(".nav-close")).display;
+r.headingVisible=(function(){var h=document.querySelector(".nav-mega__heading");return h?cs(h).display:"none";})();
+r.links=[];nav.querySelectorAll("a").forEach(function(a){var b=a.getBoundingClientRect();
+  if(b.width>0)r.links.push({t:(a.textContent.trim().slice(0,16)||"?"),w:Math.round(b.width),h:Math.round(b.height)});});
+r.tooSmall=r.links.filter(function(l){return l.h<44||l.width<44;});
+r.linkCount=r.links.length;
+r.docScrollW=document.documentElement.scrollWidth;
+r.navScrollable=nav.scrollHeight+"/"+nav.clientHeight;
 document.title="RESULT"+JSON.stringify(r);},3200);});</script>
 </body>
 </html>
