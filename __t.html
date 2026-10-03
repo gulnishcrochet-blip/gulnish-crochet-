@@ -680,16 +680,17 @@ setTimeout(function(){
 <script>window.addEventListener("load",function(){setTimeout(function(){
 var r={};
 var li=document.querySelector(".main-nav li.nav-item");
-r.hasNavItem=!!li;
-var link=li?li.querySelector("a"):null;
-r.isOpenBefore=li?li.classList.contains("is-open"):null;
-var ev=new MouseEvent("click",{bubbles:true,cancelable:true});
-if(link)link.dispatchEvent(ev);
-r.defaultPrevented=ev.defaultPrevented;
-r.isOpenAfter=li?li.classList.contains("is-open"):null;
-var m=document.querySelector(".nav-mega");
-r.megaVisible=m?getComputedStyle(m).visibility:"none";
-r.megaOpacity=m?getComputedStyle(m).opacity:"none";
-document.title="RESULT"+JSON.stringify(r);},3200);});</script>
+var link=li.querySelector("a");
+link.dispatchEvent(new MouseEvent("click",{bubbles:true,cancelable:true}));
+setTimeout(function(){
+  var m=document.querySelector(".nav-mega");
+  r.isOpen=li.classList.contains("is-open");
+  r.visibility=getComputedStyle(m).visibility;
+  r.opacity=getComputedStyle(m).opacity;
+  r.position=getComputedStyle(m).position;
+  r.rect=Math.round(m.getBoundingClientRect().width)+"x"+Math.round(m.getBoundingClientRect().height);
+  r.headerH=Math.round(document.querySelector(".site-header").getBoundingClientRect().height);
+  r.firstLinkH=Math.round(m.querySelector("a").getBoundingClientRect().height);
+  document.title="RESULT"+JSON.stringify(r);},700);},3000);});</script>
 </body>
 </html>
