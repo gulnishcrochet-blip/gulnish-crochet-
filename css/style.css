@@ -6092,7 +6092,10 @@ body.has-topbar .site-header { top: 0; }
 
 .qv-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /* minmax(0, 1fr) rather than a bare 1fr: a 1fr track has an automatic
+     min-content minimum, so the product photo's intrinsic width inflated the
+     media column to 593px inside a 380px modal and pushed the layout sideways. */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 }
 
 .qv-media {
