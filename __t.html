@@ -677,14 +677,5 @@ setTimeout(function(){
 },1800);});
 </script>
 
-<script>window.addEventListener("load",function(){setTimeout(function(){
-var r={};
-var hd=document.querySelector(".site-header");
-r.headerH=Math.round(hd.getBoundingClientRect().height);
-var m=document.querySelector(".nav-mega");
-r.megaPos=m?getComputedStyle(m).position:"none";
-r.navRowH=Math.round(document.querySelector(".main-nav ul").getBoundingClientRect().height);
-r.overflow=document.documentElement.scrollWidth+"/"+innerWidth;
-document.title="RESULT"+JSON.stringify(r);},3200);});</script>
 </body>
 </html>
