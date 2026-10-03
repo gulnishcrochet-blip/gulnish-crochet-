@@ -6308,6 +6308,24 @@ body.has-topbar .site-header { top: 0; }
 
 .wl-close:hover { background: var(--primary-light); transform: rotate(90deg); }
 
+/* Quick view on a phone: stack the media above the details and keep the close
+   button at a reachable size. */
+@media (max-width: 760px) {
+  .qv-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .qv-media {
+    max-height: 46vh;
+  }
+
+  .qv-close {
+    width: 44px;
+    height: 44px;
+    font-size: 1.3rem;
+  }
+}
+
 .wl-items { flex: 1 1 auto; overflow-y: auto; padding: 0.9rem; display: flex; flex-direction: column; gap: 0.6rem; }
 
 .wl-item {
