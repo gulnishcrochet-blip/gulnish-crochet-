@@ -3403,7 +3403,10 @@ html.js .reveal.revealed {
     gap: 3px;
     padding: 0.3rem 0.2rem;
     font-family: var(--font-body);
-    font-size: 0.72rem;
+    /* 0.72rem lands near 11.5px, which is hard to read on the one piece of
+       chrome every shopper uses all day. */
+    font-size: 0.76rem;
+    letter-spacing: 0.01em;
     font-weight: 700;
     color: var(--muted);
     background: none;
