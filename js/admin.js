@@ -13,17 +13,79 @@
   var mainNav = document.getElementById("mainNav");
 
   if (navToggle && mainNav) {
+    /* admin.html does not load script.js, so the drawer's behaviour lives
+       here. Kept in step with the storefront version: a real close control,
+       Escape, a scrim to tap, and a scroll lock so the page cannot be dragged
+       around behind an open panel. */
+    var navOverlay = document.createElement("div");
+    navOverlay.className = "nav-overlay";
+    navOverlay.setAttribute("aria-hidden", "true");
+    if (header) header.appendChild(navOverlay);
+
+    if (!mainNav.querySelector(".nav-close")) {
+      var navClose = document.createElement("button");
+      navClose.type = "button";
+      navClose.className = "nav-close";
+      navClose.setAttribute("aria-label", "Close menu");
+      navClose.innerHTML =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+      mainNav.insertBefore(navClose, mainNav.firstChild);
+    }
+
+    var closeAdminNav = function () {
+      if (!mainNav.classList.contains("open")) return;
+      mainNav.classList.remove("open");
+      navOverlay.classList.remove("open");
+      navToggle.setAttribute("aria-expanded", "false");
+      document.body.style.overflow = "";
+      document.body.style.paddingRight = "";
+      navToggle.focus();
+    };
+
+    var openAdminNav = function () {
+      var gap = window.innerWidth - document.documentElement.clientWidth;
+      if (gap > 0) document.body.style.paddingRight = gap + "px";
+      document.body.style.overflow = "hidden";
+      mainNav.classList.add("open");
+      navOverlay.classList.add("open");
+      navToggle.setAttribute("aria-expanded", "true");
+      var link = mainNav.querySelector("a");
+      if (link) link.focus();
+    };
+
     navToggle.addEventListener("click", function (e) {
       e.stopPropagation();
-      mainNav.classList.toggle("open");
-      navToggle.setAttribute("aria-expanded", mainNav.classList.contains("open") ? "true" : "false");
-      if (mainNav.classList.contains("open")) {
-        var link = mainNav.querySelector("a");
-        if (link) link.focus();
-      }
+      if (mainNav.classList.contains("open")) closeAdminNav();
+      else openAdminNav();
     });
     mainNav.addEventListener("click", function (e) { e.stopPropagation(); });
-    document.addEventListener("click", function () { mainNav.classList.remove("open"); });
+    var navCloseBtn = mainNav.querySelector(".nav-close");
+    if (navCloseBtn) navCloseBtn.addEventListener("click", closeAdminNav);
+    navOverlay.addEventListener("click", closeAdminNav);
+
+    document.addEventListener("click", closeAdminNav);
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeAdminNav();
+      if (e.key === "Tab" && mainNav.classList.contains("open")) {
+        var focusables = mainNav.querySelectorAll('a[href], button:not([disabled])');
+        if (!focusables.length) return;
+        var first = focusables[0];
+        var last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    });
+
+    /* Leaving the drawer open across a rotation would strand it over a layout
+       that no longer shows it. */
+    window.addEventListener("resize", function () {
+      if (window.innerWidth > 760) closeAdminNav();
+    });
   }
 
   var onScroll = function () {
