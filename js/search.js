@@ -94,8 +94,9 @@
     closeBtn.type = 'button';
     closeBtn.className = 'search-panel__close';
     closeBtn.setAttribute('aria-label', 'Close search');
-    closeBtn.style.cssText =
-      'width:34px;height:34px;border:0;border-radius:50%;background:none;color:var(--muted);cursor:pointer;font-size:1.2rem;line-height:1;display:grid;place-items:center;';
+    /* Presentation lives in CSS. It used to be inline at 34px, which outranked
+       any stylesheet and, as a shrinkable flex item, let the row squeeze the
+       button down to 11px wide. */
     closeBtn.innerHTML = '&times;';
 
     top.appendChild(icon);
