@@ -5048,6 +5048,25 @@ body.has-topbar .site-header { top: 0; }
 
 .nav-mega__group { padding: 0.2rem 0.35rem 0.6rem; }
 
+/* Section label for the inline drawer list. The desktop flyout needs no such
+   signpost, so it is suppressed there. */
+.nav-mega__heading {
+  grid-column: 1 / -1;
+  display: none;
+  margin: 0.2rem 0 0.35rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+@media (max-width: 980px) {
+  .nav-mega__heading {
+    display: block;
+  }
+}
+
 .nav-mega__label {
   display: flex;
   align-items: center;
