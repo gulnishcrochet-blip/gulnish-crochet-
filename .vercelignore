@@ -1,13 +1,16 @@
-# Dev-only files: the deploy uploads the site, not the local toolchain.
-# Each of these was shipped on every one of the 1200+ deployments for nothing.
-scripts/
-supabase-v20.sql
-.gitignore
-.gitattributes
-*.md
+# Dev-only files: deployed by accident, never used by the site.
+# Keeps deployment size (and Vercel's per-push storage) down.
 
-# Never upload local env files. `vercel link` writes a .env.local holding a
-# VERCEL_OIDC_TOKEN into the project root, and a root file is published as a
-# static asset - without this it would be readable at /.env.local.
-.env*
+# Local tooling
+scripts/
+.gitignore
+
+# Credentials — Vercel ignores this by default, but be explicit
+.env.local
+.env*.local
+
+# Database schema, applied once by hand in the Supabase dashboard
+supabase-v20.sql
+
+# Vercel CLI metadata
 .vercel/
