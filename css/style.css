@@ -4931,6 +4931,14 @@ p.about-text {
 
 .topbar__close:hover { background: rgba(255, 255, 255, 0.3); }
 
+/* 26x26 is fine for a cursor but not for a finger, and the topbar is too short
+   to grow a 44px box into. Extend the hit area instead of the visual one. */
+.topbar__close::after {
+  content: "";
+  position: absolute;
+  inset: -9px -9px;
+}
+
 .topbar__link {
   color: #fff;
   text-decoration: underline;
