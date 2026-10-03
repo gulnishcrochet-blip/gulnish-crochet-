@@ -358,27 +358,6 @@
       progress.style.transformOrigin = "left center";
       progress.style.width = "100%";
     }
-
-    /* Card wishlist hearts need their saved state applied whenever the grid
-       is re-rendered (filters, search, pagination all rewrite innerHTML). */
-    if (window.GulnishWishlist) {
-      var syncHearts = function () {
-        document.querySelectorAll("[data-wishlist-toggle]").forEach(function (b) {
-        var on = window.GulnishWishlist.has(b.dataset.id);
-        b.classList.toggle("is-on", on);
-        b.setAttribute("aria-pressed", on ? "true" : "false");
-        b.setAttribute("aria-label", on ? "Remove from wishlist" : "Save to wishlist");
-      });
-      };
-      syncHearts();
-      var grids = document.getElementById("productGrid");
-      var featured = document.getElementById("featuredGrid");
-      [grids, featured].forEach(function (g) {
-        if (!g || typeof MutationObserver === "undefined") return;
-        new MutationObserver(syncHearts).observe(g, { childList: true, subtree: true });
-      });
-      document.addEventListener("gc:wishlist-change", syncHearts);
-    }
   }
 
   /* ---------- Footer: current year + contact block ---------- */
