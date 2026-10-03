@@ -6767,6 +6767,53 @@ body.has-topbar .site-header { top: 0; }
   .breadcrumbs li {
     gap: 0.25rem;
   }
+
+  /* --- Search overlay on a phone ---------------------------------------
+     The panel's only keyboard affordances are Esc and the arrow keys, which
+     a touch device does not have. They were eating the width that the input
+     and the close button need, and the close button lost that race. */
+  .search-panel__hint,
+  .search-panel__foot {
+    display: none;
+  }
+
+  .search-panel__top {
+    gap: 0.55rem;
+    padding: 0.7rem 0.8rem;
+  }
+
+  .search-panel__input {
+    /* Already past 16px, but pin it so a future edit cannot reintroduce the
+       iOS zoom-on-focus the storefront guard exists to prevent. */
+    font-size: 16px;
+  }
+
+  .search-panel__results {
+    /* 58vh of an 844px screen plus the top bar overflowed the panel and hid
+       results behind a nested scroll. Let the overlay scroll as one column. */
+    max-height: none;
+  }
+
+  .search-overlay {
+    padding: 0.75rem 0.65rem calc(0.75rem + env(safe-area-inset-bottom, 0px));
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .search-panel {
+    margin: 0 auto;
+  }
+
+  /* Suggestions wrap onto their own row rather than crowding the field. */
+  .search-suggest {
+    padding: 0.75rem 0.85rem;
+  }
+
+  .search-chip {
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.82rem;
+  }
 }
 
 /* --- 5. Fixed bottom bars covered the last of the page -----------------
