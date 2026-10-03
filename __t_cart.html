@@ -312,6 +312,11 @@ r.scrollW=document.documentElement.scrollWidth;r.innerW=window.innerWidth;
 r.overflowers=[];
 document.querySelectorAll("body *").forEach(function(e){
   var s=cs(e);if(s.display==="none"||s.position==="fixed")return;
+  /* off-canvas panels park off-screen when closed; that is not overflow */
+  var oc=e.closest(".main-nav,.cart-drawer,.lightbox,.wl-panel,.search-overlay,.qv-modal,.quickview-modal,.nav-overlay");
+  if(oc){var oo=oc;var closed=(oo.classList.contains("open")||oo.classList.contains("is-open")||oo.classList.contains("show")||oo.classList.contains("visible"))?"":"";
+    if(!closed&&!/main-nav/.test(oo.className))return;
+    if(!closed&&/main-nav/.test(oo.className)&&getComputedStyle(oo).transform!=="none"&&!/matrix\(1, 0, 0, 1, 0, 0\)/.test(getComputedStyle(oo).transform))return;}
   var b=e.getBoundingClientRect();if(!b.width||!b.height)return;
   if(b.right>window.innerWidth+1||b.left<-1){
     var t=(e.textContent||"").trim().slice(0,18);
@@ -323,6 +328,9 @@ document.querySelectorAll("a,button,input,select,textarea,[role=button]").forEac
   var s=cs(e);if(s.display==="none"||s.visibility==="hidden"||s.opacity==="0")return;
   var b=e.getBoundingClientRect();if(!b.width||!b.height)return;
   if(e.closest("[aria-hidden='true']"))return;
+  /* WCAG 2.5.8 exempts links inline in a sentence */
+  if(e.tagName==="A"&&e.parentElement&&/^(P|SPAN|EM|STRONG|LI|LABEL)$/.test(e.parentElement.tagName)
+     &&getComputedStyle(e).display==="inline")return;
   if(b.height<32||b.width<32){
     var lbl=(e.getAttribute("aria-label")||e.textContent||e.placeholder||"").trim().slice(0,16);
     r.small.push(String(e.className||e.tagName).slice(0,20)+" "+Math.round(b.width)+"x"+Math.round(b.height)+(lbl?"'"+lbl+"'":""));}});
