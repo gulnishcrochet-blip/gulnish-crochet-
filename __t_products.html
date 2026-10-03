@@ -5,20 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="google-site-verification" content="cezaTrp3tqryT63zC6IFOU2wXM-8M_bjIBm1xXGouZs" />
   <script src="js/head.js?v=270"></script>
-  <title>Your Cart | Gulnish Crochet</title>
-  <meta name="description" content="Review your Gulnish Crochet cart, adjust quantities and proceed to checkout.">
-    
+  <title>Shop Handmade Crochet Products | Gulnish Crochet</title>
+  <meta name="description" content="Browse handmade crochet purses, gajrays, keychains, bags, jewellery and headbands by Gulnish Crochet. Custom designs and made-to-order gifts available.">
+  <meta name="keywords" content="handmade crochet, crochet purses, crochet bags, crochet keychains, crochet jewellery, crochet headbands, custom crochet, made to order">
   <meta name="author" content="Gulnish Crochet">
-  <meta name="robots" content="noindex, follow">
+  <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#FBF7F1">
-  <link rel="canonical" href="https://gulnishcrochet.vercel.app/cart">
+  <link rel="canonical" href="https://gulnishcrochet.vercel.app/products">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Gulnish Crochet">
   <meta property="og:title" content="Shop Handmade Crochet Products | Gulnish Crochet">
   <meta property="og:description" content="Handmade crochet purses, bags, jewellery, keychains and headbands — made to order with love.">
-  <meta property="og:url" content="https://gulnishcrochet.vercel.app/cart">
+  <meta property="og:url" content="https://gulnishcrochet.vercel.app/products">
   <meta property="og:image" content="https://gulnishcrochet.vercel.app/images/og-cover-v2.webp">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -61,11 +61,11 @@
           {
             "@type": "ListItem",
             "position": 2,
-            "name": "Your Cart",
-            "item": "https://gulnishcrochet.vercel.app/cart"
+            "name": "Products",
+            "item": "https://gulnishcrochet.vercel.app/products"
           }
         ],
-        "@id": "https://gulnishcrochet.vercel.app/cart#breadcrumb"
+        "@id": "https://gulnishcrochet.vercel.app/products#breadcrumb"
       }
     ]
   }</script>
@@ -88,7 +88,7 @@
       <nav class="main-nav" id="mainNav">
         <ul>
           <li><a href="/">Home</a></li>
-          <li><a href="/products">Products</a></li>
+          <li><a href="/products" class="active">Products</a></li>
           <li><a href="/about">About</a></li>
           <li><a href="/contact">Contact</a></li>
         </ul>
@@ -116,49 +116,90 @@
   </header>
 
   <main>
-    <section class="section" id="cartPage">
+    <!-- ============ PRODUCTS ============ -->
+    <section class="section" id="shop">
       <div class="container">
+
         <nav class="breadcrumbs reveal" aria-label="Breadcrumb">
           <ol>
             <li><a href="/">Home</a></li>
-            <li class="is-current" aria-current="page">Cart</li>
+            <li class="is-current" aria-current="page">Products</li>
           </ol>
         </nav>
 
         <div class="section-head reveal">
-          <span class="section-eyebrow">Shopping bag</span>
-          <h1 class="section-title">Your <em>Cart</em></h1>
+          <span class="section-eyebrow">Shop</span>
+          <h1 class="section-title">Our <em>Products</em></h1>
+          <p class="section-lead">Every piece is handmade to order &mdash; browse, search or filter below.</p>
         </div>
 
-        <div id="cpEmpty" class="cart-page-empty reveal" hidden>
-          <div class="cart-empty__ph">&#128722;</div>
-          <p>Your cart is empty.</p>
-          <div class="cart-page-empty__actions">
-            <a class="btn" href="/products">Browse products</a>
-          </div>
-          <div class="trust-row" data-trust-row></div>
-        </div>
-
-        <div class="cart-page" id="cpWrap">
-          <div class="cart-page__main">
-            <p class="cart-page__total-label" id="cpCountLabel"></p>
-            <div id="cpItems" class="cp-items"></div>
-            <a class="btn btn--ghost cart-page__continue" href="/products">&larr; Continue shopping</a>
+        <!-- Products list -->
+        <div id="productsView" class="shop-view">
+          <div class="products-topbar">
+            <button class="btn btn--ghost btn--small" type="button" data-back-categories="true">&larr; Shop categories</button>
           </div>
 
-          <aside class="cart-page__aside">
-            <div class="checkout-card cart-summary">
-              <h2>Order summary</h2>
-              <div class="co-total">
-                <span>Subtotal</span>
-                <span id="cpSubtotal">Rs. 0.00</span>
-              </div>
-              <p class="co-trust" id="cartDeliveryNote">Pay in advance &mdash; we confirm payment and delivery details on WhatsApp before we start stitching.</p>
-              <div class="trust-row" data-trust-row></div>
-              <button class="btn co-place" type="button" id="cpCheckout">Proceed to Checkout &rarr;</button>
-              <a class="btn btn--ghost cart-page__wa" id="cpWa" href="https://wa.me/923075729901" target="_blank" rel="noopener">Order on WhatsApp</a>
+          <div class="shop-bar reveal">
+            <span class="shop-bar__count" id="productCountLabel"></span>
+            <select class="select" id="sortSelect" aria-label="Sort products">
+              <option value="featured">Sort: Featured</option>
+              <option value="low">Price: Low to High</option>
+              <option value="high">Price: High to Low</option>
+              <option value="name">Name: A &ndash; Z</option>
+            </select>
+          </div>
+
+          <div class="shop-tools reveal">
+            <div class="search-box">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+              </svg>
+              <input type="text" id="searchInput" aria-label="Search products" placeholder="Search products..." autocomplete="off">
             </div>
-          </aside>
+            <div class="filters" id="filters"></div>
+            <div class="filters filters--sub" id="subFilters" hidden></div>
+          </div>
+
+          <p class="no-results" id="noResults" hidden>No products found.</p>
+          <p class="no-products" id="noProducts" hidden>No products available yet. Check back soon.</p>
+
+          <div class="image-grid" id="productGrid"></div>
+          <div class="show-more-wrap">
+            <button class="btn btn--ghost" type="button" id="showMore" hidden>Show more</button>
+          </div>
+        </div>
+
+        <!-- VIEW 3: single product page -->
+        <div id="productView" class="shop-view" hidden>
+          <div class="products-topbar">
+            <button class="btn btn--ghost btn--small" type="button" data-back-products="true">&larr; Back</button>
+          </div>
+
+          <div class="product-page">
+            <div class="product-page__media js-lightbox">
+              <div class="image-slot product-page__img" id="ppImage"></div>
+            </div>
+            <div class="product-page__thumbs" id="ppThumbs" hidden></div>
+            <div class="product-page__info">
+              <span class="product-page__cat" id="ppCategory"></span>
+              <h2 class="product-page__name" id="ppName"></h2>
+              <div class="product-page__price" id="ppPrice"></div>
+              <div class="product-page__status" id="ppStatus" hidden></div>
+              <div class="product-page__colors-label">Colour</div>
+              <div class="work-card__colors" id="ppColors"></div>
+              <div class="product-page__qty">
+                <span class="qty"><button class="qty__btn" type="button" data-pq="minus" aria-label="Decrease">&#8722;</button><span class="qty__val" id="ppQtyVal">1</span><button class="qty__btn" type="button" data-pq="plus" aria-label="Increase">+</button></span>
+              </div>
+              <div class="product-page__btn-row">
+                <button class="btn product-page__add" type="button" id="ppAdd">Add to Cart</button>
+                <a class="btn btn--wa product-page__wa" id="ppWa" href="https://wa.me/923075729901" target="_blank" rel="noopener">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.001 0C5.384 0 0 5.384 0 12.001c0 2.117.554 4.19 1.606 6.009L0 24l6.146-1.612c1.79.977 3.806 1.492 5.855 1.492 6.617 0 12.001-5.384 12.001-12.001C24 5.384 18.616 0 12.001 0z"/></svg>
+                  Order on WhatsApp
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -294,7 +335,6 @@
   <script src="js/analytics.js?v=270" defer></script>
   <script src="js/supabase.js?v=270" defer></script>
   <script src="js/script.js?v=270" defer></script>
-  <script src="js/cart.js?v=270" defer></script>
 
 <!-- Storefront modules. Order matters: script.js publishes the cart
      write (window.addToCart) and the product markup these read. -->
@@ -305,33 +345,41 @@
 <script src="js/theme.js?v=270" defer></script>
 <script src="js/sw-register.js?v=270" defer></script>
 <script>
-function lum(c){var m=c.match(/[\d.]+/g);if(!m)return null;var v=m.slice(0,3).map(Number).map(function(x){x/=255;return x<=0.03928?x/12.92:Math.pow((x+0.055)/1.055,2.4)});return 0.2126*v[0]+0.7152*v[1]+0.0722*v[2];}
-function parse(s){var m=s.match(/[\d.]+/g);return m?m.slice(0,3).map(Number):null;}
-function bgOf(el){var n=el;while(n&&n!==document.documentElement){var cs=getComputedStyle(n);if(cs.backgroundImage&&cs.backgroundImage!=="none")return "G";
- var b=cs.backgroundColor,p=parse(b);if(p&&(p[0]>0||p[1]>0||p[2]>0)){var a=(b.match(/[\d.]+/g)||[])[3];if(a===undefined||parseFloat(a)>0.85)return p;}n=n.parentElement;}return [255,255,255];}
 window.addEventListener("load",function(){setTimeout(function(){
-var o={lc:[],nl:[],tiny:[],small:[],hscroll:document.documentElement.scrollWidth>window.innerWidth+1};
-document.querySelectorAll("body *").forEach(function(el){
-  if(el.children.length)return;var t=(el.textContent||"").trim();if(!t)return;
-  var cs=getComputedStyle(el);if(cs.display==="none"||cs.visibility==="hidden")return;
-  var fs=parseFloat(cs.fontSize);
-  if(fs<11&&t.length>3)o.tiny.push(fs.toFixed(1)+"px "+t.slice(0,14));
-  var bg=bgOf(el);if(bg==="G")return;
-  var L1=lum(cs.color),L2=lum("rgb("+bg.join(",")+")");if(L1===null)return;
-  var r=(Math.max(L1,L2)+0.05)/(Math.min(L1,L2)+0.05);
-  var fw=parseInt(cs.fontWeight)||400, need=((fs>=24)||(fs>=18.66&&fw>=700))?3:4.5;
-  if(r<need)o.lc.push(t.slice(0,20)+" "+r.toFixed(2)+"/"+need);});
-document.querySelectorAll("input:not([type=hidden]),select,textarea").forEach(function(i){
-  var id=i.id,lab=id&&document.querySelector('label[for="'+CSS.escape(id)+'"]');
-  if(!lab&&!i.getAttribute("aria-label")&&!i.closest("label"))o.nl.push(i.id||i.type);});
-document.querySelectorAll("a,button,input,select,textarea,[role=button]").forEach(function(e){
-  var cs=getComputedStyle(e);if(cs.display==="none"||cs.visibility==="hidden")return;
-  if(e.closest("[aria-hidden='true']"))return;
-  if(e.tagName==="A"&&e.parentElement&&/^(P|SPAN|EM|STRONG|LI|LABEL)$/.test(e.parentElement.tagName)&&cs.display==="inline")return;
+var r={},cs=function(e){return getComputedStyle(e)};
+r.hscroll=document.documentElement.scrollWidth>window.innerWidth+1;
+r.scrollW=document.documentElement.scrollWidth;r.innerW=window.innerWidth;
+r.overflowers=[];
+document.querySelectorAll("body *").forEach(function(e){
+  var s=cs(e);if(s.display==="none"||s.position==="fixed")return;
+  /* off-canvas panels park off-screen when closed; that is not overflow */
+  var oc=e.closest(".main-nav,.cart-drawer,.lightbox,.wl-panel,.search-overlay,.qv-modal,.quickview-modal,.nav-overlay");
+  if(oc){var oo=oc;var closed=(oo.classList.contains("open")||oo.classList.contains("is-open")||oo.classList.contains("show")||oo.classList.contains("visible"))?"":"";
+    if(!closed&&!/main-nav/.test(oo.className))return;
+    if(!closed&&/main-nav/.test(oo.className)&&getComputedStyle(oo).transform!=="none"&&!/matrix\(1, 0, 0, 1, 0, 0\)/.test(getComputedStyle(oo).transform))return;}
   var b=e.getBoundingClientRect();if(!b.width||!b.height)return;
-  if(b.height<32||b.width<32)o.small.push(String(e.className||e.tagName).slice(0,18)+" "+Math.round(b.width)+"x"+Math.round(b.height));});
-o.lc=o.lc.slice(0,6);o.tiny=o.tiny.slice(0,4);o.small=o.small.slice(0,4);
-parent.postMessage({p:"__V__",r:o},"*");},2400)});
+  if(b.right>window.innerWidth+1||b.left<-1){
+    var t=(e.textContent||"").trim().slice(0,18);
+    r.overflowers.push(String(e.className||e.tagName).slice(0,24)+"["+Math.round(b.left)+".."+Math.round(b.right)+"]"+(t?"'"+t+"'":""));}});
+r.overflowers=r.overflowers.slice(0,4);
+/* tap targets that are actually visible and interactive */
+r.small=[];
+document.querySelectorAll("a,button,input,select,textarea,[role=button]").forEach(function(e){
+  var s=cs(e);if(s.display==="none"||s.visibility==="hidden"||s.opacity==="0")return;
+  var b=e.getBoundingClientRect();if(!b.width||!b.height)return;
+  if(e.closest("[aria-hidden='true']"))return;
+  /* WCAG 2.5.8 exempts links inline in a sentence */
+  if(e.tagName==="A"&&e.parentElement&&/^(P|SPAN|EM|STRONG|LI|LABEL)$/.test(e.parentElement.tagName)
+     &&getComputedStyle(e).display==="inline")return;
+  if(b.height<32||b.width<32){
+    var lbl=(e.getAttribute("aria-label")||e.textContent||e.placeholder||"").trim().slice(0,16);
+    r.small.push(String(e.className||e.tagName).slice(0,20)+" "+Math.round(b.width)+"x"+Math.round(b.height)+(lbl?"'"+lbl+"'":""));}});
+r.small=r.small.slice(0,5);
+/* fixed bottom bars vs footer clearance */
+r.barStack=getComputedStyle(document.documentElement).getPropertyValue("--bar-stack").trim();
+r.bodyPadB=cs(document.body).paddingBottom;
+parent.postMessage({p:"__PAGE__",r:r},"*");
+},2300)});
 </script>
 </body>
 </html>
