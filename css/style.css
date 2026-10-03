@@ -6659,21 +6659,39 @@ body.has-topbar .site-header { top: 0; }
   }
 }
 
-/* --- 5. Fixed bottom bar covered the last of the page ---------------
-   .bottom-nav is 60px tall and position:fixed, but the body had no bottom
-   padding, so the footer's last line sat underneath it on every page. */
+/* --- 5. Fixed bottom bars covered the last of the page -----------------
+   .bottom-nav is fixed and 60px tall, and on checkout a .co-bar is fixed at
+   bottom:0 as well, but the body only reserved 72px. The footer's last line
+   sat underneath the nav, and the co-bar (higher z-index) covered the nav
+   outright. Reserve whatever stack is actually present, safe-area included. */
 @media (max-width: 760px) {
-  .bottom-nav:not([hidden]) ~ * {
-    /* no-op guard: keeps the rule valid if the nav is later re-parented */
+  /* One variable for the stack height, so nav / cart-bar / co-bar and the
+     body reserve can never drift apart again. Defaults to the nav alone. */
+  :root {
+    --bar-stack: calc(60px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* The checkout CTA replaces the nav rather than fighting it for the same
+     pixels. Hiding it keeps a single, unambiguous action at the bottom. */
+  body:has(.co-bar.show) .bottom-nav {
+    display: none !important;
+  }
+
+  body:has(.co-bar.show) {
+    --bar-stack: calc(
+      60px + env(safe-area-inset-bottom, 0px) + 0.7rem + 2.8rem
+    );
   }
 
   body:has(.bottom-nav) {
-    padding-bottom: 72px;
+    padding-bottom: calc(var(--bar-stack) + 12px);
   }
 
   /* Fallback for browsers without :has() support. */
   .site-footer {
-    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(
+      var(--bar-stack) + 12px + env(safe-area-inset-bottom, 0px)
+    );
   }
 }
 
