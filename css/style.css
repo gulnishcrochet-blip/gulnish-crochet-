@@ -3298,8 +3298,15 @@ html.js .reveal.revealed {
     gap: 0.3rem;
   }
 
+  .main-nav li {
+    position: relative;
+  }
+
   .main-nav a {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    min-height: 48px;
     padding: 0.85rem 1rem;
     font-size: 1.02rem;
     border-radius: var(--radius-sm);
@@ -3307,12 +3314,35 @@ html.js .reveal.revealed {
 
   .main-nav a.active {
     background: var(--primary-light);
+    color: var(--primary-deep);
+    font-weight: 700;
+  }
+
+  /* Rail marker on the current page, so the active section reads instantly
+     rather than relying on the fill colour alone. */
+  .main-nav a.active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 3px;
+    height: 22px;
+    border-radius: 0 3px 3px 0;
+    background: var(--primary);
+    transform: translateY(-50%);
+  }
+
+  /* The desktop mega-menu cannot follow into the phone drawer: its links are
+     already stacked, and a hover panel has no way to be dismissed. */
+  .main-nav .nav-mega {
+    display: none !important;
   }
 
   .nav-close {
     position: absolute;
-    top: 1.1rem;
+    top: calc(1.1rem + env(safe-area-inset-top, 0px));
     right: 1.2rem;
+    z-index: 1;
   }
 
   .bottom-nav {
