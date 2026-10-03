@@ -592,53 +592,80 @@
 <script src="js/theme.js?v=243" defer></script>
 <script src="js/sw-register.js?v=243" defer></script>
 <script>
+window.__errs=[];
+window.addEventListener("error",function(e){window.__errs.push(String(e.message).slice(0,60))});
+window.addEventListener("unhandledrejection",function(e){window.__errs.push("rej:"+String(e.reason).slice(0,40))});
 window.addEventListener("load",function(){setTimeout(function(){
 var r={},cs=function(e){return e?getComputedStyle(e):null;};
-function vis(sel){var e=document.querySelector(sel);if(!e)return null;
-  var s=cs(e),b=e.getBoundingClientRect();
-  return {disp:s.display,pos:s.position,z:s.z,bottom:Math.round(b.bottom),h:Math.round(b.height),w:Math.round(b.width)};}
-r.inner=innerWidth+"x"+innerHeight;
-r.bottomNav=vis(".bottom-nav");
-r.cartBar=vis(".cart-bar");
-r.coBar=vis(".co-bar");
-r.bodyPadB=cs(document.body).paddingBottom;
-r.footerPadB=cs(document.querySelector(".site-footer")||document.body).paddingBottom;
-r.scrollW=document.documentElement.scrollWidth;
-r.overflowX=document.documentElement.scrollWidth>innerWidth?"OVERFLOW "+document.documentElement.scrollWidth+">"+innerWidth:"none";
-/* does any visible fixed bar cover the bottom nav? */
-var bn=document.querySelector(".bottom-nav"),bars=[];
-document.querySelectorAll(".cart-bar,.co-bar").forEach(function(b){
-  var s=cs(b);if(s.display!=="none"&&b.offsetHeight>0)bars.push({cls:b.className,z:s.zIndex,bottom:Math.round(b.getBoundingClientRect().bottom)});});
-r.visibleBarsAboveNav=bars;
-r.navOccluded=bars.filter(function(b){return b.bottom>=(bn?bn.getBoundingClientRect().bottom-2:1e9);}).map(function(b){return b.cls;});
+r.vw=innerWidth+"x"+innerHeight;
+
+/* --- drawer --- */
+var nav=document.getElementById("mainNav"),tg=document.getElementById("navToggle");
+r.drawer={
+  toggle:tg?cs(tg).display:"NO-TOGGLE",
+  toggleBox:tg?Math.round(tg.getBoundingClientRect().width)+"x"+Math.round(tg.getBoundingClientRect().height):null,
+  navPos:cs(nav).position,
+  navClosedVis:cs(nav).visibility,
+  closeBtn:nav.querySelector(".nav-close")?cs(nav.querySelector(".nav-close")).display:"MISSING"
+};
+/* open via the real handler, then confirm it is usable */
+tg.click();
+r.drawer.afterClick_open=nav.classList.contains("open");
+r.drawer.ariaExpanded=tg.getAttribute("aria-expanded");
+r.drawer.bodyOverflow=document.body.style.overflow;
+r.drawer.focusInside=nav.contains(document.activeElement);
+var vis=[];nav.querySelectorAll("a").forEach(function(a){var b=a.getBoundingClientRect();
+  if(b.width>0){vis.push({t:(a.textContent.trim().slice(0,18)||"?"),h:Math.round(b.height)});}});
+r.drawer.linksVisible=vis.length;
+r.drawer.under44=vis.filter(function(v){return v.h<44;}).map(function(v){return v.t+"="+v.h;});
+r.drawer.megaH=(function(){var m=document.querySelector(".nav-mega");return m?m.offsetHeight:0;})();
+r.drawer.scrollable=nav.scrollHeight>nav.clientHeight?(nav.scrollHeight+"/"+nav.clientHeight):"fits";
+/* escape closes */
+document.dispatchEvent(new KeyboardEvent("keydown",{key:"Escape",bubbles:true}));
+r.drawer.escClosed=!nav.classList.contains("open");
+r.drawer.escRestoredBody=(document.body.style.overflow===""||!document.body.style.overflow);
+r.drawer.focusReturned=document.activeElement===tg;
+
+/* --- tap targets across page (inline prose links excluded) --- */
 var small=[];
 document.querySelectorAll("a,button,input,select,textarea").forEach(function(e){
   var s=cs(e);if(s.display==="none"||s.visibility==="hidden")return;
   var b=e.getBoundingClientRect();if(b.width===0||b.height===0)return;
-  if(b.height<40)small.push((e.tagName+"."+String(e.className).slice(0,24)).slice(0,46)+"="+Math.round(b.height));});
-r.under40=small.slice(0,12);
-r.smallCount=small.length;
-var fi=[];document.querySelectorAll("input,select,textarea").forEach(function(e){
-  var s=cs(e);if(s.display==="none")return;if(parseFloat(s.fontSize)<16)fi.push((e.name||e.id||e.type)+"="+s.fontSize);});
-r.inputsUnder16=fi;
-r.errors=window.__errs||[];
-document.title="RESULT"+JSON.stringify(r);
-},900);});
-</script>
+  if(e.closest("p,li.toc li,.prose,address,small"))return;
+  if(b.height<40)small.push((e.tagName+"."+String(e.className).slice(0,22)).slice(0,42)+"="+Math.round(b.height));});
+r.smallTargets=small.slice(0,8);r.smallCount=small.length;
 
-<script>window.addEventListener("load",function(){setTimeout(function(){
-var R={};
-var cb=document.querySelector(".cart-bar");
-R.found=!!cb;R.hiddenAttr=cb.hidden;R.cls=cb.className;
-cb.classList.add("show");
-R.afterCls=getComputedStyle(cb).display;
-R.rectTop=Math.round(cb.getBoundingClientRect().top);
-R.stackBefore=getComputedStyle(document.documentElement).getPropertyValue("--bar-stack");
-setTimeout(function(){
-R.stackAfterObs=getComputedStyle(document.documentElement).getPropertyValue("--bar-stack");
-window.dispatchEvent(new Event("resize"));
-setTimeout(function(){
-R.stackAfterResize=getComputedStyle(document.documentElement).getPropertyValue("--bar-stack");
-document.title="RESULT"+JSON.stringify(R);},500);},800);},1500);});</script>
+/* --- iOS zoom guard on text-entry controls --- */
+var tiny=[];
+document.querySelectorAll("input,select,textarea").forEach(function(e){
+  var s=cs(e);if(s.display==="none")return;
+  var t=(e.type||"").toLowerCase();
+  if(t==="checkbox"||t==="radio"||t==="hidden"||t==="button"||t==="submit")return;
+  if(parseFloat(s.fontSize)<16)tiny.push((e.id||e.name||t)+"="+s.fontSize);});
+r.zoomRisk=tiny;
+
+/* --- overflow --- */
+r.scrollW=document.documentElement.scrollWidth;
+r.overflowX=document.documentElement.scrollWidth>innerWidth?"OVERFLOW "+document.documentElement.scrollWidth+">"+innerWidth:"none";
+
+/* --- bottom bar stack --- */
+r.stack=getComputedStyle(document.documentElement).getPropertyValue("--bar-stack");
+r.bodyPadB=getComputedStyle(document.body).paddingBottom;
+r.bars=[];
+document.querySelectorAll(".bottom-nav,.cart-bar,.co-bar").forEach(function(b){
+  var s=cs(b);if(s.display==="none"||!b.offsetHeight)return;
+  var bb=b.getBoundingClientRect();
+  r.bars.push({c:b.className.split(" ")[0],top:Math.round(bb.top),bottom:Math.round(bb.bottom),z:s.zIndex});});
+r.barOverlap=[];
+for(var i=1;i<r.bars.length;i++){if(r.bars[i].top<r.bars[i-1].bottom-0.5)r.barOverlap.push(r.bars[i-1].c+" x "+r.bars[i].c);}
+r.footerClears=(function(){
+  var f=document.querySelector(".site-footer");if(!f)return "no-footer";
+  var lb=f.lastElementChild.getBoundingClientRect();
+  var top=Math.min.apply(null,r.bars.map(function(b){return b.top;}).concat([1e9]));
+  return lb.bottom<=top+0.5?"YES":"NO by "+Math.round(lb.top)+"vs"+Math.round(top);})();
+r.errs=window.__errs.slice(0,4);
+document.title="RESULT"+JSON.stringify(r);
+},1800);});
+</script>
 </body>
 </html>
