@@ -6277,6 +6277,7 @@ body.has-topbar .site-header { top: 0; }
 .wl-close {
   width: 34px;
   height: 34px;
+  flex: none;
   display: grid;
   place-items: center;
   border-radius: 50%;
@@ -6287,6 +6288,16 @@ body.has-topbar .site-header { top: 0; }
   line-height: 1;
   cursor: pointer;
   transition: background 0.2s ease, transform 0.2s var(--ease);
+}
+
+/* 34x34 is a comfortable mouse target but undersized for a thumb, and this
+   button is the only way out of a full-screen panel on a phone. */
+@media (max-width: 760px) {
+  .wl-close {
+    width: 44px;
+    height: 44px;
+    font-size: 1.35rem;
+  }
 }
 
 .wl-close:hover { background: var(--primary-light); transform: rotate(90deg); }
