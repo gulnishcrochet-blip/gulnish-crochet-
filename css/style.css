@@ -3180,13 +3180,20 @@ html.js .reveal.revealed {
     pointer-events: auto;
   }
 
+  /* The drawer below replaces the inline nav on phones, so the hamburger has
+     to come back. These were display:none !important, which also outranked the
+     fixed-drawer rules further down and left the whole menu unreachable. */
   .nav-toggle {
-    display: none !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
   }
 
-  .main-nav,
-  .nav-overlay {
-    display: none !important;
+  .nav-toggle .nav-toggle__bars,
+  .nav-toggle .nav-toggle__bars::before,
+  .nav-toggle .nav-toggle__bars::after {
+    background: currentColor;
   }
 
   .header-inner {

@@ -48,7 +48,7 @@ function buildCart() {
     "              </div>\n" +
     '              <button class="btn co-place" type="button" id="cpCheckout">Proceed to Checkout &rarr;</button>\n' +
     '              <a class="btn btn--ghost cart-page__wa" id="cpWa" href="#" target="_blank" rel="noopener">Order on WhatsApp</a>\n' +
-    '              <p class="cart-note co-trust">Free to place now &mdash; pay on delivery or as arranged on WhatsApp.</p>\n' +
+    '              <p class="cart-note co-trust">Pay in advance &mdash; we confirm payment and delivery details on WhatsApp before we start stitching.</p>\n' +
     "            </div>\n" +
     "          </aside>\n" +
     "        </div>\n\n" +
