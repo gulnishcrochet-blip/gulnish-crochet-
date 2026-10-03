@@ -6819,8 +6819,10 @@ body.has-topbar .site-header { top: 0; }
 
   .search-panel__input {
     /* Already past 16px, but pin it so a future edit cannot reintroduce the
-       iOS zoom-on-focus the storefront guard exists to prevent. */
+       iOS zoom-on-focus the storefront guard exists to prevent. The bare input
+       also measured only 20px tall, which is a thin target for a thumb. */
     font-size: 16px;
+    min-height: 44px;
   }
 
   .search-panel__results {
