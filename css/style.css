@@ -5061,7 +5061,7 @@ body.has-topbar .site-header { top: 0; }
   color: var(--muted);
 }
 
-@media (max-width: 980px) {
+@media (max-width: 760px) {
   .nav-mega__heading {
     display: block;
   }
