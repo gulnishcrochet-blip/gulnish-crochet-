@@ -627,17 +627,22 @@ document.title="RESULT"+JSON.stringify(r);
 </script>
 
 <script>window.addEventListener("load",function(){setTimeout(function(){
+var R={};
+try{
 document.querySelector(".cart-bar").classList.add("show");
-setTimeout(function(){
+R.step="added show";
+setTimeout(function(){try{
 var cs=function(e){return getComputedStyle(e);};
 var bn=document.querySelector(".bottom-nav"),cb=document.querySelector(".cart-bar");
 var a=bn.getBoundingClientRect(),b=cb.getBoundingClientRect();
-var r={barStack:getComputedStyle(document.documentElement).getPropertyValue("--bar-stack"),
-bodyPadB:cs(document.body).paddingBottom,navTop:Math.round(a.top),cartTop:Math.round(b.top),
-stack=Math.max(Math.round(innerHeight-a.top),Math.round(innerHeight-b.top)),
-pillBottom:Math.round(document.querySelector(".fb-group").getBoundingClientRect().bottom),
-footLast:Math.round(document.querySelector(".site-footer").lastElementChild.getBoundingClientRect().bottom),
-docH:Math.round(document.body.scrollHeight),maxScroll:Math.round(document.body.scrollHeight-innerHeight)};
-document.title="RESULT"+JSON.stringify(r);},800);},1500);});</script>
+R.barStack=getComputedStyle(document.documentElement).getPropertyValue("--bar-stack");
+R.bodyPadB=cs(document.body).paddingBottom;
+R.navTop=Math.round(a.top);R.cartTop=Math.round(b.top);
+R.pillBottom=Math.round(document.querySelector(".fb-group").getBoundingClientRect().bottom);
+R.footLast=Math.round(document.querySelector(".site-footer").lastElementChild.getBoundingClientRect().bottom);
+R.maxScroll=Math.round(document.body.scrollHeight-innerHeight);
+document.title="RESULT"+JSON.stringify(R);}catch(e2){R.e2=String(e2);document.title="RESULT"+JSON.stringify(R);}},800);
+}catch(e){R.e1=String(e);document.title="RESULT"+JSON.stringify(R);}
+},1500);});</script>
 </body>
 </html>
