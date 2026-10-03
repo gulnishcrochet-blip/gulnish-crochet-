@@ -1370,70 +1370,6 @@ body.has-topbar { scroll-padding-top: 132px; }
   flex: none;
 }
 
-/* ============ TESTIMONIALS ============ */
-.testimonials {
-  background: var(--bg-warm);
-}
-
-.testimonial-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1.4rem;
-}
-
-.testimonial {
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 1.5rem;
-  box-shadow: var(--shadow-sm);
-}
-
-.testimonial__stars {
-  color: var(--gold-ink);
-  letter-spacing: 0.18em;
-  font-size: 1.05rem;
-}
-
-.testimonial__quote {
-  font-size: 0.96rem;
-  color: var(--ink);
-  line-height: 1.7;
-  flex: 1;
-}
-
-.testimonial__footer {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-}
-
-.testimonial__avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  color: #fff;
-  background: linear-gradient(135deg, var(--gold), var(--primary));
-  font-size: 1rem;
-}
-
-.testimonial__name {
-  font-weight: 700;
-  font-size: 0.95rem;
-}
-
-.testimonial__role {
-  font-size: 0.8rem;
-  color: var(--muted);
-}
-
 /* ============ FOOTER ============ */
 .site-footer {
   background: linear-gradient(160deg, #2C241D, #201A15);
@@ -3160,10 +3096,6 @@ html.js .reveal.revealed {
 
   .category-grid {
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  }
-
-  .testimonial-grid {
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
   }
 }
 
@@ -5541,70 +5473,6 @@ body.has-topbar .site-header { top: 0; }
 @media (max-width: 520px) {
 }
 
-/* ============ FAQ ============ */
-.faq {
-  max-width: 780px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
-}
-
-.faq-item {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease;
-}
-
-.faq-item[open] {
-  border-color: var(--primary-light);
-  box-shadow: var(--shadow-sm);
-}
-
-.faq-q {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 1rem 1.2rem;
-  font-family: var(--font-body);
-  font-size: 0.98rem;
-  font-weight: 700;
-  color: var(--ink);
-  cursor: pointer;
-  list-style: none;
-  transition: background 0.2s ease, color 0.2s ease;
-}
-
-.faq-q::-webkit-details-marker { display: none; }
-.faq-q:hover { background: var(--bg-soft); color: var(--primary-deep); }
-
-.faq-q::after {
-  content: "";
-  flex: none;
-  width: 11px;
-  height: 11px;
-  border-right: 2px solid var(--primary);
-  border-bottom: 2px solid var(--primary);
-  transform: rotate(45deg) translate(-2px, -2px);
-  transition: transform 0.28s var(--ease);
-}
-
-.faq-item[open] .faq-q::after { transform: rotate(-135deg) translate(-2px, -2px); }
-
-.faq-a {
-  padding: 0 1.2rem 1.1rem;
-  font-size: 0.92rem;
-  color: var(--muted);
-  line-height: 1.7;
-}
-
-.faq-a a { color: var(--primary-deep); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
-.faq-a ul { list-style: disc; padding-left: 1.1rem; margin-top: 0.5rem; }
-.faq-a li { margin-top: 0.3rem; }
-
 
 @media (max-width: 560px) {
 }
@@ -6251,23 +6119,6 @@ body.has-topbar .site-header { top: 0; }
 .trust-chip strong { display: block; color: var(--ink); font-size: 0.84rem; }
 
 @media (max-width: 620px) { .trust-row { grid-template-columns: 1fr; } }
-
-/* ============ REVIEWS SUMMARY (product page) ============ */
-.rating-row {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  font-size: 0.82rem;
-  color: var(--muted);
-}
-
-.rating-row__stars { color: var(--gold); letter-spacing: 0.06em; }
-
-.rating-row__count {
-  border-bottom: 1px dotted currentColor;
-  cursor: pointer;
-}
-.rating-row__count:hover { color: var(--primary-deep); }
 
 /* =========================================================
    MOBILE REFINEMENTS
