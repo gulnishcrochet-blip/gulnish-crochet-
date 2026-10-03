@@ -626,23 +626,20 @@ document.title="RESULT"+JSON.stringify(r);
 },900);});
 </script>
 
-<script>window.addEventListener("load",function(){setTimeout(function(){
+<script>window.__e=[];window.addEventListener("error",function(ev){window.__e.push(ev.message+" @"+(ev.lineno||"?"))});
+window.addEventListener("load",function(){setTimeout(function(){try{
 var c=document.querySelector(".cart-bar");
-if(c){c.removeAttribute("hidden");c.classList.add("show");}
-window.scrollTo(0,document.body.scrollHeight);
-setTimeout(function(){
-var r={},cs=function(e){return getComputedStyle(e);};
-r.barStack=getComputedStyle(document.documentElement).getPropertyValue("--bar-stack");
-r.bodyPadB=cs(document.body).paddingBottom;
+if(c){c.classList.add("show");}
 var bn=document.querySelector(".bottom-nav"),cb=document.querySelector(".cart-bar");
 var a=bn.getBoundingClientRect(),b=cb.getBoundingClientRect();
-r.navBox=Math.round(a.top)+".."+Math.round(a.bottom);
-r.cartBox=Math.round(b.top)+".."+Math.round(b.bottom);
-r.overlap=(b.top<=a.bottom-0.5&&b.bottom>=a.top)?"OVERLAP":"ok";
-r.gap=Math.round(a.top-b.bottom);
-var last=document.querySelector(".site-footer").lastElementChild.getBoundingClientRect();
-r.footerClear=last.bottom<=b.top+0.5?"YES":"NO by "+Math.round(last.bottom-b.top)+"px";
-r.pillClear=document.querySelector(".fb-group").getBoundingClientRect().bottom<=b.top+0.5?"YES":"NO";
-document.title="RESULT"+JSON.stringify(r);},700);},1500);});</script>
+var r={barStack:getComputedStyle(document.documentElement).getPropertyValue("--bar-stack"),
+bodyPadB:getComputedStyle(document.body).paddingBottom,
+navBox:Math.round(a.top)+".."+Math.round(a.bottom),cartBox:Math.round(b.top)+".."+Math.round(b.bottom),
+cartDisp:getComputedStyle(cb).display,
+overlap:(b.top<=a.bottom-0.5&&b.bottom>=a.top)?"OVERLAP":"ok",
+lastFoot:Math.round(document.querySelector(".site-footer").lastElementChild.getBoundingClientRect().bottom),
+pillBottom:Math.round(document.querySelector(".fb-group").getBoundingClientRect().bottom),errs:window.__e};
+document.title="RESULT"+JSON.stringify(r);
+}catch(err){document.title="RESULT"+JSON.stringify({err:String(err),e:window.__e});}},1500);});</script>
 </body>
 </html>
