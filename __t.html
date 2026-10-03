@@ -595,22 +595,21 @@
 window.addEventListener("load",function(){setTimeout(function(){
 var r={},cs=function(e){return e?getComputedStyle(e):null;};
 var nav=document.getElementById("mainNav"),ov=document.querySelector(".nav-overlay");
-r.innerH=window.innerHeight; r.innerW=window.innerWidth;
-r.clientH=document.documentElement.clientHeight;
+r.inner=innerWidth+"x"+innerHeight;
 r.navH=cs(nav).height;
-var bb=nav.getBoundingClientRect(); r.navRect=Math.round(bb.top)+".."+Math.round(bb.bottom);
-r.dvhSupported=CSS.supports("height","100dvh");
+var bb=nav.getBoundingClientRect(); r.navRect=Math.round(bb.left)+".."+Math.round(bb.right)+" w="+Math.round(bb.width);
+r.toggle=cs(document.getElementById("navToggle")).display;
 nav.classList.add("open"); ov.classList.add("open");
 var small=[];
-nav.querySelectorAll("a").forEach(function(a){
-  var b=a.getBoundingClientRect();
-  if(b.width===0) return;
-  if(b.height<44) small.push((a.textContent.trim().slice(0,22)||a.className)+"="+Math.round(b.height));
-});
+nav.querySelectorAll("a").forEach(function(a){var b=a.getBoundingClientRect();if(b.width>0&&b.height<44)small.push((a.textContent.trim().slice(0,20)||"?")+"="+Math.round(b.height));});
 r.smallTargets=small;
-r.navScrollable=nav.scrollHeight>nav.clientHeight?(nav.scrollHeight+"/"+nav.clientHeight):"fits";
-r.megaVisible=!!(document.querySelector(".nav-mega")&&document.querySelector(".nav-mega").offsetHeight>0);
-r.overflowX=document.documentElement.scrollWidth>window.innerWidth?document.documentElement.scrollWidth+">"+window.innerWidth:"none";
+r.links=nav.querySelectorAll("a").length;
+r.megaH=document.querySelector(".nav-mega")?document.querySelector(".nav-mega").offsetHeight:0;
+r.docScrollW=document.documentElement.scrollWidth;
+r.overflowX=document.documentElement.scrollWidth>innerWidth?document.documentElement.scrollWidth+">"+innerWidth:"none";
+var worst=[];document.querySelectorAll("body *").forEach(function(e){var b=e.getBoundingClientRect();if(b.width>0&&b.right>innerWidth+1&&cs(e).position!=="fixed"&&!e.closest(".nav-mega"))worst.push(e.tagName+"."+String(e.className).slice(0,30)+" right="+Math.round(b.right));});
+r.bleed=worst.slice(0,6);
+r.bodyPadB=cs(document.body).paddingBottom;
 document.title="RESULT"+JSON.stringify(r);
 },700);});
 </script>
