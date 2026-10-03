@@ -769,9 +769,9 @@
       return bootPromise;
     },
 
-    /* Direct table access for features that are not part of the catalogue
-       model (js/newsletter.js). Kept off the catalogue methods on purpose:
-       those are all about products/settings/orders. */
+    /* Direct table access for features outside the catalogue model. Kept off
+       the catalogue methods on purpose: those are all about
+       products/settings/orders. */
     table: function (name) {
       return sb && configured ? sb.from(name) : null;
     },
