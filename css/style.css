@@ -6718,10 +6718,9 @@ body.has-topbar .site-header { top: 0; }
    .bottom-nav is fixed and 60px tall, and on checkout a .co-bar is fixed at
    bottom:0 as well, but the body only reserved 72px. The footer's last line
    sat underneath the nav, and the co-bar (higher z-index) covered the nav
-   outright. Reserve whatever stack is actually present, safe-area included. */
+   outright. --bar-stack is measured by script.js from whichever bars are
+   actually visible; the declaration here is the pre-script fallback. */
 @media (max-width: 760px) {
-  /* One variable for the stack height, so nav / cart-bar / co-bar and the
-     body reserve can never drift apart again. Defaults to the nav alone. */
   :root {
     --bar-stack: calc(60px + env(safe-area-inset-bottom, 0px));
   }
@@ -6732,13 +6731,8 @@ body.has-topbar .site-header { top: 0; }
     display: none !important;
   }
 
+  body:has(.bottom-nav),
   body:has(.co-bar.show) {
-    --bar-stack: calc(
-      60px + env(safe-area-inset-bottom, 0px) + 0.7rem + 2.8rem
-    );
-  }
-
-  body:has(.bottom-nav) {
     padding-bottom: calc(var(--bar-stack) + 12px);
   }
 
