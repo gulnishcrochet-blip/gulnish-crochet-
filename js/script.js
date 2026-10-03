@@ -478,22 +478,11 @@
       (p.image ? image + altImage : photoPendingHTML()) +
       soldOut +
       "</div>";
-    /* The two card tools sit outside .work-card__media on purpose: the media
+    /* The card tool sits outside .work-card__media on purpose: the media
        is the click target for opening the product, so a button inside it
        would have to stopPropagation to stay clickable. */
-    var isSaved =
-      window.GulnishWishlist && window.GulnishWishlist.has
-        ? window.GulnishWishlist.has(p.id)
-        : false;
     var tools =
       '<div class="work-card__tools">' +
-      '<button type="button" class="card-tool card-tool--wish' + (isSaved ? " is-on" : "") +
-        '" data-wishlist-toggle data-id="' + escapeHtml(p.id) + '"' +
-        ' aria-pressed="' + (isSaved ? "true" : "false") + '"' +
-        ' aria-label="' + (isSaved ? "Remove from wishlist" : "Save to wishlist") + '">' +
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-      '<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>' +
-      "</button>" +
       '<button type="button" class="card-tool card-tool--qv" data-quick-view data-id="' +
         escapeHtml(p.id) + '" aria-label="Quick view of ' + escapeHtml(p.name) + '">Quick view</button>' +
       "</div>";
