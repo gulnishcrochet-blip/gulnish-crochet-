@@ -44,8 +44,8 @@
         <div class="admin-login-card">
           <h2>Admin access</h2>
           <p>Sign in to manage the shop. Use the admin user you created in your Supabase dashboard (Authentication &rarr; Users &rarr; Add user).</p>
-          <input type="email" id="adminLoginEmail" placeholder="Admin email" autocomplete="username">
-          <input type="password" id="adminLoginPassword" placeholder="Password" autocomplete="current-password">
+          <input type="email" id="adminLoginEmail" aria-label="Admin email" placeholder="Admin email" autocomplete="username">
+          <input type="password" id="adminLoginPassword" aria-label="Password" placeholder="Password" autocomplete="current-password">
           <p class="admin-login-err" id="adminLoginErr" hidden>Sign in failed. Check your email and password.</p>
           <div class="admin-login-actions">
             <button class="btn" type="button" id="adminLoginBtn">Sign in</button>
@@ -181,7 +181,7 @@
 
         <div class="admin-field">
           <span>Photo</span>
-          <input type="file" id="pImage" accept="image/*">
+          <input type="file" id="pImage" aria-label="Product image" accept="image/*">
           <div class="admin-img-pre">
             <img id="pImagePreview" alt="" hidden>
             <button class="btn btn--small" type="button" id="pImageClear" hidden>Remove photo</button>
@@ -196,7 +196,7 @@
 
         <div class="admin-field">
           <span>Extra photos <small>(optional — paste a storage or full URL per line; shows thumbnails / lightbox on the product page)</small></span>
-          <textarea id="pGallery" rows="2" placeholder="https://.../in-hand.webp&#10;https://.../detail.webp"></textarea>
+          <textarea id="pGallery" aria-label="Gallery image URLs" rows="2" placeholder="https://.../in-hand.webp&#10;https://.../detail.webp"></textarea>
         </div>
 
         <div class="admin-actions">
@@ -218,9 +218,9 @@
         <div class="admin-order-toolbar">
           <div class="admin-order-search">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" id="orderSearchInput" placeholder="Search by ID, name, phone, city...">
+            <input type="text" id="orderSearchInput" aria-label="Search orders" placeholder="Search by ID, name, phone, city...">
           </div>
-          <select id="orderStatusFilter" class="select">
+          <select id="orderStatusFilter" class="select" aria-label="Filter orders by status">
             <option value="">All statuses</option>
             <option value="Pending">Pending</option>
             <option value="Confirmed">Confirmed</option>
@@ -235,7 +235,7 @@
         <div class="admin-bulk-actions" id="bulkActions">
           <label class="admin-select-all"><input type="checkbox" id="selectAllOrders"> Select all</label>
           <span class="bulk-count">0 selected</span>
-          <select id="bulkStatusSelect" class="select">
+          <select id="bulkStatusSelect" class="select" aria-label="Set status for selected orders">
             <option value="Pending">Pending</option>
             <option value="Confirmed">Confirmed</option>
             <option value="Processing">Processing</option>
