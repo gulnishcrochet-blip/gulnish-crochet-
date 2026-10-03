@@ -3271,13 +3271,18 @@ html.js .reveal.revealed {
     height: 100dvh;
     width: min(330px, 86vw);
     background: var(--bg);
-    z-index: 170;
-    padding: 5rem 1.6rem 1.6rem;
+z-index: 170;
+    /* Top inset keeps the heading clear of the notch; the bottom inset and the
+       extra padding keep the last link above the home-indicator bar. */
+    padding: calc(4.4rem + env(safe-area-inset-top, 0px)) 1.6rem
+      calc(1.6rem + env(safe-area-inset-bottom, 0px));
     box-shadow: -20px 0 50px rgba(40, 28, 18, 0.18);
     transform: translateX(102%);
     visibility: hidden;
     transition: transform 0.36s var(--ease), visibility 0s linear 0.36s;
     overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
     border-left: 1px solid var(--line);
   }
 
