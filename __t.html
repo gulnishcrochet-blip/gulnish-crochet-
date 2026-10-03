@@ -676,5 +676,17 @@ setTimeout(function(){
 },500);
 },1800);});
 </script>
+
+<script>window.addEventListener("load",function(){setTimeout(function(){
+var r={},cs=function(e){return getComputedStyle(e);};
+r.headerH=Math.round(document.querySelector(".site-header").getBoundingClientRect().height);
+r.viewportH=innerHeight;
+var m=document.querySelector(".nav-mega");
+r.megaPos=m?cs(m).position:"none";r.megaH=m?m.offsetHeight:0;
+var ul=document.querySelector(".main-nav ul");
+r.navUlH=Math.round(ul.getBoundingClientRect().height);
+r.navUlW=Math.round(ul.getBoundingClientRect().width);
+r.docW=document.documentElement.scrollWidth+"/"+innerWidth;
+document.title="RESULT"+JSON.stringify(r);},3200);});</script>
 </body>
 </html>
