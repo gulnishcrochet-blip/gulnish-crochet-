@@ -79,22 +79,62 @@
   var navHeader = document.querySelector(".site-header");
   if (navHeader) navHeader.appendChild(navOverlay);
 
+  /* The close control is styled in CSS but shipped in no markup, so on phones
+     the drawer could only be dismissed by tapping the scrim or the toggle
+     itself. Inject it once here so every page gets it. */
+  if (mainNav && !mainNav.querySelector(".nav-close")) {
+    var navClose = document.createElement("button");
+    navClose.type = "button";
+    navClose.className = "nav-close";
+    navClose.setAttribute("aria-label", "Close menu");
+    navClose.innerHTML =
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+    mainNav.insertBefore(navClose, mainNav.firstChild);
+  }
+
+  var navScrollbarPad = 0;
+
+  function lockScroll() {
+    /* Hiding the body scrollbar lets the page underneath widen by its width,
+       which reads as a visible jump the moment the drawer slides in. Pad the
+       body by the same amount first so nothing shifts. */
+    var gap = window.innerWidth - document.documentElement.clientWidth;
+    if (gap > 0) {
+      navScrollbarPad = gap;
+      document.body.style.paddingRight = gap + "px";
+    }
+    document.body.style.overflow = "hidden";
+  }
+
+  function unlockScroll() {
+    document.body.style.overflow = "";
+    document.body.style.paddingRight = "";
+    navScrollbarPad = 0;
+  }
+
   function closeMobileNav() {
     if (!mainNav) return;
     if (navToggle) navToggle.setAttribute("aria-expanded", "false");
     mainNav.classList.remove("open");
     navOverlay.classList.remove("open");
-    document.body.style.overflow = "";
+    unlockScroll();
+    /* Return focus to the button that opened the drawer, otherwise the next
+       Tab press lands back inside the now-collapsed menu. */
+    if (navToggle && navToggle.offsetParent !== null) navToggle.focus();
   }
 
   function openMobileNav() {
     mainNav.classList.add("open");
     navOverlay.classList.add("open");
     if (navToggle) navToggle.setAttribute("aria-expanded", "true");
-    document.body.style.overflow = "hidden";
+    lockScroll();
+    var firstLink = mainNav.querySelector("a");
+    if (firstLink) firstLink.focus();
   }
 
   if (navToggle && mainNav) {
+    var navCloseBtn = mainNav.querySelector(".nav-close");
+
     navToggle.addEventListener("click", function () {
       if (mainNav.classList.contains("open")) {
         closeMobileNav();
@@ -102,12 +142,39 @@
         openMobileNav();
       }
     });
+    if (navCloseBtn) navCloseBtn.addEventListener("click", closeMobileNav);
     navOverlay.addEventListener("click", closeMobileNav);
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape") closeMobileNav();
+      /* Keep Tab inside the drawer while it is open. The scrim and the rest of
+         the page are still in the tab order, so without this the focus ring
+         walks off into invisible controls behind the overlay. */
+      if (e.key === "Tab" && mainNav.classList.contains("open")) {
+        var focusables = mainNav.querySelectorAll(
+          'a[href], button:not([disabled])'
+        );
+        if (!focusables.length) return;
+        var first = focusables[0];
+        var last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     });
     mainNav.querySelectorAll("a").forEach(function (link) {
       link.addEventListener("click", closeMobileNav);
+    });
+
+    /* Rotating the phone or returning to a resized window can leave the drawer
+       open against a layout that no longer hides it. Reset in that case. */
+    window.addEventListener("resize", function () {
+      if (window.innerWidth > 760 && mainNav.classList.contains("open")) {
+        closeMobileNav();
+      }
     });
   }
 
