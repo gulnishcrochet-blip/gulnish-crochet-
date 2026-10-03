@@ -1,6 +1,7 @@
-<!doctype html><meta charset=utf-8><style>html,body{margin:0}iframe{width:390px;height:844px;border:0;display:block}</style>
+<!doctype html><meta charset=utf-8><style>html,body{margin:0;background:#333}
+iframe{width:390px;height:844px;border:0;display:block}</style>
 <iframe id=f src=/__t.html></iframe>
 <script>
-var f=document.getElementById("f");
-f.onload=function(){setTimeout(function(){document.title="RESULT"+f.contentDocument.title.replace("RESULT","");},1400);};
+document.getElementById("f").onload=function(){setTimeout(function(){
+document.title="RESULT"+document.getElementById("f").contentDocument.title.replace("RESULT","");},1600);};
 </script>

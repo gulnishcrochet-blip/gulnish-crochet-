@@ -594,24 +594,37 @@
 <script>
 window.addEventListener("load",function(){setTimeout(function(){
 var r={},cs=function(e){return e?getComputedStyle(e):null;};
-var nav=document.getElementById("mainNav"),ov=document.querySelector(".nav-overlay");
+function vis(sel){var e=document.querySelector(sel);if(!e)return null;
+  var s=cs(e),b=e.getBoundingClientRect();
+  return {disp:s.display,pos:s.position,z:s.z,bottom:Math.round(b.bottom),h:Math.round(b.height),w:Math.round(b.width)};}
 r.inner=innerWidth+"x"+innerHeight;
-r.navH=cs(nav).height;
-var bb=nav.getBoundingClientRect(); r.navRect=Math.round(bb.left)+".."+Math.round(bb.right)+" w="+Math.round(bb.width);
-r.toggle=cs(document.getElementById("navToggle")).display;
-nav.classList.add("open"); ov.classList.add("open");
-var small=[];
-nav.querySelectorAll("a").forEach(function(a){var b=a.getBoundingClientRect();if(b.width>0&&b.height<44)small.push((a.textContent.trim().slice(0,20)||"?")+"="+Math.round(b.height));});
-r.smallTargets=small;
-r.links=nav.querySelectorAll("a").length;
-r.megaH=document.querySelector(".nav-mega")?document.querySelector(".nav-mega").offsetHeight:0;
-r.docScrollW=document.documentElement.scrollWidth;
-r.overflowX=document.documentElement.scrollWidth>innerWidth?document.documentElement.scrollWidth+">"+innerWidth:"none";
-var worst=[];document.querySelectorAll("body *").forEach(function(e){var b=e.getBoundingClientRect();if(b.width>0&&b.right>innerWidth+1&&cs(e).position!=="fixed"&&!e.closest(".nav-mega"))worst.push(e.tagName+"."+String(e.className).slice(0,30)+" right="+Math.round(b.right));});
-r.bleed=worst.slice(0,6);
+r.bottomNav=vis(".bottom-nav");
+r.cartBar=vis(".cart-bar");
+r.coBar=vis(".co-bar");
 r.bodyPadB=cs(document.body).paddingBottom;
+r.footerPadB=cs(document.querySelector(".site-footer")||document.body).paddingBottom;
+r.scrollW=document.documentElement.scrollWidth;
+r.overflowX=document.documentElement.scrollWidth>innerWidth?"OVERFLOW "+document.documentElement.scrollWidth+">"+innerWidth:"none";
+/* does any visible fixed bar cover the bottom nav? */
+var bn=document.querySelector(".bottom-nav"),bars=[];
+document.querySelectorAll(".cart-bar,.co-bar").forEach(function(b){
+  var s=cs(b);if(s.display!=="none"&&b.offsetHeight>0)bars.push({cls:b.className,z:s.zIndex,bottom:Math.round(b.getBoundingClientRect().bottom)});});
+r.visibleBarsAboveNav=bars;
+r.navOccluded=bars.filter(function(b){return b.bottom>=(bn?bn.getBoundingClientRect().bottom-2:1e9);}).map(function(b){return b.cls;});
+var small=[];
+document.querySelectorAll("a,button,input,select,textarea").forEach(function(e){
+  var s=cs(e);if(s.display==="none"||s.visibility==="hidden")return;
+  var b=e.getBoundingClientRect();if(b.width===0||b.height===0)return;
+  if(b.height<40)small.push((e.tagName+"."+String(e.className).slice(0,24)).slice(0,46)+"="+Math.round(b.height));});
+r.under40=small.slice(0,12);
+r.smallCount=small.length;
+var fi=[];document.querySelectorAll("input,select,textarea").forEach(function(e){
+  var s=cs(e);if(s.display==="none")return;if(parseFloat(s.fontSize)<16)fi.push((e.name||e.id||e.type)+"="+s.fontSize);});
+r.inputsUnder16=fi;
+r.errors=window.__errs||[];
 document.title="RESULT"+JSON.stringify(r);
-},700);});
+},900);});
 </script>
+
 </body>
 </html>
