@@ -5595,7 +5595,7 @@ body.has-topbar .site-header { top: 0; }
   line-height: 1.6;
 }
 
-@media (max-width: 900px) { .process { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 900px) { }
 @media (max-width: 520px) {
   .process { grid-template-columns: 1fr; }
   .process-step { padding: 1.2rem 1.1rem; }
