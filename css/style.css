@@ -1027,6 +1027,12 @@ body.has-topbar { scroll-padding-top: 132px; }
   box-shadow: 0 0 0 3px rgba(188, 106, 69, 0.14);
 }
 
+/* The box had padding but the field inside it did not, so the control you
+   actually click measured 19px tall on desktop. */
+.search-box input {
+  min-height: 44px;
+}
+
 .search-box input {
   flex: 1;
   border: none;
