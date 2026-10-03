@@ -677,21 +677,19 @@ setTimeout(function(){
 },1800);});
 </script>
 
-<script>function walk(rules,out,media){for(var i=0;i<rules.length;i++){var r=rules[i];
- if(r.type===4){walk(r.cssRules,out,r.conditionText);continue;}
- if(!r.selectorText)continue;
- if(r.selectorText.indexOf("nav-mega")>=0&&r.selectorText.indexOf("is-open")>=0)
-   out.push({sel:r.selectorText,media:media||"-",css:r.style.cssText.slice(0,90)});}}
-window.addEventListener("load",function(){setTimeout(function(){
-var r={},out=[];
-try{
-for(var s=0;s<document.styleSheets.length;s++){try{walk(document.styleSheets[s].cssRules,out,null);}catch(e){r.err="sheet"+s+":"+e.message;}}
-r.rules=out;
+<script>window.addEventListener("load",function(){setTimeout(function(){
+var r={};
 var li=document.querySelector(".main-nav li.nav-item");
+var m=document.querySelector(".nav-mega");
+r.before=getComputedStyle(m).opacity+"/"+getComputedStyle(m).visibility;
 li.classList.add("is-open");
-r.liClass=li.className;
-r.megaMatches=document.querySelector(".nav-mega").matches(".main-nav li.nav-item.is-open .nav-mega");
-}catch(e){r.ex=String(e);}
-document.title="RESULT"+JSON.stringify(r);},3200);});</script>
+r.t0=getComputedStyle(m).opacity+"/"+getComputedStyle(m).visibility;
+setTimeout(function(){
+r.t500=getComputedStyle(m).opacity+"/"+getComputedStyle(m).visibility;
+r.isOpen=li.classList.contains("is-open");
+var cs=getComputedStyle(m);
+r.opacity=cs.opacity;r.visibility=cs.visibility;r.transition=cs.transition;
+r.inlineStyle=m.getAttribute("style");
+document.title="RESULT"+JSON.stringify(r);},500);},3200);});</script>
 </body>
 </html>
