@@ -678,16 +678,22 @@ setTimeout(function(){
 </script>
 
 <script>window.addEventListener("load",function(){setTimeout(function(){
-var r={},cs=function(e){return getComputedStyle(e);};
+var r={};
 r.headerH=Math.round(document.querySelector(".site-header").getBoundingClientRect().height);
-var m=document.querySelector(".nav-mega");
-r.megaPos=m?cs(m).position:"none";r.megaH=m?m.offsetHeight:0;
-r.docW=document.documentElement.scrollWidth+"/"+innerWidth;
-r.overflow=document.documentElement.scrollWidth>innerWidth?"OVERFLOW":"none";
-r.hit=[];document.querySelectorAll(".header-actions .icon-btn,.header-actions .cart-btn").forEach(function(b){
- var a=getComputedStyle(b,"::after");
- var w=parseFloat(a.width);
- r.hit.push(String(e)||Math.round(w)+"x"+Math.round(parseFloat(a.height)));});
+r.hitTest=[];
+document.querySelectorAll(".header-actions .icon-btn,.header-actions .cart-btn").forEach(function(b){
+  var c=b.getBoundingClientRect(),cx=c.left+c.width/2,cy=c.top+c.height/2;
+  var far=21; /* just outside the 38px box, inside the 44px hit area */
+  var pts={};
+  ["right","left","top","bottom"].forEach(function(d){
+    var x=cx,y=cy;
+    if(d==="right")x=cx+far; if(d==="left")x=cx-far;
+    if(d==="top")y=cy-far; if(d==="bottom")y=cy+far;
+    var el=document.elementFromPoint(Math.round(x),Math.round(y));
+    pts[d]=el?(el===b||b.contains(el)?"hit":"other:"+(el.className||el.tagName)):"null";
+  });
+  r.hitTest.push({cls:b.className.split(" ")[0],box:Math.round(c.width)+"x"+Math.round(c.height),pts:pts});
+});
 document.title="RESULT"+JSON.stringify(r);},3200);});</script>
 </body>
 </html>
