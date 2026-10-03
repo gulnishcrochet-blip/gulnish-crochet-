@@ -807,7 +807,7 @@ body.has-topbar { scroll-padding-top: 132px; }
   .photo-pending { padding: 0.7rem; gap: 0.4rem; }
   .photo-pending__mark { width: 28px; height: 28px; }
   .photo-pending__mark svg { width: 15px; height: 15px; }
-  .photo-pending__text { font-size: 0.64rem; line-height: 1.45; }
+  .photo-pending__text { font-size: 0.75rem; line-height: 1.45; }
 }
 
 .work-card__badge {
@@ -5388,7 +5388,7 @@ body.has-topbar .site-header { top: 0; }
   .collage__panel--d { min-height: 150px; }
   .collage__body { padding: 0.9rem 0.95rem; }
   .collage__text { display: none; }
-  .collage__chip { top: 0.6rem; left: 0.6rem; font-size: 0.64rem; padding: 0.3rem 0.6rem; }
+  .collage__chip { top: 0.6rem; left: 0.6rem; font-size: 0.75rem; padding: 0.3rem 0.6rem; }
 }
 
 /* ============ VALUE / TRUST STRIP ============ */
