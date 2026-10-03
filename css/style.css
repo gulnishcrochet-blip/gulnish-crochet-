@@ -16,6 +16,14 @@
   --primary-deep: #9E4F30;
   --primary-light: #F1DACB;
   --gold: #C29A5B;
+
+  /* Text-safe variants. --primary-deep and --gold are fine on white but fall
+     under WCAG AA (4.5:1) on the tinted cream panels they are used on:
+     --primary-deep scored 4.32:1 on #F1DACB and --gold only 2.60:1 on white,
+     which made the testimonial stars almost invisible. These keep the hue for
+     decorative fills and clear the bar wherever the colour carries words. */
+  --primary-ink: #964C2E;
+  --gold-ink: #8E6A2E;
   --gold-deep: #A87E2C;
   --gold-light: #EAD9B6;
   --sage: #7C946F;
@@ -256,7 +264,7 @@ em {
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--primary-deep);
+  color: var(--primary-ink);
 }
 
 .section-eyebrow::before,
@@ -1389,7 +1397,7 @@ body.has-topbar { scroll-padding-top: 132px; }
 }
 
 .testimonial__stars {
-  color: var(--gold);
+  color: var(--gold-ink);
   letter-spacing: 0.18em;
   font-size: 1.05rem;
 }
@@ -4192,7 +4200,7 @@ p.about-text {
   font-family: var(--font-head);
   font-size: 1.05rem;
   font-weight: 700;
-  color: var(--primary-deep);
+  color: var(--primary-ink);
   background: var(--primary-light);
   border-radius: 12px;
 }
