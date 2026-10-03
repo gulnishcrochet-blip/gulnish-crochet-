@@ -6582,7 +6582,10 @@ body.has-topbar .site-header { top: 0; }
   }
 
   .header-actions {
-    gap: 0.35rem;
+    /* Wide enough that two 44px hit boxes centred on 38px buttons cannot
+       overlap: 38 + 6.7 = 44.7. At 0.35rem the gap was 5.6px and the right
+       neighbour won the taps in the 1px where they met. */
+    gap: 0.42rem;
   }
 
   .icon-btn,
