@@ -6244,7 +6244,10 @@ body.has-topbar .site-header { top: 0; }
   right: 0;
   bottom: 0;
   z-index: 321;
-  width: min(400px, 100vw);
+  width: min(400px, 100%);
+  /* was 100vw, which includes the classic scrollbar and so made the panel
+     10px wider than the containing block; anchored right, it then overhung the
+     left edge of the viewport instead of sitting flush. */
   display: flex;
   flex-direction: column;
   background: var(--bg);
