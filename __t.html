@@ -592,66 +592,29 @@
 <script src="js/theme.js?v=252" defer></script>
 <script src="js/sw-register.js?v=252" defer></script>
 <style>*{transition:none !important;animation:none !important}</style>
-<script>
-window.__errs=[];
-window.addEventListener("error",function(e){window.__errs.push(String(e.message).slice(0,70))});
-function cs(e){return e?getComputedStyle(e):null;}
-function box(e){if(!e)return null;var b=e.getBoundingClientRect();
-  return {w:Math.round(b.width),h:Math.round(b.height),t:Math.round(b.top),l:Math.round(b.left),
-          r:Math.round(b.right),b:Math.round(b.bottom),disp:cs(e).display,ov:cs(e).overflowY};}
-function audit(name,openFn){
-  var r={};
-  try{
-    openFn();
-    var sels={cart:".cart-drawer",cartOv:".cart-overlay",search:".search-overlay,.search-modal,.search-panel",
-      wish:".wishlist-drawer,.wishlist-panel,.wishlist-overlay",light:".lightbox",quick:".quickview,.qv-modal,.quickview-modal"};
-    var found={};
-    Object.keys(sels).forEach(function(k){
-      var e=document.querySelector(sels[k]);
-      if(e&&box(e).w>0)found[k]=box(e);
-    });
-    r.surfaces=found;
-    /* is any part of an open surface outside the viewport? */
-    var bleed=[];
-    document.querySelectorAll(".cart-drawer,.cart-overlay,.lightbox,.quickview,.search-overlay,.wishlist-drawer,.toast,.fb-group").forEach(function(e){
-      var b=e.getBoundingClientRect(); if(!b.width||cs(e).display==="none")return;
-      if(b.right>innerWidth+1||b.left<-1||b.top<-1||b.bottom>innerHeight+1)
-        bleed.push(e.className.split(" ")[0]+"["+Math.round(b.left)+","+Math.round(b.top)+","+Math.round(b.right)+","+Math.round(b.bottom)+"]");
-    });
-    r.bleed=bleed;
-    /* interactive targets inside the open surface */
-    var small=[];
-    document.querySelectorAll(".cart-drawer,.lightbox,.quickview,.wishlist-drawer,.search-overlay button,.search-modal button,.cart-drawer button,.cart-drawer a,.cart-drawer input,.cart-drawer select").forEach(function(e){
-      var s=cs(e); if(s.display==="none"||s.visibility==="hidden")return;
-      var b=e.getBoundingClientRect(); if(!b.width||!b.height)return;
-      if(b.height<40||b.width<40)small.push((e.tagName+"."+String(e.className).slice(0,20)).slice(0,40)+" "+Math.round(b.width)+"x"+Math.round(b.height));
-    });
-    r.smallInSurface=small.slice(0,8);
-    /* text legibility inside the surface */
-    var tiny=[];
-    document.querySelectorAll(".cart-drawer,.lightbox,.quickview,.wishlist-drawer,.search-overlay,.search-modal").forEach(function(s){
-      var p=cs(s); if(p.display==="none")return;
-      s.querySelectorAll("*").forEach(function(e){
-        if(!e.textContent||!e.textContent.trim())return;
-        if(e.children.length)return;
-        var fs=parseFloat(cs(e).fontSize); if(fs&&fs<12)tiny.push(fs+"px:"+e.textContent.trim().slice(0,14));
-      });
-    });
-    r.tinyText=tiny.slice(0,6);
-    /* scroll containment */
-    r.bodyScrollLocked=document.body.style.overflow==="hidden"||document.documentElement.style.overflow==="hidden";
-  }catch(e){r.err=name+":"+String(e).slice(0,70);}
-  return r;
+<script>window.addEventListener("load",function(){setTimeout(function(){
+var r={},cs=function(e){return e?getComputedStyle(e):null;};
+r.hintDisp=cs(document.querySelector(".search-panel__hint")).display;
+r.footDisp=cs(document.querySelector(".search-panel__foot")).display;
+document.querySelector("[data-open-search]").click();
+setTimeout(function(){
+r.afterOpen_hint=cs(document.querySelector(".search-panel__hint")).display;
+r.afterOpen_foot=cs(document.querySelector(".search-panel__foot")).display;
+var cb=document.querySelector(".search-panel__close"),b=cb.getBoundingClientRect();
+r.closeBox=Math.round(b.width)+"x"+Math.round(b.height);
+r.inputBox=(function(){var i=document.querySelector(".search-panel__input").getBoundingClientRect();return Math.round(i.width)+"x"+Math.round(i.height);})();
+document.dispatchEvent(new KeyboardEvent("keydown",{key:"Escape",bubbles:true}));
+/* wishlist */
+document.querySelector("[data-open-wishlist]").click();
+setTimeout(function(){
+var pn=document.querySelector(".wl-panel"),ov=document.querySelector(".wl-overlay");
+r.wlPanel=pn?(getComputedStyle(pn).display+" "+Math.round(pn.getBoundingClientRect().width)+"x"+Math.round(pn.getBoundingClientRect().height)+" @"+Math.round(pn.getBoundingClientRect().top)):"MISSING";
+r.wlOverlay=ov?(getComputedStyle(ov).display+" vis="+getComputedStyle(ov).visibility):"MISSING";
+r.wlOpen=pn?pn.classList.contains("is-open"):null;
+if(pn&&pn.getBoundingClientRect().height){
+  var sm=[];pn.querySelectorAll("button,a").forEach(function(e){var b=e.getBoundingClientRect();if(b.height&&(b.height<40||b.width<40))sm.push(e.className.slice(0,18)+" "+Math.round(b.width)+"x"+Math.round(b.height));});
+  r.wlSmall=sm.slice(0,5);
 }
-window.addEventListener("load",function(){setTimeout(function(){
-var out={};
-out.cart=audit("cart",function(){var b=document.getElementById("cartToggle")||document.querySelector("[data-open-cart]");if(b)b.click();});
-document.querySelector(".cart-drawer__close,.cart-overlay")&&document.querySelector(".cart-drawer__close").click();
-out.search=audit("search",function(){var b=document.querySelector("[data-open-search]");if(b)b.click();});
-document.dispatchEvent(new KeyboardEvent("keydown",{key:"Escape",bubbles:true}));
-out.wish=audit("wish",function(){var b=document.querySelector("[data-open-wishlist]");if(b)b.click();});
-document.dispatchEvent(new KeyboardEvent("keydown",{key:"Escape",bubbles:true}));
-document.title="RESULT"+JSON.stringify(out);},2600);});
-</script>
+document.title="RESULT"+JSON.stringify(r);},500);},400);},2500);});</script>
 </body>
 </html>
