@@ -3461,6 +3461,9 @@ html.js .reveal.revealed {
 
   .cart-bar {
     position: fixed;
+    /* The safe-area inset is already baked into the nav's own height, which
+       the offset below adds to. Counting it again in the padding as well grew
+       the bar by a whole inset and floated it off the top of the nav. */
     bottom: calc(60px + env(safe-area-inset-bottom, 0px));
     left: 0;
     right: 0;
@@ -3470,7 +3473,7 @@ html.js .reveal.revealed {
     gap: 0.8rem;
     background: var(--ink);
     color: #F8EAD8;
-    padding: 0.7rem 1.2rem calc(0.7rem + env(safe-area-inset-bottom, 0px));
+    padding: 0.7rem 1.2rem;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
     transform: translateY(0);
     transition: transform 0.3s var(--ease), display 0s;
