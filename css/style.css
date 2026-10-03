@@ -3354,10 +3354,37 @@ html.js .reveal.revealed {
     transform: translateY(-50%);
   }
 
-  /* The desktop mega-menu cannot follow into the phone drawer: its links are
-     already stacked, and a hover panel has no way to be dismissed. */
+  /* The mega-menu keeps its categories inside the drawer as an always-expanded
+     single column (the <=980px block below already turns the flyout into a
+     static list). Hiding it outright would strip the drawer of every product
+     category, so it is restyled instead: indented, and sized for thumbs. */
   .main-nav .nav-mega {
-    display: none !important;
+    padding: 0.3rem 0 0.4rem 0.75rem;
+    margin: 0.1rem 0 0.3rem 0.55rem;
+    border-left-color: var(--line-strong);
+  }
+
+  .main-nav .nav-mega__label {
+    min-height: 44px;
+    font-size: 0.92rem;
+    padding: 0.5rem 0.7rem;
+  }
+
+  .main-nav .nav-mega__subs a {
+    min-height: 44px;
+    font-size: 0.9rem;
+    padding: 0.55rem 0.7rem;
+  }
+
+  .main-nav .nav-mega__all {
+    min-height: 44px;
+    font-size: 0.9rem;
+  }
+
+  /* Nothing to expand now that the panel is inline, so the caret would only
+     promise an interaction that no longer exists. */
+  .main-nav .nav-caret {
+    display: none;
   }
 
   .nav-close {
