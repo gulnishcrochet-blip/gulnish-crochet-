@@ -331,20 +331,21 @@
 <script>
 function lum(c){var m=c.match(/[\d.]+/g);if(!m)return null;var v=m.slice(0,3).map(Number).map(function(x){x/=255;return x<=0.03928?x/12.92:Math.pow((x+0.055)/1.055,2.4)});return 0.2126*v[0]+0.7152*v[1]+0.0722*v[2];}
 function parse(s){var m=s.match(/[\d.]+/g);return m?m.slice(0,3).map(Number):null;}
-function bgOf(el){var n=el;while(n&&n!==document.documentElement){var cs=getComputedStyle(n);if(cs.backgroundImage&&cs.backgroundImage!=="none")return "GRADIENT";
+function bgOf(el){var n=el;while(n&&n!==document.documentElement){var cs=getComputedStyle(n);if(cs.backgroundImage&&cs.backgroundImage!=="none")return "G";
  var b=cs.backgroundColor,p=parse(b);if(p&&(p[0]>0||p[1]>0||p[2]>0)){var a=(b.match(/[\d.]+/g)||[])[3];if(a===undefined||parseFloat(a)>0.85)return p;}n=n.parentElement;}return [255,255,255];}
 window.addEventListener("load",function(){setTimeout(function(){
 var res=[];
 document.querySelectorAll("body *").forEach(function(el){
   if(el.children.length)return;var t=(el.textContent||"").trim();if(!t)return;
   var cs=getComputedStyle(el);if(cs.display==="none"||cs.visibility==="hidden")return;
-  var bg=bgOf(el);if(bg==="GRADIENT")return;
+  var bg=bgOf(el);if(bg==="G")return;
   var L1=lum(cs.color),L2=lum("rgb("+bg.join(",")+")");if(L1===null)return;
   var r=(Math.max(L1,L2)+0.05)/(Math.min(L1,L2)+0.05);
-  if(r>=2)return;
-  var chain=[],n=el;while(n&&n!==document.documentElement&&chain.length<3){chain.push(n.tagName+"."+String(n.className).slice(0,18)+" bgc="+getComputedStyle(n).backgroundColor);n=n.parentElement;}
-  res.push({t:t.slice(0,26),cls:String(el.className).slice(0,22),color:cs.color,r:r.toFixed(2),fs:parseFloat(cs.fontSize).toFixed(1),chain:chain});});
-parent.postMessage({p:"__L__",r:res.slice(0,6)},"*");},2400)});
+  var fs=parseFloat(cs.fontSize),fw=parseInt(cs.fontWeight)||400;
+  var need=((fs>=24)||(fs>=18.66&&fw>=700))?3:4.5;
+  if(r>=need)return;
+  res.push({t:t.slice(0,22),cls:String(el.className).slice(0,26),color:cs.color,bg:"rgb("+bg.join(",")+")",r:+r.toFixed(2),need:need,fs:+fs.toFixed(1)});});
+parent.postMessage({p:"__C__",r:res},"*");},2400)});
 </script>
 </body>
 </html>
