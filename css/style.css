@@ -3362,6 +3362,7 @@ html.js .reveal.revealed {
     top: calc(1.1rem + env(safe-area-inset-top, 0px));
     right: 1.2rem;
     z-index: 1;
+    display: inline-flex;
   }
 
   .bottom-nav {
