@@ -6615,6 +6615,30 @@ body.has-topbar .site-header { top: 0; }
   }
 }
 
+/* The round header controls shrink on narrow screens to keep the bar on one
+   line, which left them at 38-40px: under the 44px touch floor. Growing the
+   button back would re-introduce the overflow these rules exist to prevent, so
+   the painted circle stays small and an invisible layer extends the tappable
+   area instead. At a 0.35rem gap the 44px boxes are 45.6px apart, so adjacent
+   controls cannot steal each other's taps. */
+@media (max-width: 420px) {
+  .icon-btn,
+  .cart-btn {
+    position: relative;
+  }
+
+  .icon-btn::after,
+  .cart-btn::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, 44px);
+    height: max(100%, 44px);
+    transform: translate(-50%, -50%);
+  }
+}
+
 /* --- 2. Homepage category grid overflowed on a phone ---------------
    Measured at 390px: two 168px tracks plus a 22px gap came to 386px
    against a 351px container, so the right-hand column ran off screen.
