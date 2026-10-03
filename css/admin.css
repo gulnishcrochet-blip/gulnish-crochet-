@@ -1103,3 +1103,11 @@ h1, h2, h3 {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+/* Helper text inside form fields had no rule of its own, so the user-agent
+   default for <small> ("smaller", roughly 0.83em) computed to 10.7px against a
+   13px label - below the 12px floor everything else on the site holds. */
+.admin-field small {
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
