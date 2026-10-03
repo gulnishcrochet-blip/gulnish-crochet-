@@ -591,11 +591,47 @@
 <script src="js/newsletter.js?v=235" defer></script>
 <script src="js/theme.js?v=235" defer></script>
 <script src="js/sw-register.js?v=235" defer></script>
-<script>window.addEventListener("load",function(){setTimeout(function(){
-var n=document.getElementById("mainNav");
-var o=document.querySelector(".nav-overlay");
-if(n){n.classList.add("open");}
-if(o){o.classList.add("open");}
-},400);});</script>
+<script>
+function cs(el){return el?getComputedStyle(el):null;}
+window.addEventListener("load",function(){setTimeout(function(){
+var out={};
+var toggle=document.getElementById("navToggle");
+var nav=document.getElementById("mainNav");
+var overlay=document.querySelector(".nav-overlay");
+var bn=document.querySelector(".bottom-nav");
+var r={};
+r.toggleExists=!!toggle;
+r.toggleDisplay=cs(toggle).display;
+r.toggleBox=toggle?toggle.getBoundingClientRect().width+"x"+Math.round(toggle.getBoundingClientRect().height):null;
+r.navDisplay=cs(nav).display;
+r.navPos=cs(nav).position;
+r.overlayDisplay=cs(overlay).display;
+r.overlayZ=cs(overlay).zIndex;
+r.navZ=cs(nav).zIndex;
+r.navHeight=cs(nav).height;
+r.navPaddingTop=cs(nav).paddingTop;
+r.navPaddingBottom=cs(nav).paddingBottom;
+r.navOverflowY=cs(nav).overflowY;
+// drawer closed state
+r.navTransform=cs(nav).transform;
+r.navVis=cs(nav).visibility;
+// open it
+nav.classList.add("open"); overlay.classList.add("open");
+r.openTransform=cs(nav).transform;
+r.openVis=cs(nav).visibility;
+r.links=[];
+nav.querySelectorAll("a").forEach(function(a){
+  var bb=a.getBoundingClientRect();
+  r.links.push(a.textContent.trim()+"|"+Math.round(bb.width)+"x"+Math.round(bb.height));
+});
+r.bodyPadBottom=cs(document.body).paddingBottom;
+r.bottomNavHeight=cs(bn).height;
+r.bottomNavFont=cs(bn.querySelector(".bottom-nav__item span")).fontSize;
+r.bottomNavItemH=Math.round(bn.querySelector(".bottom-nav__item").getBoundingClientRect().height);
+r.mainNavItemsCount=bn.querySelectorAll(".bottom-nav__item").length;
+r.horizontalOverflow=document.documentElement.scrollWidth>window.innerWidth?document.documentElement.scrollWidth+" > "+window.innerWidth:"none";
+document.title="RESULT"+JSON.stringify(r);
+},600);});
+</script>
 </body>
 </html>
