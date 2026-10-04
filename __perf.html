@@ -12,11 +12,13 @@ document.getElementById("a").addEventListener("load",function(){
     L.push("=== DESKTOP HOVER IMAGE ===");
     L.push("viewport: "+d.documentElement.clientWidth+"px (hover-capable: "+
            w.matchMedia("(hover: hover)").matches+")");
-    var card=d.querySelector("[data-category]");
+    var card=[].slice.call(d.querySelectorAll("[data-category]")).filter(function(c){
+      return c.querySelector("img.work-card__main"); })[0];
+    if(!card){ L.push("no card with an image found"); finish(); return; }
     var main=card.querySelector("img.work-card__main");
     var alt=card.querySelector("img.work-card__alt");
     L.push("main hydrated on load: "+(!!main.getAttribute("src")?"yes":"NO  <-- BUG"));
-    L.push("alt parked before hover: "+(alt.getAttribute("src")?"NO - already loaded":"yes (good)"));
+    L.push("alt parked before hover: "+(alt?(alt.getAttribute("src")?"NO - already loaded":"yes (good)"):"no alt image on this card"));
     // simulate a real pointer entering the card
     var ev=new w.MouseEvent("mouseover",{bubbles:true});
     alt.dispatchEvent(ev);
