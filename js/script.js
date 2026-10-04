@@ -77,7 +77,8 @@
     if ((" " + photoDirs + " ").indexOf(" " + parts[parts.length - 2] + " ") < 0) return "";
     var small = parts.slice(0, parts.length - 1);
     small.push("sm", parts[parts.length - 1]);
-    var ss = small.join("/") + " 480w, " + src + " 800w";
+    small = small.join("/");
+    var ss = small + " " + imageWidth(small) + "w, " + src + " " + imageWidth(src) + "w";
     var sz = sizes || "(max-width: 760px) 44vw, 250px";
     return deferred
       ? ' data-srcset="' + ss + '" data-sizes="' + sz + '"'
