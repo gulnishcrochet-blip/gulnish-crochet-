@@ -3127,7 +3127,6 @@ html.js .reveal.revealed {
     transform: none;
     will-change: auto;
     background: rgba(251, 247, 241, 0.97);
-    padding-top: env(safe-area-inset-top, 0px);
   }
 
   a,
