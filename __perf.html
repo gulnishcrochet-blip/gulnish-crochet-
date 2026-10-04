@@ -1,48 +1,42 @@
 <!DOCTYPE html>
 <html><head><meta charset="utf-8"><title>hover path</title></head>
 <body>
-<pre id="out">running</pre>
+<pre id="out">seeding...</pre>
 <script>
 var KEY="gulnish-products-v53";
-var f1=document.createElement("iframe");
-f1.style.cssText="width:1190px;height:900px;border:0";
-f1.src="products.html";
-f1.onload=function(){
-  var w=this.contentWindow;
-  try{
-    var list=JSON.parse(w.localStorage.getItem(KEY)||"[]");
-    if(list.length && list[0].image){
-      list[0].gallery=[list[0].image.replace(/\.webp$/,"-2.webp")];
-      w.localStorage.setItem(KEY,JSON.stringify(list));
-      document.getElementById("out").textContent="seeded gallery on product 0: "+list[0].gallery[0]+
-        "\n(expected file exists: "+ "checking")+"\nreloading...";
-      // reload with the seeded data
-      setTimeout(function(){
-        var f2=document.createElement("iframe");
-        f2.style.cssText="width:1190px;height:900px;border:0";
-        f2.src="products.html";
-        f2.onload=function(){
-          var d=this.contentDocument, w2=this.contentWindow, L=[];
-          setTimeout(function(){
-            var alt=d.querySelector("img.work-card__alt");
-            L.push("hover-capable: "+w2.matchMedia("(hover: hover)").matches);
-            L.push("alt image rendered: "+(alt?"yes":"no"));
-            if(alt){
-              L.push("alt parked before hover: "+(alt.getAttribute("src")?"NO - loaded eagerly":"yes (good)"));
-              L.push("alt has data-src: "+(alt.getAttribute("data-src")||"NO  <-- BUG"));
-              alt.dispatchEvent(new w2.MouseEvent("mouseover",{bubbles:true}));
-              setTimeout(function(){
-                L.push("alt src after mouseover: "+(alt.getAttribute("src")||"STILL EMPTY  <-- BUG"));
-                L.push("data-src cleaned up: "+(alt.hasAttribute("data-src")?"NO  <-- BUG":"yes (good)"));
-                document.getElementById("out").textContent=L.join("\n");
-              },500);
-            } else document.getElementById("out").textContent=L.join("\n");
-          },6000);
-        };
-        document.body.appendChild(f2);
-      },300);
-    } else document.getElementById("out").textContent="could not seed (no products in storage)";
-  }catch(e){ document.getElementById("out").textContent="error: "+e; }
-};
-document.body.appendChild(f1);
+var list;
+try{ list=JSON.parse(localStorage.getItem(KEY)||"[]"); }catch(e){ list=[]; }
+if(!list.length){ document.getElementById("out").textContent="no products in localStorage yet"; }
+else if(!list[0].image){ document.getElementById("out").textContent="product 0 has no image"; }
+else{
+  // point the gallery at a file that really exists
+  var img=list[0].image;                      // e.g. images/purses/purse-1.webp
+  var alt=img.replace(/\.webp$/,"-2.webp");
+  list[0].gallery=[alt];
+  localStorage.setItem(KEY,JSON.stringify(list));
+  var f=document.createElement("iframe");
+  f.style.cssText="width:1190px;height:900px;border:0";
+  f.src="products.html";
+  f.onload=function(){
+    var d=this.contentDocument,w=this.contentWindow,L=[];
+    L.push("seeded gallery: "+alt);
+    setTimeout(function(){
+      var el=d.querySelector("img.work-card__alt");
+      L.push("hover-capable: "+w.matchMedia("(hover: hover)").matches);
+      L.push("alt image in DOM: "+(el?"yes":"no  (feature dormant unless gallery set)"));
+      if(el){
+        L.push("parked before hover: "+(el.getAttribute("src")?"NO - eager  <-- BUG":"yes (good)"));
+        L.push("data-src present: "+(el.getAttribute("data-src")||"NO  <-- BUG"));
+        el.dispatchEvent(new w.MouseEvent("mouseover",{bubbles:true}));
+        setTimeout(function(){
+          L.push("src after mouseover: "+(el.getAttribute("src")||"STILL EMPTY  <-- BUG"));
+          L.push("data-src cleaned: "+(el.hasAttribute("data-src")?"NO  <-- BUG":"yes (good)"));
+          L.push("alt srcset: "+el.getAttribute("srcset"));
+          document.getElementById("out").textContent=L.join("\n");
+        },600);
+      } else document.getElementById("out").textContent=L.join("\n");
+    },7000);
+  };
+  document.body.appendChild(f);
+}
 </script></body></html>
