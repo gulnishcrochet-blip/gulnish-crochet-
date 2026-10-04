@@ -489,7 +489,7 @@
     var imgSrc = displayImage(p.image);
     var isFirst = typeof index === "number" && index === 0;
     var image = imgSrc
-      ? '<img class="work-card__main" data-src="' + imgSrc + '"' + imgSrcset(p.image, true) +
+      ? '<img class="work-card__main" data-src="' + imgSrc + '"' + imgSrcset(p.image, null, true) +
         ' alt="' + escapeHtml(p.name) + '"' +
         (isFirst ? ' fetchpriority="high" decoding="async"' : ' loading="lazy" decoding="async"') + ">"
       : "";
