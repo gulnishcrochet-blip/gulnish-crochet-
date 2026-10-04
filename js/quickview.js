@@ -128,7 +128,26 @@
 
     closeBtn.addEventListener('click', close);
     modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && isOpen()) close(); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && isOpen()) { close(); return; }
+      /* Keep Tab inside the dialog. The scrim and the page behind are still in
+         the tab order, so without this the focus ring walks off into controls
+         the modal is covering. Matches the cart drawer and mobile nav. */
+      if (e.key !== 'Tab' || !isOpen()) return;
+      var focusables = modal.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+      if (!focusables.length) return;
+      var first = focusables[0];
+      var last = focusables[focusables.length - 1];
+      if (e.shiftKey && (document.activeElement === first || !modal.contains(document.activeElement))) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && (document.activeElement === last || !modal.contains(document.activeElement))) {
+        e.preventDefault();
+        first.focus();
+      }
+    });
 
     addBtn.addEventListener('click', function () {
       if (!current) return;
