@@ -1,30 +1,33 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"></head><body>
 <pre id="out">x</pre>
 <script>
-var widths=[320,360,390],L=[],i=0;
+var pages=["index","products","about","contact","cart","checkout","track","privacy","terms","refund"];
+var L=[],i=0;
 function next(){
- if(i>=widths.length){document.getElementById("out").textContent=L.join("\n");return;}
- var px=widths[i++];
+ if(i>=pages.length){document.getElementById("out").textContent=L.join("\n");return;}
+ var p=pages[i++];
  var f=document.createElement("iframe");
- f.style.cssText="width:"+px+"px;height:900px;border:0";f.src="index.html";
+ f.style.cssText="width:390px;height:844px;border:0";f.src=p+".html";
  f.onload=function(){
   setTimeout(function(){
    var d=this.contentDocument,w=this.contentWindow;
    var ftr=d.querySelector(".site-footer");
+   if(!ftr){L.push(p.padEnd(10)+"NO FOOTER");f.remove();next();return;}
    var cols=[].slice.call(ftr.querySelectorAll(".footer-col"));
-   var wrapped=[].slice.call(ftr.querySelectorAll(".footer-links a,.footer-shoplist a")).filter(function(a){
-     var r=d.createRange(); r.selectNodeContents(a);
-     return r.getBoundingClientRect().height>24;});
+   var contact=ftr.querySelector(".footer-col--contact");
+   var cs=w.getComputedStyle(contact);
    var over=[].slice.call(ftr.querySelectorAll("*")).filter(function(el){
      var b=el.getBoundingClientRect();
-     return b.width>0&&(b.right>px+1||b.left<-1);}).length;
-   L.push(px+"px: footerH="+Math.round(ftr.getBoundingClientRect().height)+
-     "  ShopH="+Math.round(cols[0].getBoundingClientRect().height)+
-     "  HelpH="+Math.round(cols[1].getBoundingClientRect().height)+
-     "  wrapped="+wrapped.length+(wrapped.length?" ["+wrapped.map(function(a){return a.textContent.trim();}).join("; ")+"]":"")+
-     "  overflow="+over);
+     return b.width>0&&(b.right>391||b.left<-1);}).length;
+   var small=[].slice.call(ftr.querySelectorAll("a")).filter(function(a){
+     var b=a.getBoundingClientRect();
+     return b.width>0&&b.height>0&&b.height<44;}).length;
+   L.push(p.padEnd(10)+"footerH="+String(Math.round(ftr.getBoundingClientRect().height)).padStart(4)+
+     "  cols="+cols.length+
+     "  contactSpansFull="+(Math.round(contact.getBoundingClientRect().width)>300?"yes":"NO  <-- BUG")+
+     "  overflow="+over+"  smallTargets="+small);
    f.remove();next();
-  }.bind(this),5000);
+  }.bind(this),4500);
  };
  document.body.appendChild(f);
 }
