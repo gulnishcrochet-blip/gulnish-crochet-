@@ -2996,6 +2996,34 @@ html.js .reveal.revealed {
   }
 }
 
+/* Phones stack these sections end to end, so the desktop rhythm compounds:
+   3.6rem of padding above and below a heading plus 2.6rem under the heading
+   itself put roughly 100px of empty space between one block and the next.
+   Tightening the scale here keeps the sections legible as distinct without
+   pushing the product grid a screen further down. */
+@media (max-width: 760px) {
+  .section {
+    padding: 2.6rem 0;
+  }
+
+  .section-head {
+    margin-bottom: 1.7rem;
+  }
+
+  .section-title {
+    margin: 0.3rem 0 0.45rem;
+  }
+
+  .section-lead {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .site-footer {
+    margin-top: 2.4rem;
+  }
+}
+
 @media (max-width: 760px) {
   html {
     scroll-padding-top: 118px;
