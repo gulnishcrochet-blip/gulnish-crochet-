@@ -321,10 +321,20 @@
     try {
       var card = btnEl.closest('.work-card');
       var img = card ? card.querySelector('.work-card__media img') : null;
+      /* The header cart button is hidden on phones, where the bottom nav
+         carries the cart instead. Measuring a display:none element returns an
+         all-zero rect, which sent the ghost image flying to the top-left
+         corner, so pick whichever control is actually on screen. */
       var cartIcon = document.getElementById('cartToggle');
-      if (!img || !cartIcon || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var iconRect = cartIcon ? cartIcon.getBoundingClientRect() : null;
+      if (!iconRect || (!iconRect.width && !iconRect.height)) {
+        cartIcon = document.getElementById('bottomNavCart');
+        iconRect = cartIcon ? cartIcon.getBoundingClientRect() : null;
+      }
+      if (!img || !cartIcon || !iconRect || (!iconRect.width && !iconRect.height)) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       var r = img.getBoundingClientRect();
-      var c = cartIcon.getBoundingClientRect();
+      var c = iconRect;
       var clone = img.cloneNode(true);
       Object.assign(clone.style, {
         position: 'fixed',
