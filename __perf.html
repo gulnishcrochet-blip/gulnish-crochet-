@@ -39,6 +39,7 @@ document.getElementById("f").addEventListener("load",function(){
       L.push("=== QUICKVIEW ===");
       L.push("quickview trigger present: "+(qvBtn?"yes":"no"));
       if(!qvBtn){ step3(); return; }
+      qvBtn.focus();   /* a real tap focuses the button; .click() alone does not */
       qvBtn.click();
       setTimeout(function(){
         var modal=d.querySelector(".qv-modal.is-open");
