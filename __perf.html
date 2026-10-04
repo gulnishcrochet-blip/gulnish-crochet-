@@ -1,35 +1,45 @@
 <!DOCTYPE html>
-<html><head><meta charset="utf-8"><title>srcset probe</title></head>
+<html><head><meta charset="utf-8"><title>a11y probe</title></head>
 <body>
-<iframe id="f" src="products.html" style="width:390px;height:844px;border:0"></iframe>
+<iframe id="f" src="index.html" style="width:390px;height:844px;border:0"></iframe>
 <pre id="out">waiting</pre>
 <script>
 document.getElementById("f").addEventListener("load", function(){
   var w=this.contentWindow,d=this.contentDocument,L=[];
+  function who(){var e=d.activeElement;if(!e)return"none";
+    return (e.id||e.className||e.tagName)+(e.id?"":"");}
   setTimeout(function(){
-    // For each visible card, compare the srcset against the real file widths.
-    var probe=["bouquet-1.webp","purse-1.webp","bag-1.webp","keychain-1.webp","bag-3.webp"];
-    var out=[];
-    probe.forEach(function(name){
-      var im=d.querySelector('img[srcset*="'+name+'"]') ||
-             d.querySelector('img[data-srcset*="'+name+'"]');
-      if(!im){ out.push(name+": (no card in view)"); return; }
-      var ss=im.getAttribute("srcset")||im.getAttribute("data-srcset")||"";
-      var sizes=im.getAttribute("sizes")||im.getAttribute("data-sizes")||"";
-      out.push(name+"\n    srcset: "+ss+"\n    sizes:  "+sizes);
-    });
-    // Count any srcset entry that points at a missing file (a 404 waiting to happen)
-    var all=0,bad=0;
-    [].slice.call(d.querySelectorAll("img")).forEach(function(im){
-      var ss=im.getAttribute("srcset")||im.getAttribute("data-srcset")||"";
-      if(!ss) return; all++;
-      var d2=ss.split(",").map(function(p){return p.trim().split(" ")[0];});
-      if(d2.some(function(u){return u.indexOf("images/sm/")===0 && u.indexOf("og-")===0;})) bad++;
-    });
-    L=out.concat(["","imgs with a srcset: "+all+"  suspicious: "+bad,
-      "browser-picked currentSrc of first visible main img:",
-      "    "+(d.querySelector(".work-card__main[src]")||{currentSrc:"none"}).currentSrc]);
-    document.getElementById("out").textContent=L.join("\n");
-  },5000);
+    // seed the cart so the drawer has content
+    w.localStorage.setItem("gulnish-cart",JSON.stringify([
+      {id:"p1",name:"Purse",price:450,color:"Cream",image:"",qty:1}]));
+    d.dispatchEvent(new w.Event("storage"));
+    var btn=d.getElementById("bottomNavCart");
+    L.push("bottomNavCart present: "+(btn?"yes":"NO"));
+    L.push("aria-expanded before: "+btn.getAttribute("aria-expanded"));
+    L.push("focus before click: "+who());
+    btn.click();
+    // check immediately (same task) and after frames
+    setTimeout(function(){
+      L.push("focus immediately after click: "+who()+"   <-- old code stopped here");
+      requestAnimationFrame(function(){requestAnimationFrame(function(){
+        L.push("focus after double rAF: "+who());
+        L.push("aria-expanded after: "+btn.getAttribute("aria-expanded"));
+        L.push("drawer aria-hidden: "+d.getElementById("cartDrawer").getAttribute("aria-hidden"));
+        L.push("active element is inside drawer: "+
+          (d.getElementById("cartDrawer").contains(d.activeElement)?"yes":"NO <-- BUG"));
+        // Escape closes and returns focus
+        d.dispatchEvent(new w.KeyboardEvent("keydown",{key:"Escape",bubbles:true}));
+        setTimeout(function(){
+          L.push("");
+          L.push("after Escape -> drawer open: "+d.getElementById("cartDrawer").classList.contains("open"));
+          L.push("after Escape -> aria-expanded: "+btn.getAttribute("aria-expanded"));
+          L.push("after Escape -> focus returned to: "+who()+
+            (d.activeElement===btn?" (correct)":" <-- check"));
+          L.push("body overflow restored: "+(d.body.style.overflow===""?"yes":"NO <-- BUG"));
+          document.getElementById("out").textContent=L.join("\n");
+        },500);
+      });});
+    },50);
+  },4000);
 });
 </script></body></html>
