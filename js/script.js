@@ -29,7 +29,37 @@
     return parts.join("/");
   }
 
-/* Builds a srcset so the browser itself can choose the 480px tier.
+/* Real intrinsic widths for every catalogue photo that is not the usual
+     800w full / 480w sm twin. Measured off the files themselves - the
+     catalogue is genuinely mixed (600w bags, 597w purses, 1024w bouquets), so
+     one hardcoded pair lied to the browser on 20 of 132 files. Understating a
+     1024w file as 800w made Chrome pick the 480w twin on large screens and the
+     bouquet photos went soft; overstating the 597w purses made it fetch them
+     when it did not need to.
+     Regenerate after adding photos with:
+       python3 scripts/img-widths.py > /tmp/w.json  (then paste the object)
+     Anything not listed falls back to 800/480, which is correct for the
+     standard files. */
+  var IMAGE_WIDTHS = {
+    "images/bags/bag-1.webp": 600, "images/bags/bag-2.webp": 600,
+    "images/bags/bag-3.webp": 1024, "images/bags/bag-4.webp": 1024,
+    "images/bouquets/bouquet-1.webp": 1024, "images/bouquets/bouquet-2.webp": 1024,
+    "images/bouquets/bouquet-3.webp": 1024, "images/bouquets/bouquet-4.webp": 1024,
+    "images/bouquets/bouquet-5.webp": 1024, "images/bouquets/bouquet-6.webp": 1024,
+    "images/bouquets/bouquet-7.webp": 1024,
+    "images/jewellery/jewellery-1.webp": 600,
+    "images/keychains/keychain-1.webp": 600, "images/keychains/keychain-2.webp": 600,
+    "images/purses/purse-1.webp": 597, "images/purses/purse-2.webp": 597,
+    "images/purses/purse-3.webp": 597,
+    "images/purses/sm/purse-1.webp": 358, "images/purses/sm/purse-2.webp": 358,
+    "images/purses/sm/purse-3.webp": 358
+  };
+
+  function imageWidth(src) {
+    return IMAGE_WIDTHS[src] || (src.indexOf("/sm/") !== -1 ? 480 : 800);
+  }
+
+  /* Builds a srcset so the browser itself can choose the 480px tier.
      displayImage() above only helps browsers that expose
      navigator.connection (Chrome/Android); Safari and Firefox never get the
      small files, so a phone on wifi still downloads every 800px original.
