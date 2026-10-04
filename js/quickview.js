@@ -287,10 +287,19 @@
 
   function close() {
     if (!modal) return;
+    var wasOpen = modal.classList.contains('is-open');
     modal.classList.remove('is-open');
     modal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
     current = null;
+    /* Send focus back to the card that opened the dialog, otherwise a keyboard
+       user is dropped at the top of the document and the next Tab restarts
+       from the header. Guarded on wasOpen because close() is also reached from
+       the add-to-cart path, which must not steal focus. */
+    if (wasOpen && returnFocusTo && returnFocusTo.isConnected) {
+      try { returnFocusTo.focus({ preventScroll: true }); } catch (err) { returnFocusTo.focus(); }
+    }
+    returnFocusTo = null;
   }
 
   document.addEventListener('click', function (e) {
