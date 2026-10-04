@@ -766,6 +766,9 @@
        photoPending placeholder, so nothing silently disappears. */
     var items = getProducts().slice(0, 8);
     featuredGrid.innerHTML = items.map(cardHTML).join("");
+    /* The featured grid is never filtered, so applyFilters never runs over it
+       and nothing would promote its parked photos. */
+    Array.prototype.forEach.call(featuredGrid.querySelectorAll(".work-card"), hydrateCardImages);
     var featuredSection = featuredGrid.closest(".section") || featuredGrid.closest("section");
     if (featuredSection) featuredSection.hidden = !items.length;
   }
