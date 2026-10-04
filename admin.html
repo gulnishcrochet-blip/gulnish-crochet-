@@ -44,12 +44,17 @@
         <div class="admin-login-card">
           <h2>Admin access</h2>
           <p>Sign in to manage the shop. Use the admin user you created in your Supabase dashboard (Authentication &rarr; Users &rarr; Add user).</p>
-          <input type="email" id="adminLoginEmail" aria-label="Admin email" placeholder="Admin email" autocomplete="username">
-          <input type="password" id="adminLoginPassword" aria-label="Password" placeholder="Password" autocomplete="current-password">
+          <!-- A real form so browsers offer autofill and a password manager,
+               and so Enter submits instead of doing nothing. The button keeps
+               type="submit" and admin.js preventDefaults its own handler. -->
+          <form id="adminLoginForm" novalidate>
+          <input type="email" id="adminLoginEmail" name="email" aria-label="Admin email" placeholder="Admin email" autocomplete="username">
+          <input type="password" id="adminLoginPassword" name="password" aria-label="Password" placeholder="Password" autocomplete="current-password">
           <p class="admin-login-err" id="adminLoginErr" hidden>Sign in failed. Check your email and password.</p>
           <div class="admin-login-actions">
-            <button class="btn" type="button" id="adminLoginBtn">Sign in</button>
+            <button class="btn" type="submit" id="adminLoginBtn">Sign in</button>
           </div>
+          </form>
           <p class="admin-login-demo" id="adminDemoNote" hidden>No Supabase configured &mdash; running in local demo mode.</p>
         </div>
       </div>
