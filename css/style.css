@@ -313,6 +313,15 @@ em {
   transform: translateZ(0);
   will-change: transform;
   transition: box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+  /* The sticky header has to clear the notch on its own. When the announcement
+     bar is on screen it sits above the header and is the element actually
+     touching the top edge, so it takes the inset and the header drops it -
+     otherwise the inset gets counted twice and the header sits a notch too low. */
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+body.has-topbar .site-header {
+  padding-top: 0;
 }
 
 .site-header .header-inner {
