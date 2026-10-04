@@ -697,6 +697,9 @@
       var termMatch = !term || name.indexOf(term) !== -1;
       var show = inRange && categoryMatch && subMatch && termMatch;
       card.classList.toggle("is-hidden", !show);
+      /* Release the parked photo only once the card is actually shown, which
+         covers the first page, "Show more", and every filter change. */
+      if (show) hydrateCardImages(card);
       if (show) visible += 1;
     });
 
