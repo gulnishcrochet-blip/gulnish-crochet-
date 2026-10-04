@@ -1,83 +1,64 @@
 <!DOCTYPE html>
-<html><head><meta charset="utf-8"><title>dialog a11y regression</title></head>
+<html><head><meta charset="utf-8"><title>final perf</title></head>
 <body>
-<iframe id="f" src="products.html" style="width:390px;height:844px;border:0"></iframe>
-<pre id="out">waiting</pre>
+<pre id="out">running</pre>
 <script>
-document.getElementById("f").addEventListener("load",function(){
-  var w=this.contentWindow,d=this.contentDocument,L=[];
-  function who(){var e=d.activeElement;if(!e)return"none";
-    return e.id||String(e.className||"").split(" ")[0]||e.tagName;}
-  function finish(){document.getElementById("out").textContent=L.join("\n");}
-  setTimeout(function(){
-    // ---------- 1. MOBILE NAV ----------
-    var tog=d.getElementById("navToggle"), nav=d.getElementById("mainNav");
-    if(tog&&nav){
-      tog.click();
-      setTimeout(function(){
-        L.push("=== MOBILE NAV ===");
-        L.push("focus inside nav after open: "+(nav.contains(d.activeElement)?"YES (fixed)":"NO  <-- BROKEN"));
-        L.push("aria-expanded: "+tog.getAttribute("aria-expanded"));
-        // focus last element then Tab -> should wrap to first
-        var f=nav.querySelectorAll('a[href], button:not([disabled])');
-        f[f.length-1].focus();
-        var ev=new w.KeyboardEvent("keydown",{key:"Tab",bubbles:true,cancelable:true});
-        d.activeElement.dispatchEvent(ev);
-        L.push("Tab from last -> focus: "+who()+(nav.contains(d.activeElement)?" (trapped, correct)":"  <-- ESCAPED"));
-        d.dispatchEvent(new w.KeyboardEvent("keydown",{key:"Escape",bubbles:true}));
-        setTimeout(function(){
-          L.push("Escape -> focus back on toggle: "+(d.activeElement===tog?"YES":"NO")+", body overflow: "+(d.body.style.overflow===""?"restored":"STUCK"));
-          step2();
-        },300);
-      },80);
-    } else { L.push("navToggle/mainNav not found"); step2(); }
-
-    function step2(){
-      // ---------- 2. QUICKVIEW ----------
-      var qvBtn=d.querySelector("[data-quick-view]");
-      L.push("");
-      L.push("=== QUICKVIEW ===");
-      L.push("quickview trigger present: "+(qvBtn?"yes":"no"));
-      if(!qvBtn){ step3(); return; }
-      qvBtn.focus();   /* a real tap focuses the button; .click() alone does not */
-      qvBtn.click();
-      setTimeout(function(){
-        var modal=d.querySelector(".qv-modal.is-open");
-        L.push("modal open: "+(modal?"yes":"NO  <-- BROKEN"));
-        if(!modal){ step3(); return; }
-        var closeBtn=modal.querySelector(".qv-close");
-        L.push("focus inside modal after open: "+(modal.contains(d.activeElement)?"YES (fixed)":"NO  <-- BROKEN"));
-        L.push("focused element: "+who());
-        var f=modal.querySelectorAll('a[href], button:not([disabled]), input:not([disabled])');
-        L.push("focusable count in modal: "+f.length);
-        f[f.length-1].focus();
-        d.activeElement.dispatchEvent(new w.KeyboardEvent("keydown",{key:"Tab",bubbles:true,cancelable:true}));
-        L.push("Tab from last -> "+who()+(modal.contains(d.activeElement)?" (trapped, correct)":"  <-- ESCAPED"));
-        d.dispatchEvent(new w.KeyboardEvent("keydown",{key:"Escape",bubbles:true}));
-        setTimeout(function(){
-          L.push("Escape -> focus back on trigger: "+(d.activeElement===qvBtn?"YES":"NO ("+who()+")"));
-          L.push("modal closed: "+(d.querySelector(".qv-modal.is-open")?"NO  <-- BROKEN":"yes"));
-          L.push("body overflow: "+(d.body.style.overflow===""?"restored":"STUCK"));
-          step3();
-        },300);
-      },150);
-    }
-
-    function step3(){
-      // ---------- 3. CART ----------
-      L.push("");
-      L.push("=== CART ===");
-      var c=d.getElementById("bottomNavCart"), drawer=d.getElementById("cartDrawer");
-      c.click();
-      setTimeout(function(){
-        L.push("focus inside drawer after open: "+(drawer.contains(d.activeElement)?"YES (fixed)":"NO  <-- BROKEN")+"  -> "+who());
-        d.dispatchEvent(new w.KeyboardEvent("keydown",{key:"Escape",bubbles:true}));
-        setTimeout(function(){
-          L.push("Escape -> focus back on trigger: "+(d.activeElement===c?"YES":"NO ("+who()+")"));
-          finish();
-        },300);
-      },80);
-    }
-  },4500);
-});
+var pages=["index.html","products.html","about.html","contact.html","cart.html","checkout.html","track.html"];
+var results=[],i=0;
+function next(){
+  if(i>=pages.length){ report(); return; }
+  var p=pages[i++];
+  var f=document.createElement("iframe");
+  f.style.cssText="width:390px;height:844px;border:0";
+  f.src=p;
+  f.onload=function(){
+    setTimeout(function(){
+      try{ results.push(measure(p,f.contentWindow)); }
+      catch(e){ results.push({page:p,error:String(e)}); }
+      f.remove(); next();
+    },6000);
+  };
+  document.body.appendChild(f);
+}
+function measure(p,w){
+  var nav=w.performance.getEntriesByType("navigation")[0]||{};
+  var rs=w.performance.getEntriesByType("resource");
+  var fcp=0,lcp=0,cls=0;
+  w.performance.getEntriesByType("paint").forEach(function(e){ if(e.name==="first-contentful-paint") fcp=Math.round(e.startTime); });
+  try{
+    var le=w.performance.getEntriesByType("largest-contentful-paint");
+    if(le.length) lcp=Math.round(le[le.length-1].startTime);
+  }catch(e){}
+  var lt=w.performance.getEntriesByType("longtask")||[];
+  return {
+    page:p,
+    fcp:fcp, lcp:lcp||null,
+    dcl:Math.round(nav.domContentLoadedEventEnd||0),
+    load:Math.round(nav.loadEventEnd||0),
+    reqs:rs.length+1,
+    imgReqs:rs.filter(function(r){return r.initiatorType==="img";}).length,
+    imgKB:Math.round(rs.filter(function(r){return r.initiatorType==="img";})
+              .reduce(function(a,r){return a+(r.transferSize||0);},0)/1024),
+    totalKB:Math.round(rs.reduce(function(a,r){return a+(r.transferSize||0);},0)/1024),
+    longtasks:lt.length
+  };
+}
+function report(){
+  var out="page          FCP    LCP    DCL   load  reqs imgReqs  imgKB  totalKB longtask\n";
+  out+="-".repeat(83)+"\n";
+  results.forEach(function(r){
+    if(r.error){ out+=r.page+"  ERROR "+r.error+"\n"; return; }
+    out+=r.page.padEnd(13)+String(r.fcp).padStart(5)+" "+
+      String(r.lcp==null?"n/a":r.lcp).padStart(5)+" "+
+      String(r.dcl).padStart(5)+" "+
+      String(r.load).padStart(6)+" "+
+      String(r.reqs).padStart(5)+" "+
+      String(r.imgReqs).padStart(7)+" "+
+      String(r.imgKB+"K").padStart(7)+" "+
+      String(r.totalKB+"K").padStart(8)+" "+
+      String(r.longtasks).padStart(8)+"\n";
+  });
+  document.getElementById("out").textContent=out;
+}
+next();
 </script></body></html>
