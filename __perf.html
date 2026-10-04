@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>footer probe</title>
+<style>html,body{margin:0}iframe{border:0;display:block}</style></head>
+<body>
+<iframe id="f" src="index.html" style="width:390px;height:844px"></iframe>
+<pre id="out" style="font:11px/1.5 monospace"></pre>
+<script>
+document.getElementById("f").addEventListener("load",function(){
+  var w=this.contentWindow,d=this.contentDocument,L=[];
+  setTimeout(function(){
+    var f=d.querySelector(".site-footer");
+    var r=f.getBoundingClientRect();
+    L.push("FOOTER total height: "+Math.round(r.height)+"px  ("+Math.round(r.height/844*100)+"% of a844px screen)");
+    L.push("");
+    // each direct child block
+    [].slice.call(f.querySelectorAll(".footer-inner > *")).forEach(function(el){
+      var b=el.getBoundingClientRect();
+      L.push("  "+el.className.padEnd(16)+" h="+String(Math.round(b.height)).padStart(4)+
+             "  y="+Math.round(b.top));
+    });
+    L.push("");
+    // columns
+    [].slice.call(f.querySelectorAll(".footer-col")).forEach(function(el){
+      var b=el.getBoundingClientRect();
+      var h2=el.querySelector("h2");
+      L.push("  col h2='"+h2.textContent+"' w="+Math.round(b.width)+" h="+Math.round(b.height));
+    });
+    L.push("");
+    // every link + tap target size
+    var links=[].slice.call(f.querySelectorAll("a"));
+    var small=links.filter(function(a){
+      var b=a.getBoundingClientRect();
+      return b.width>0 && b.height>0 && b.height<44;});
+    L.push("footer links: "+links.length+"   with tap height <44px: "+small.length);
+    small.slice(0,10).forEach(function(a){
+      var b=a.getBoundingClientRect();
+      L.push("    '"+a.textContent.trim().slice(0,22)+"' "+Math.round(b.width)+"x"+Math.round(b.height));
+    });
+    L.push("");
+    // gaps between the columns (mobile stack whitespace)
+    var cols=[].slice.call(f.querySelectorAll(".footer-col, .footer-brand"));
+    for(var i=1;i<cols.length;i++){
+      var prev=cols[i-1].getBoundingClientRect(), cur=cols[i].getBoundingClientRect();
+      var gap=cur.top-prev.bottom;
+      L.push("  gap before block "+i+" ("+cols[i].querySelector("h2").textContent+"): "+Math.round(gap)+"px");
+    }
+    L.push("");
+    // font sizes actually used
+    var fs={};
+    [].slice.call(f.querySelectorAll("*")).forEach(function(el){
+      if(!el.textContent.trim()) return;
+      var s=w.getComputedStyle(el).fontSize;
+      fs[s]=(fs[s]||0)+1;});
+    L.push("font sizes in footer: "+JSON.stringify(fs));
+    // bottom nav overlap risk
+    var bn=d.querySelector(".bottom-nav");
+    if(bn){
+      var cs=w.getComputedStyle(bn);
+      L.push("");
+      L.push("bottom-nav height: "+Math.round(bn.getBoundingClientRect().height)+"px  position: "+cs.position);
+      L.push("footer bottom padding: "+w.getComputedStyle(f).paddingBottom);
+    }
+    // is the last footer content reachable above the bottom nav?
+    var copy=d.querySelector(".footer-bottom");
+    L.push("last footer row bottom: "+Math.round(copy.getBoundingClientRect().bottom)+
+           "  (viewport "+w.innerHeight+")");
+    document.getElementById("out").textContent=L.join("\n");
+  },6000);
+});
+</script></body></html>
