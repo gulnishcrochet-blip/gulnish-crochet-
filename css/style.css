@@ -825,7 +825,9 @@ body.has-topbar { scroll-padding-top: 132px; }
   border: 1px solid transparent;
   border-radius: var(--radius-pill);
   cursor: pointer;
-  transition: all 0.22s var(--ease);
+  transition: background 0.22s var(--ease), color 0.22s var(--ease),
+    border-color 0.22s var(--ease), box-shadow 0.22s var(--ease),
+    transform 0.22s var(--ease), opacity 0.22s var(--ease);
 }
 
 .add-btn:hover {
@@ -997,7 +999,8 @@ body.has-topbar { scroll-padding-top: 132px; }
   border-radius: var(--radius-pill);
   padding: 0.45rem 1.05rem;
   cursor: pointer;
-  transition: all 0.2s var(--ease);
+  transition: background 0.2s var(--ease), color 0.2s var(--ease),
+    border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
 }
 
 .filter-btn--sub {
@@ -1986,7 +1989,8 @@ body:has(.co-bar.show) .cart-bar {
   justify-content: center;
   font-weight: 700;
   font-size: 0.95rem;
-  transition: all 0.25s ease;
+  transition: background 0.25s ease, color 0.25s ease,
+    border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .checkout-step-dot.active .checkout-step-num {
@@ -5494,7 +5498,7 @@ body.has-topbar .site-header { top: 0; }
   font-weight: 600;
   color: var(--muted);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 .search-chip:hover { border-color: var(--primary); color: var(--primary-deep); background: var(--primary-light); }
