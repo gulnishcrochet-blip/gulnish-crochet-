@@ -4537,13 +4537,29 @@ p.about-text {
     padding: 0.5rem 0;
   }
 
-  /* Section rhythm */
+  /* Section rhythm. Phones stack these sections end to end, so the desktop
+     scale compounds: 3.6rem above and below a heading plus the gap under the
+     heading itself put close to 100px of empty space between one block and the
+     next. */
   .section {
-    padding: 3rem 0;
+    padding: 2.6rem 0;
   }
 
   .section-head {
-    margin-bottom: 1.9rem;
+    margin-bottom: 1.7rem;
+  }
+
+  .section-title {
+    margin: 0.3rem 0 0.45rem;
+  }
+
+  .section-lead {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .site-footer {
+    margin-top: 2.4rem;
   }
 
   /* Tap targets >= 44px */
