@@ -52,6 +52,10 @@ html {
   scroll-padding-top: 92px;
   overscroll-behavior-y: contain;
   overflow-x: clip;
+  /* Without this, iOS Safari inflates text in landscape and the rem-based
+     type scale drifts out of proportion with the layout around it. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 section {
