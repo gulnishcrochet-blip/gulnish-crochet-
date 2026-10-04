@@ -13,7 +13,7 @@ document.getElementById("a").addEventListener("load",function(){
     L.push("viewport: "+d.documentElement.clientWidth+"px (hover-capable: "+
            w.matchMedia("(hover: hover)").matches+")");
     var card=[].slice.call(d.querySelectorAll("[data-category]")).filter(function(c){
-      return c.querySelector("img.work-card__main"); })[0];
+      return c.querySelector("img.work-card__main") && c.querySelector("img.work-card__alt"); })[0];
     if(!card){ L.push("no card with an image found"); finish(); return; }
     var main=card.querySelector("img.work-card__main");
     var alt=card.querySelector("img.work-card__alt");
@@ -31,7 +31,7 @@ document.getElementById("a").addEventListener("load",function(){
 });
 function searchTest(){
   L.push("=== SEARCH OVERLAY ===");
-  var btn=d.querySelector("[data-search-open], .search-btn, #searchOpen");
+  var btn=d.querySelector("[data-open-search]");
   L.push("search trigger: "+(btn?btn.id||btn.className:"NOT FOUND"));
   if(btn){
     btn.click();
