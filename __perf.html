@@ -1,20 +1,32 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"></head><body>
-<iframe id="f" src="index.html" style="width:320px;height:900px;border:0"></iframe>
 <pre id="out">x</pre>
 <script>
-document.getElementById("f").addEventListener("load",function(){
- var d=this.contentDocument,w=this.contentWindow,L=[];
- setTimeout(function(){
-  [].slice.call(d.querySelectorAll(".site-footer a")).forEach(function(a){
-    var r=d.createRange(); r.selectNodeContents(a);
-    var h=r.getBoundingClientRect().height;
-    var fs=w.getComputedStyle(a).fontSize;
-    var b=a.getBoundingClientRect();
-    if(h>24) L.push("WRAPS: '"+a.textContent.trim()+"'  textH="+Math.round(h)+" font="+fs+
-                    " colW="+Math.round(b.width)+" scrollW="+a.scrollWidth);
-  });
-  if(!L.length) L.push("none wrap at 320px");
-  document.getElementById("out").textContent=L.join("\n");
- },6000);
-});
+var widths=[320,360,390],L=[],i=0;
+function next(){
+ if(i>=widths.length){document.getElementById("out").textContent=L.join("\n");return;}
+ var px=widths[i++];
+ var f=document.createElement("iframe");
+ f.style.cssText="width:"+px+"px;height:900px;border:0";f.src="index.html";
+ f.onload=function(){
+  setTimeout(function(){
+   var d=this.contentDocument,w=this.contentWindow;
+   var ftr=d.querySelector(".site-footer");
+   var cols=[].slice.call(ftr.querySelectorAll(".footer-col"));
+   var wrapped=[].slice.call(ftr.querySelectorAll(".footer-links a,.footer-shoplist a")).filter(function(a){
+     var r=d.createRange(); r.selectNodeContents(a);
+     return r.getBoundingClientRect().height>24;});
+   var over=[].slice.call(ftr.querySelectorAll("*")).filter(function(el){
+     var b=el.getBoundingClientRect();
+     return b.width>0&&(b.right>px+1||b.left<-1);}).length;
+   L.push(px+"px: footerH="+Math.round(ftr.getBoundingClientRect().height)+
+     "  ShopH="+Math.round(cols[0].getBoundingClientRect().height)+
+     "  HelpH="+Math.round(cols[1].getBoundingClientRect().height)+
+     "  wrapped="+wrapped.length+(wrapped.length?" ["+wrapped.map(function(a){return a.textContent.trim();}).join("; ")+"]":"")+
+     "  overflow="+over);
+   f.remove();next();
+  }.bind(this),5000);
+ };
+ document.body.appendChild(f);
+}
+next();
 </script></body></html>
