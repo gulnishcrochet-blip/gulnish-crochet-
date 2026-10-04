@@ -1578,7 +1578,11 @@ body:has(.co-bar.show) .cart-bar {
   font-size: 1.4rem;
   color: var(--ink);
   cursor: pointer;
-  transition: all 0.2s ease;
+  /* Named properties, not `all`. This button sits inside .cart-drawer, which
+     toggles visibility; `all` also transitioned the inherited visibility
+     change over 0.2s, so the button stayed unfocusable for 200ms after the
+     cart opened and keyboard focus never reached it. */
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 .cart-drawer__close:hover {
