@@ -5104,16 +5104,21 @@ body.has-topbar .site-header { top: 0; }
 }
 
 @media (max-width: 560px) {
-  .hero-collage { padding: 1.4rem 0 2.4rem; }
-  .collage { gap: 0.7rem; }
-  .collage__panel--hero { min-height: 260px; }
+  .hero-collage { padding: 1.1rem 0 1.6rem; }
+  .collage { gap: 0.6rem; }
+  /* Trimming the panels keeps the hero plus its four category tiles inside one
+     screen and a half, so the products are reachable without a long scroll. */
+  .collage__panel--hero { min-height: 218px; }
   .collage__panel--a,
   .collage__panel--b,
   .collage__panel--c,
-  .collage__panel--d { min-height: 150px; }
-  .collage__body { padding: 0.9rem 0.95rem; }
+  .collage__panel--d { min-height: 116px; }
+  .collage__body { padding: 0.8rem 0.85rem; }
   .collage__text { display: none; }
-  .collage__chip { top: 0.6rem; left: 0.6rem; font-size: 0.75rem; padding: 0.3rem 0.6rem; }
+  .collage__panel--hero .collage__body { padding: 1.05rem 1.05rem; }
+  .collage__panel--hero .collage__tag { margin-bottom: 0.25rem; }
+  .collage__cta { margin-top: 0.7rem; padding: 0.45rem 0.95rem; }
+  .collage__chip { top: 0.55rem; left: 0.55rem; font-size: 0.75rem; padding: 0.3rem 0.6rem; }
 }
 
 /* ============ VALUE / TRUST STRIP ============ */
