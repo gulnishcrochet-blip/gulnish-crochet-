@@ -1,38 +1,82 @@
 <!DOCTYPE html>
-<html><head><meta charset="utf-8"><title>a11y probe</title></head>
+<html><head><meta charset="utf-8"><title>dialog a11y regression</title></head>
 <body>
-<iframe id="f" src="index.html" style="width:390px;height:844px;border:0"></iframe>
+<iframe id="f" src="products.html" style="width:390px;height:844px;border:0"></iframe>
 <pre id="out">waiting</pre>
 <script>
-document.getElementById("f").addEventListener("load", function(){
+document.getElementById("f").addEventListener("load",function(){
   var w=this.contentWindow,d=this.contentDocument,L=[];
-  function who(){var e=d.activeElement;if(!e)return"none";return e.id||e.className||e.tagName;}
+  function who(){var e=d.activeElement;if(!e)return"none";
+    return e.id||String(e.className||"").split(" ")[0]||e.tagName;}
+  function finish(){document.getElementById("out").textContent=L.join("\n");}
   setTimeout(function(){
-    var btn=d.getElementById("bottomNavCart");
-    var drawer=d.getElementById("cartDrawer");
-    var closeBtn=d.getElementById("cartClose");
-    L.push("focus before open: "+who());
-    btn.click();
-    setTimeout(function(){
-      L.push("focus 60ms after open: "+who());
-      L.push("close btn computed visibility: "+w.getComputedStyle(closeBtn).visibility);
-      L.push("FOCUS IS INSIDE DRAWER: "+(drawer.contains(d.activeElement)?"YES  (fixed)":"NO  <-- STILL BROKEN"));
-      L.push("aria-expanded: "+btn.getAttribute("aria-expanded")+"  drawer aria-hidden: "+drawer.getAttribute("aria-hidden"));
-      // tab order: close button should be reachable
-      closeBtn.focus();
-      L.push("closeBtn.focus() -> activeElement: "+who());
-      // reopen then Escape
-      btn.click(); setTimeout(function(){
+    // ---------- 1. MOBILE NAV ----------
+    var tog=d.getElementById("navToggle"), nav=d.getElementById("mainNav");
+    if(tog&&nav){
+      tog.click();
+      setTimeout(function(){
+        L.push("=== MOBILE NAV ===");
+        L.push("focus inside nav after open: "+(nav.contains(d.activeElement)?"YES (fixed)":"NO  <-- BROKEN"));
+        L.push("aria-expanded: "+tog.getAttribute("aria-expanded"));
+        // focus last element then Tab -> should wrap to first
+        var f=nav.querySelectorAll('a[href], button:not([disabled])');
+        f[f.length-1].focus();
+        var ev=new w.KeyboardEvent("keydown",{key:"Tab",bubbles:true,cancelable:true});
+        d.activeElement.dispatchEvent(ev);
+        L.push("Tab from last -> focus: "+who()+(nav.contains(d.activeElement)?" (trapped, correct)":"  <-- ESCAPED"));
         d.dispatchEvent(new w.KeyboardEvent("keydown",{key:"Escape",bubbles:true}));
         setTimeout(function(){
-          L.push("");
-          L.push("Escape -> drawer open: "+drawer.classList.contains("open"));
-          L.push("Escape -> focus returned to: "+who()+(d.activeElement===btn?"  (correct)":"  <-- check"));
-          L.push("body overflow restored: "+(d.body.style.overflow===""?"yes":"NO  <-- BUG"));
-          document.getElementById("out").textContent=L.join("\n");
-        },600);
-      },300);
-    },60);
-  },3500);
+          L.push("Escape -> focus back on toggle: "+(d.activeElement===tog?"YES":"NO")+", body overflow: "+(d.body.style.overflow===""?"restored":"STUCK"));
+          step2();
+        },300);
+      },80);
+    } else { L.push("navToggle/mainNav not found"); step2(); }
+
+    function step2(){
+      // ---------- 2. QUICKVIEW ----------
+      var qvBtn=d.querySelector("[data-quick-view]");
+      L.push("");
+      L.push("=== QUICKVIEW ===");
+      L.push("quickview trigger present: "+(qvBtn?"yes":"no"));
+      if(!qvBtn){ step3(); return; }
+      qvBtn.click();
+      setTimeout(function(){
+        var modal=d.querySelector(".qv-modal.is-open");
+        L.push("modal open: "+(modal?"yes":"NO  <-- BROKEN"));
+        if(!modal){ step3(); return; }
+        var closeBtn=modal.querySelector(".qv-close");
+        L.push("focus inside modal after open: "+(modal.contains(d.activeElement)?"YES (fixed)":"NO  <-- BROKEN"));
+        L.push("focused element: "+who());
+        var f=modal.querySelectorAll('a[href], button:not([disabled]), input:not([disabled])');
+        L.push("focusable count in modal: "+f.length);
+        f[f.length-1].focus();
+        d.activeElement.dispatchEvent(new w.KeyboardEvent("keydown",{key:"Tab",bubbles:true,cancelable:true}));
+        L.push("Tab from last -> "+who()+(modal.contains(d.activeElement)?" (trapped, correct)":"  <-- ESCAPED"));
+        d.dispatchEvent(new w.KeyboardEvent("keydown",{key:"Escape",bubbles:true}));
+        setTimeout(function(){
+          L.push("Escape -> focus back on trigger: "+(d.activeElement===qvBtn?"YES":"NO ("+who()+")"));
+          L.push("modal closed: "+(d.querySelector(".qv-modal.is-open")?"NO  <-- BROKEN":"yes"));
+          L.push("body overflow: "+(d.body.style.overflow===""?"restored":"STUCK"));
+          step3();
+        },300);
+      },150);
+    }
+
+    function step3(){
+      // ---------- 3. CART ----------
+      L.push("");
+      L.push("=== CART ===");
+      var c=d.getElementById("bottomNavCart"), drawer=d.getElementById("cartDrawer");
+      c.click();
+      setTimeout(function(){
+        L.push("focus inside drawer after open: "+(drawer.contains(d.activeElement)?"YES (fixed)":"NO  <-- BROKEN")+"  -> "+who());
+        d.dispatchEvent(new w.KeyboardEvent("keydown",{key:"Escape",bubbles:true}));
+        setTimeout(function(){
+          L.push("Escape -> focus back on trigger: "+(d.activeElement===c?"YES":"NO ("+who()+")"));
+          finish();
+        },300);
+      },80);
+    }
+  },4500);
 });
 </script></body></html>
