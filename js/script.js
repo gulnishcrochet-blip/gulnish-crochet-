@@ -1264,7 +1264,7 @@
   function openCart() {
     cartDrawer.classList.add("open");
     cartDrawer.setAttribute("aria-hidden", "false");
-    if (cartToggle) cartToggle.setAttribute("aria-expanded", "true");
+    cartTriggers().forEach(function (t) { t.setAttribute("aria-expanded", "true"); });
     cartOverlay.classList.add("open");
     document.body.style.overflow = "hidden";
     var closeBtn = document.getElementById("cartClose");
@@ -1275,10 +1275,10 @@
     var wasOpen = cartDrawer.classList.contains("open");
     cartDrawer.classList.remove("open");
     cartDrawer.setAttribute("aria-hidden", "true");
-    if (cartToggle) cartToggle.setAttribute("aria-expanded", "false");
+    cartTriggers().forEach(function (t) { t.setAttribute("aria-expanded", "false"); });
     cartOverlay.classList.remove("open");
     document.body.style.overflow = "";
-    if (wasOpen && cartToggle) cartToggle.focus();
+    if (wasOpen) visibleCartTrigger().focus();
   }
 
   function bumpBadge() {
