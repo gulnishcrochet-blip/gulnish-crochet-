@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html><head><meta charset="utf-8"><title>img audit</title></head>
+<html><head><meta charset="utf-8"><title>hidden image audit</title></head>
 <body>
 <iframe id="f" src="products.html" style="width:390px;height:844px;border:0"></iframe>
 <pre id="out">waiting</pre>
@@ -7,32 +7,29 @@
 document.getElementById("f").addEventListener("load", function(){
   var w = this.contentWindow, d = this.contentDocument;
   setTimeout(function(){
-    var imgs = [].slice.call(d.querySelectorAll("img"));
-    var noSrcset = [], oversized = [], noDims = [], noLazy = [], totalNatural = 0;
-    var tiers = {sm:0, full:0, other:0};
-    imgs.forEach(function(im){
-      var cs = im.currentSrc || im.src || "";
-      if (/\/sm\//.test(cs)) tiers.sm++; else if (/images\//.test(cs)) tiers.full++; else tiers.other++;
-      if (!im.srcset && cs.indexOf("images/")>=0) noSrcset.push(cs.split("/").slice(-2).join("/"));
-      var nw = im.naturalWidth || 0, cw = im.clientWidth || 0;
-      totalNatural += nw * (im.naturalHeight||0) * 0.3; // rough decoded px
-      if (nw && cw && nw > cw * 2.2) oversized.push(cs.split("/").slice(-2).join("/")+" nat="+nw+" css="+Math.round(cw));
-      if (!im.getAttribute("width") || !im.getAttribute("height")) noDims.push(cs.split("/").pop());
-      if (!im.loading && cs.indexOf("images/")>=0) noLazy.push(cs.split("/").pop());
+    var cards = [].slice.call(d.querySelectorAll("[data-category]"));
+    var hidden = cards.filter(function(c){return c.classList.contains("is-hidden");});
+    var shown  = cards.filter(function(c){return !c.classList.contains("is-hidden");});
+    var imgs = [].slice.call(d.getElementById("productGrid").querySelectorAll("img"));
+    var loaded = imgs.filter(function(i){return i.complete && i.naturalWidth>0;});
+    var loadedHidden = imgs.filter(function(i){
+      var c = i.closest("[data-category]");
+      return c && c.classList.contains("is-hidden") && i.complete && i.naturalWidth>0;
     });
-    var res = w.performance.getEntriesByType("resource").filter(function(r){return r.initiatorType==="img";});
-    var imgKB = res.reduce(function(a,r){return a+(r.transferSize||0);},0)/1024;
-    var L = [];
-    L.push("viewport "+w.innerWidth+"x"+w.innerHeight+"  DPR="+w.devicePixelRatio);
-    L.push("img elements: "+imgs.length+"   img subresource requests: "+res.length);
-    L.push("tier chosen -> sm/: "+tiers.sm+"   full/: "+tiers.full+"   other: "+tiers.other);
-    L.push("image transfer: "+Math.round(imgKB)+"KB");
-    L.push("images WITHOUT srcset ("+noSrcset.length+"): "+noSrcset.slice(0,8).join(", "));
-    L.push("images WITHOUT width/height attrs ("+noDims.length+"): "+noDims.slice(0,10).join(", "));
-    L.push("images WITHOUT loading=lazy ("+noLazy.length+"): "+noLazy.slice(0,10).join(", "));
-    L.push("OVERSIZED natural>2.2x css ("+oversized.length+"):");
-    oversized.slice(0,12).forEach(function(s){ L.push("    "+s); });
+    var kb = w.performance.getEntriesByType("resource")
+      .filter(function(r){return r.initiatorType==="img";})
+      .reduce(function(a,r){return a+(r.transferSize||0);},0)/1024;
+    var L=[];
+    L.push("cards total: "+cards.length+"   shown: "+shown.length+"   hidden: "+hidden.length);
+    L.push("img elements in grid: "+imgs.length+"   successfully loaded: "+loaded.length);
+    L.push(">>> loaded images belonging to HIDDEN cards: "+loadedHidden.length);
+    L.push(">>> WASTED image bytes: "+Math.round(kb)+"KB");
+    L.push("hidden card sample: "+(hidden[0]?hidden[0].querySelector("img").src.split("/").slice(-2).join("/")+" complete="+hidden[0].querySelector("img").complete+" nat="+hidden[0].querySelector("img").naturalWidth:"none"));
+    // is display:none actually applied?
+    var h0 = hidden[0];
+    L.push("hidden card display: "+(h0?getComputedStyle(h0).display:"-"));
+    L.push("hidden card img loading attr: "+(h0?h0.querySelector("img").getAttribute("loading"):"-"));
     document.getElementById("out").textContent = L.join("\n");
-  }, 4500);
+  }, 5000);
 });
 </script></body></html>
