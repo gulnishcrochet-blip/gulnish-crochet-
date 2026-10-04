@@ -495,7 +495,10 @@
      whole 114-piece catalogue - about 1.4MB - to show eight products. */
   function hydrateCardImages(card) {
     if (!card) return;
-    var imgs = card.querySelectorAll("img[data-src]");
+    /* Main image only. .work-card__alt is deliberately excluded: it is the
+       hover state and must stay parked until hydrateHoverImage() releases it,
+       otherwise every visible card downloads a second photo nobody sees. */
+    var imgs = card.querySelectorAll("img.work-card__main[data-src]");
     for (var i = 0; i < imgs.length; i++) {
       var im = imgs[i];
       if (im.dataset.srcset) im.srcset = im.dataset.srcset;
