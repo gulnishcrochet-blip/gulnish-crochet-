@@ -6428,3 +6428,71 @@ body.has-topbar .site-header { top: 0; }
     width: 92%;
   }
 }
+
+/* --- v4 mobile: the footer was 1522px tall, 1.8 screens of scrolling ------
+   Measured on a 390x844 phone: brand 239px, then three full-width stacked
+   columns (Shop 437px, Help 235px, Get in Touch 268px) with a 29px gap
+   between each, then the bottom row. Every column was the full 342px content
+   width to hold four short links, so almost half the footer was empty
+   horizontal space and the visitor scrolled a page and a half to reach the
+   copyright line.
+
+   Phones now get two side-by-side link columns instead of one, with the brand
+   and contact blocks spanning the full width where their content is wide.
+   Same markup, same colours, no new elements. */
+@media (max-width: 760px) {
+  .site-footer {
+    margin-top: 2.4rem;
+    padding: 2.4rem 0 0;
+  }
+
+  .footer-inner {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem 1.1rem;
+  }
+
+  /* The brand line and its tagline need the whole width to stay readable. */
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+
+  /* Same for contact: the email address alone measured 266px, so it cannot
+     share a 150px column without breaking mid-word. */
+  .footer-col--contact {
+    grid-column: 1 / -1;
+  }
+
+  .footer-col h2,
+  .footer-col h4 {
+    margin-bottom: 0.6rem;
+  }
+
+  /* Links sit on their own 44px rows, which is the touch target we want, but
+     the column gap was adding a further 9.6px between each one. */
+  .footer-links,
+  .footer-shoplist {
+    gap: 0.1rem;
+  }
+
+  .footer-contact {
+    gap: 0.1rem;
+  }
+
+  .footer-bottom {
+    padding-top: 1.1rem;
+    margin-top: 0.4rem;
+  }
+}
+
+/* Two columns of link text needs a little more than 1.1rem at the narrowest
+   handsets, otherwise "Terms & Conditions" wraps to two lines. */
+@media (max-width: 380px) {
+  .footer-inner {
+    gap: 1.4rem 0.7rem;
+  }
+
+  .footer-links a,
+  .footer-shoplist a {
+    font-size: 0.9rem;
+  }
+}
