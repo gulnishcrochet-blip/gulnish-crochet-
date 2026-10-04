@@ -23,7 +23,8 @@ document.getElementById("f").addEventListener("load", function(){
       L.push("focus is INSIDE drawer: "+(drawer.contains(d.activeElement)?"yes":"NO  <-- BUG"));
       L.push("close btn computed visibility: "+
         (function(){var c=d.getElementById("cartClose");
-          return c?getComputedStyle(c).visibility:"n/a";})());
+          return c?w.getComputedStyle(c).visibility:"n/a";})());
+      L.push("drawer computed visibility: "+w.getComputedStyle(drawer).visibility);
       d.dispatchEvent(new w.KeyboardEvent("keydown",{key:"Escape",bubbles:true}));
       setTimeout(function(){
         L.push("");
