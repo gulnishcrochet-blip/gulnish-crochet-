@@ -34,5 +34,14 @@ var lines=[
  cs(".add-btn",["min-height","font-size"]),
  cs(".image-grid",["grid-template-columns","gap"])
 ];
+var n=document.querySelector(".work-card__name");
+var nl=document.createElement("div");
+nl.className="work-card__name"; nl.style.width=n.offsetWidth+"px";
+nl.textContent="One line";
+document.body.appendChild(nl);
+var oneLine=nl.offsetHeight;
+lines.push("name: clientWidth="+n.offsetWidth+"px oneLineH="+oneLine+"px actualH="+n.offsetHeight+
+  "px scrollH="+n.scrollHeight+"px clientH="+n.clientHeight+
+  " CLAMPED="+(n.scrollHeight>n.clientHeight+1));
 document.getElementById("out").textContent=lines.join("\n");
 </script></body></html>
