@@ -6441,9 +6441,12 @@ body.has-topbar .site-header { top: 0; }
    and contact blocks spanning the full width where their content is wide.
    Same markup, same colours, no new elements. */
 @media (max-width: 760px) {
+  /* padding-top only, deliberately: the shorthand would also clear the
+     padding-bottom set above for browsers without :has(), and the fixed
+     60px bottom-nav would then sit on top of the copyright line. */
   .site-footer {
     margin-top: 2.4rem;
-    padding: 2.4rem 0 0;
+    padding-top: 2.4rem;
   }
 
   .footer-inner {
