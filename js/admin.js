@@ -1293,7 +1293,9 @@
   }
 
   if (loginBtn) {
-    loginBtn.addEventListener("click", async function () {
+    /* Shared by the button click and the form's submit, so Enter in either
+       field and a tap on the button all take the identical path. */
+    async function submitLogin() {
       if (loginErr) loginErr.hidden = true;
       var email = loginEmail ? loginEmail.value.trim() : "";
       var password = loginPassword ? loginPassword.value : "";
@@ -1311,14 +1313,22 @@
         loginErr.textContent = "Sign in failed. Check your email and password.";
         loginErr.hidden = false;
       }
+    }
+
+    loginBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      submitLogin();
     });
 
-    loginPassword.addEventListener("keydown", function (e) {
-      if (e.key === "Enter") loginBtn.click();
-    });
-    loginEmail.addEventListener("keydown", function (e) {
-      if (e.key === "Enter") loginBtn.click();
-    });
+    /* The inputs live in a real form now, so let the browser handle Enter
+       instead of re-implementing it on keydown. */
+    var loginForm = document.getElementById("adminLoginForm");
+    if (loginForm) {
+      loginForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        submitLogin();
+      });
+    }
   }
 
   if (adminSignOut) {
