@@ -1,61 +1,35 @@
 <!DOCTYPE html>
-<html><head><meta charset="utf-8"><title>functional probe</title></head>
+<html><head><meta charset="utf-8"><title>srcset probe</title></head>
 <body>
 <iframe id="f" src="products.html" style="width:390px;height:844px;border:0"></iframe>
 <pre id="out">waiting</pre>
 <script>
 document.getElementById("f").addEventListener("load", function(){
-  var w = this.contentWindow, d = this.contentDocument;
-  var L = [];
-  function kb(){ return Math.round(w.performance.getEntriesByType("resource")
-      .filter(function(r){return r.initiatorType==="img";})
-      .reduce(function(a,r){return a+(r.transferSize||0);},0)/1024); }
-  function imgState(){
-    var imgs = [].slice.call(d.getElementById("productGrid").querySelectorAll("img"));
-    var loaded = imgs.filter(function(i){return i.complete && i.naturalWidth>0;});
-    var hiddenLoaded = imgs.filter(function(i){
-      var c = i.closest("[data-category]");
-      return c && c.classList.contains("is-hidden") && i.complete && i.naturalWidth>0; });
-    return {total:imgs.length, loaded:loaded.length, hiddenLoaded:hiddenLoaded.length};
-  }
-  function shownCards(){ return [].slice.call(d.querySelectorAll("[data-category]"))
-      .filter(function(c){return !c.classList.contains("is-hidden");}); }
-
+  var w=this.contentWindow,d=this.contentDocument,L=[];
   setTimeout(function(){
-    var s = imgState();
-    L.push("INITIAL  shown="+shownCards().length+"  imgsLoaded="+s.loaded+"/"+s.total+
-           "  hiddenLoaded="+s.hiddenLoaded+"  imgKB="+kb());
-
-    // --- Show more ---
-    var btn = d.getElementById("showMore");
-    L.push("showMore button present: "+(btn?("yes, label='"+btn.textContent.trim()+"'"):"NO"));
-    if (btn) btn.click();
-    setTimeout(function(){
-      var s2 = imgState();
-      L.push("AFTER SHOW MORE  shown="+shownCards().length+"  imgsLoaded="+s2.loaded+
-             "  hiddenLoaded="+s2.hiddenLoaded+"  imgKB="+kb());
-
-      // --- every SHOWN card must have a released src ---
-      var missing = shownCards().filter(function(c){
-        var m = c.querySelector("img.work-card__main");
-        return m && !m.getAttribute("src");
-      });
-      L.push("shown cards still missing src: "+missing.length+(missing.length?"  <-- BUG":"  (ok)"));
-
-      // --- add to cart from a visible card, check image captured ---
-      var addBtn = shownCards()[0].querySelector(".add-btn");
-      if (addBtn && !addBtn.disabled) {
-        addBtn.click();
-        setTimeout(function(){
-          var cart = JSON.parse(w.localStorage.getItem("gulnish-cart")||"[]");
-          L.push("cart lines: "+cart.length+"  image captured: "+
-                 (cart[0] && cart[0].image ? "yes ("+cart[0].image.split("/").slice(-2).join("/")+")" : "NO <-- BUG"));
-          finish();
-        }, 400);
-      } else { L.push("add-btn unavailable"); finish(); }
-
-      function finish(){ document.getElementById("out").textContent = L.join("\n"); }
-    }, 1500);
-  }, 5000);
+    // For each visible card, compare the srcset against the real file widths.
+    var probe=["bouquet-1.webp","purse-1.webp","bag-1.webp","keychain-1.webp","bag-3.webp"];
+    var out=[];
+    probe.forEach(function(name){
+      var im=d.querySelector('img[srcset*="'+name+'"]') ||
+             d.querySelector('img[data-srcset*="'+name+'"]');
+      if(!im){ out.push(name+": (no card in view)"); return; }
+      var ss=im.getAttribute("srcset")||im.getAttribute("data-srcset")||"";
+      var sizes=im.getAttribute("sizes")||im.getAttribute("data-sizes")||"";
+      out.push(name+"\n    srcset: "+ss+"\n    sizes:  "+sizes);
+    });
+    // Count any srcset entry that points at a missing file (a 404 waiting to happen)
+    var all=0,bad=0;
+    [].slice.call(d.querySelectorAll("img")).forEach(function(im){
+      var ss=im.getAttribute("srcset")||im.getAttribute("data-srcset")||"";
+      if(!ss) return; all++;
+      var d2=ss.split(",").map(function(p){return p.trim().split(" ")[0];});
+      if(d2.some(function(u){return u.indexOf("images/sm/")===0 && u.indexOf("og-")===0;})) bad++;
+    });
+    L=out.concat(["","imgs with a srcset: "+all+"  suspicious: "+bad,
+      "browser-picked currentSrc of first visible main img:",
+      "    "+(d.querySelector(".work-card__main[src]")||{currentSrc:"none"}).currentSrc]);
+    document.getElementById("out").textContent=L.join("\n");
+  },5000);
 });
 </script></body></html>
