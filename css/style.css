@@ -3490,6 +3490,14 @@ html.js .reveal.revealed {
     font-size: 0.95rem;
   }
 
+  /* 0.62rem of vertical padding around a 0.86rem line lands near 39px, just
+     under the 44px floor a thumb needs. */
+  .add-btn {
+    min-height: 44px;
+    padding: 0.55rem 0.6rem;
+    font-size: 0.82rem;
+  }
+
   .product-page {
     padding: 1rem;
   }
