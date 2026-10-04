@@ -29,12 +29,13 @@
     return parts.join("/");
   }
 
-  /* Builds a srcset so the browser itself can choose the 480px tier.
+/* Builds a srcset so the browser itself can choose the 480px tier.
      displayImage() above only helps browsers that expose
      navigator.connection (Chrome/Android); Safari and Firefox never get the
      small files, so a phone on wifi still downloads every 800px original.
-     Local images/ paths only - Supabase URLs have no sm/ twin. */
-  function imgSrcset(src, sizes) {
+     Local images/ paths only - Supabase URLs have no sm/ twin.
+     deferred=true emits data-srcset/data-sizes for the parked images above. */
+  function imgSrcset(src, sizes, deferred) {
     if (!src || src.lastIndexOf("data:", 0) === 0) return "";
     if (src.indexOf("images/") !== 0) return "";
     var parts = src.split("/");
@@ -46,10 +47,11 @@
     if ((" " + photoDirs + " ").indexOf(" " + parts[parts.length - 2] + " ") < 0) return "";
     var small = parts.slice(0, parts.length - 1);
     small.push("sm", parts[parts.length - 1]);
-    return (
-      ' srcset="' + small.join("/") + ' 480w, ' + src + ' 800w"' +
-      ' sizes="' + (sizes || "(max-width: 760px) 44vw, 250px") + '"'
-    );
+    var ss = small.join("/") + " 480w, " + src + " 800w";
+    var sz = sizes || "(max-width: 760px) 44vw, 250px";
+    return deferred
+      ? ' data-srcset="' + ss + '" data-sizes="' + sz + '"'
+      : ' srcset="' + ss + '" sizes="' + sz + '"';
   }
 
   /* Shown anywhere a product has no photo yet, so the grid reads as
