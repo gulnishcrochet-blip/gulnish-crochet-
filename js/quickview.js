@@ -6,6 +6,8 @@
 
   var GC = window.GC;
   var modal, cardEl, closeBtn, mediaEl, thumbsEl, catEl, nameEl, priceEl, statusEl, colorsEl, descEl, addBtn, waBtn, current = null, currentQty = 1;
+  /* Element that opened the dialog, so close() can hand focus back to it. */
+  var returnFocusTo = null;
 
   function escapeHtml(str) {
     return String(str || "")
