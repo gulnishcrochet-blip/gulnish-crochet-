@@ -6498,4 +6498,11 @@ body.has-topbar .site-header { top: 0; }
   .footer-shoplist a {
     font-size: 0.9rem;
   }
+
+  /* "Terms & Conditions" measured 148px of text in a 137px column at 320px,
+     so it broke across two lines and made the Help column taller than Shop.
+     0.84rem brings it to ~138px, which fits. */
+  .footer-links a {
+    font-size: 0.84rem;
+  }
 }
