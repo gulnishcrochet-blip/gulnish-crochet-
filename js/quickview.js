@@ -204,6 +204,10 @@
     if (!p) return;
     current = p;
     currentQty = 1;
+    /* Remember the control that opened this dialog while it is still the
+       active element, so close() can restore focus to it. */
+    var active = document.activeElement;
+    returnFocusTo = active && active !== document.body ? active : null;
     buildModal();
 
     // media
