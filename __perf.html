@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html><head><meta charset="utf-8"><title>perf one</title></head>
+<html><head><meta charset="utf-8"><title>404 probe</title></head>
 <body>
 <pre id="out">running</pre>
 <script>
@@ -8,24 +8,34 @@ var f=document.createElement("iframe");
 f.style.cssText="width:390px;height:844px;border:0";
 f.src=p;
 f.onload=function(){
+  var w=this.contentWindow;
   setTimeout(function(){
-    var w=this.contentWindow;
-    var nav=w.performance.getEntriesByType("navigation")[0]||{};
-    var rs=w.performance.getEntriesByType("resource");
-    var fcp=0;
-    w.performance.getEntriesByType("paint").forEach(function(e){
-      if(e.name==="first-contentful-paint") fcp=Math.round(e.startTime); });
-    var imgs=rs.filter(function(r){return r.initiatorType==="img";});
-    var lt=w.performance.getEntriesByType("longtask")||[];
-    var txt=fcp+" | DCL "+Math.round(nav.domContentLoadedEventEnd||0)+
-      " | load "+Math.round(nav.loadEventEnd||0)+
-      " | reqs "+(rs.length+1)+
-      " | imgReqs "+imgs.length+
-      " | imgKB "+Math.round(imgs.reduce(function(a,r){return a+(r.transferSize||0);},0)/1024)+
-      " | totalKB "+Math.round(rs.reduce(function(a,r){return a+(r.transferSize||0);},0)/1024)+
-      " | longtasks "+lt.length;
-    document.getElementById("out").textContent=txt;
-  }.bind(this),9000);
+    var d=w.document,L=[];
+    // PerformanceResourceTiming.responseStatus is Chromium-only but exact.
+    var bad=w.performance.getEntriesByType("resource").filter(function(r){
+      return r.responseStatus && r.responseStatus>=400;
+    }).map(function(r){return r.responseStatus+" "+r.name;});
+    // broken <img> (naturalWidth 0) that are actually meant to show a photo
+    var imgs=[].slice.call(d.images);
+    var broken=imgs.filter(function(i){
+      if(i.complete && i.naturalWidth===0){
+        var c=i.closest("[data-category]");
+        if(c && c.classList.contains("is-hidden")) return false; // hidden, not loaded yet
+        return true;
+      }
+      return false;
+    }).map(function(i){return (i.getAttribute("src")||i.getAttribute("data-src")||"?").split("/").slice(-2).join("/");});
+    // images still parked (data-src not promoted) among visible cards
+    var cards=[].slice.call(d.querySelectorAll("[data-category]")).filter(function(c){
+      return !c.classList.contains("is-hidden");});
+    var parked=cards.filter(function(c){return c.querySelector("img[data-src]");}).length;
+    L.push("http>=400: "+(bad.length?bad.join(", "):"none"));
+    L.push("broken images: "+(broken.length?broken.join(", "):"none"));
+    L.push("visible cards: "+cards.length+" | cards still parked: "+parked+(parked?"  <-- BUG":"  (ok)"));
+    L.push("imgs total: "+imgs.length+" | with src: "+imgs.filter(function(i){return !!i.getAttribute("src");}).length+
+           " | parked: "+imgs.filter(function(i){return !!i.getAttribute("data-src");}).length);
+    document.getElementById("out").textContent=L.join("\n");
+  },8000);
 };
 document.body.appendChild(f);
 </script></body></html>
