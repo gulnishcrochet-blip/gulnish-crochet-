@@ -1351,8 +1351,17 @@
     cartTriggers().forEach(function (t) { t.setAttribute("aria-expanded", "true"); });
     cartOverlay.classList.add("open");
     document.body.style.overflow = "hidden";
-    var closeBtn = document.getElementById("cartClose");
-    if (closeBtn) closeBtn.focus();
+    /* The drawer is visibility:hidden until .open lands, so focusing the close
+       button in this same task is a no-op - the browser still considers it
+       unfocusable and keyboard focus stays stranded on the page behind the
+       overlay. Double rAF waits until the class has been committed and the
+       drawer is genuinely visible. */
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        var closeBtn = document.getElementById("cartClose");
+        if (closeBtn) closeBtn.focus();
+      });
+    });
   }
 
   function closeCart() {
