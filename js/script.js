@@ -1124,6 +1124,23 @@
   var bottomNavCount = document.getElementById("bottomNavCount");
   var bottomNavCart = document.getElementById("bottomNavCart");
 
+  /* The header cart button is hidden on phones and the bottom nav one is
+     hidden on desktop, so every cart control has to be driven together:
+     aria-expanded has to land on whichever is visible, and closing the drawer
+     has to hand focus back to a control that can actually take it. */
+  function cartTriggers() {
+    return [cartToggle, bottomNavCart].filter(Boolean);
+  }
+
+  function visibleCartTrigger() {
+    var triggers = cartTriggers();
+    for (var i = 0; i < triggers.length; i++) {
+      var rect = triggers[i].getBoundingClientRect();
+      if (rect.width || rect.height) return triggers[i];
+    }
+    return cartToggle;
+  }
+
 
   function loadCart() {
     try {
