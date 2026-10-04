@@ -5258,14 +5258,6 @@ body.has-topbar .site-header { top: 0; }
   .promo-card { min-height: 250px; padding: 1.35rem; }
 }
 
-@media (max-width: 900px) { }
-@media (max-width: 520px) {
-}
-
-
-@media (max-width: 560px) {
-}
-
 /* ============ PRODUCT CARD UPGRADES ============ */
 .work-card { position: relative; }
 
