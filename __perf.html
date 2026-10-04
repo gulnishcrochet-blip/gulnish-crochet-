@@ -1,41 +1,39 @@
 <!DOCTYPE html>
-<html><head><meta charset="utf-8"><title>a11y probe</title></head>
+<html><head><meta charset="utf-8"><title>rule finder</title></head>
 <body>
 <iframe id="f" src="index.html" style="width:390px;height:844px;border:0"></iframe>
 <pre id="out">waiting</pre>
 <script>
-document.getElementById("f").addEventListener("load", function(){
+document.getElementById("f").addEventListener("load",function(){
   var w=this.contentWindow,d=this.contentDocument,L=[];
-  function who(){var e=d.activeElement;if(!e)return"none";return e.id||e.className||e.tagName;}
-  function finish(){document.getElementById("out").textContent=L.join("\n");}
   setTimeout(function(){
-    var btn=d.getElementById("bottomNavCart");
-    L.push("bottomNavCart present: "+(btn?"yes":"NO"));
-    L.push("aria-expanded before: "+btn.getAttribute("aria-expanded"));
-    L.push("focus before open: "+who());
-    btn.click();
-    L.push("focus in same task as .click(): "+who()+"   (old code left it here)");
-    setTimeout(function(){
-      L.push("focus after 200ms: "+who());
-      L.push("aria-expanded after: "+btn.getAttribute("aria-expanded"));
-      L.push("drawer aria-hidden: "+d.getElementById("cartDrawer").getAttribute("aria-hidden"));
-      var drawer=d.getElementById("cartDrawer");
-      L.push("focus is INSIDE drawer: "+(drawer.contains(d.activeElement)?"yes":"NO  <-- BUG"));
-      L.push("close btn computed visibility: "+
-        (function(){var c=d.getElementById("cartClose");
-          return c?w.getComputedStyle(c).visibility:"n/a";})());
-      L.push("drawer computed visibility: "+w.getComputedStyle(drawer).visibility);
-      d.dispatchEvent(new w.KeyboardEvent("keydown",{key:"Escape",bubbles:true}));
-      setTimeout(function(){
-        L.push("");
-        L.push("after Escape -> drawer open: "+drawer.classList.contains("open"));
-        L.push("after Escape -> aria-expanded: "+btn.getAttribute("aria-expanded"));
-        L.push("after Escape -> aria-hidden: "+drawer.getAttribute("aria-hidden"));
-        L.push("after Escape -> focus: "+who()+(d.activeElement===btn?"  (returned to trigger, correct)":"  <-- check"));
-        L.push("body overflow restored: "+(d.body.style.overflow===""?"yes":"NO  <-- BUG"));
-        finish();
-      },600);
-    },200);
+    var b=d.getElementById("cartClose");
+    L.push("tagName: "+b.tagName+"  class: "+b.className);
+    L.push("inline style attr: '"+b.getAttribute("style")+"'");
+    var chain=[],n=b;
+    while(n&&n!==d.documentElement){chain.push(n.tagName+(n.id?"#"+n.id:"")+(n.className?"."+String(n.className).split(" ").join("."):""));n=n.parentElement;}
+    L.push("ancestors: "+chain.join(" < "));
+    L.push("");
+    L.push("computed display: "+w.getComputedStyle(b).display);
+    L.push("computed visibility: "+w.getComputedStyle(b).visibility);
+    L.push("offsetParent: "+(b.offsetParent?b.offsetParent.tagName:"null"));
+    L.push("getBoundingClientRect: "+JSON.stringify(b.getBoundingClientRect()));
+    L.push("");
+    L.push("=== stylesheet rules mentioning cart-drawer__close or cart-drawer ===");
+    var rules=[];
+    [].slice.call(d.styleSheets).forEach(function(sheet){
+      var rs; try{rs=sheet.cssRules;}catch(e){L.push("(blocked: "+sheet.href+")");return;}
+      [].slice.call(rs).forEach(function(r){
+        if(r.cssRules){[].slice.call(r.cssRules).forEach(function(rr){
+          if(rr.selectorText&&/cart-drawer/.test(rr.selectorText)&&/visibility|display/.test(rr.cssText))
+            rules.push("@media "+r.conditionText+" { "+rr.selectorText+" { "+rr.style.cssText+" } }");
+        });}
+        else if(r.selectorText&&/cart-drawer/.test(r.selectorText)&&/visibility|display/.test(r.cssText))
+          rules.push(r.selectorText+" { "+r.style.cssText+" }");
+      });
+    });
+    L.push(rules.length?rules.join("\n"):"(no rule sets display or visibility)");
+    document.getElementById("out").textContent=L.join("\n");
   },3500);
 });
 </script></body></html>
