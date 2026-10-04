@@ -1,43 +1,20 @@
-<!DOCTYPE html>
-<html><head><meta charset="utf-8"><title>footer widths</title>
-<style>html,body{margin:0}iframe{border:0;display:block}</style></head>
-<body>
-<pre id="out" style="font:11px/1.5 monospace"></pre>
+<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>
+<iframe id="f" src="index.html" style="width:320px;height:900px;border:0"></iframe>
+<pre id="out">x</pre>
 <script>
-var widths=[320,360,390,430,760,1024];
-var L=[],i=0;
-function next(){
-  if(i>=widths.length){ document.getElementById("out").textContent=L.join("\n"); return; }
-  var wpx=widths[i++];
-  var f=document.createElement("iframe");
-  f.style.cssText="width:"+wpx+"px;height:900px;border:0";
-  f.src="index.html";
-  f.onload=function(){
-    setTimeout(function(){
-      var w=this.contentWindow,d=this.contentDocument;
-      var ftr=d.querySelector(".site-footer");
-      var h=Math.round(ftr.getBoundingClientRect().height);
-      var cols=[].slice.call(ftr.querySelectorAll(".footer-col")).map(function(c){
-        return Math.round(c.getBoundingClientRect().width);});
-      var over=[].slice.call(ftr.querySelectorAll("*")).filter(function(el){
-        var b=el.getBoundingClientRect();
-        return b.width>0&&(b.right>wpx+1||b.left<-1);}).length;
-      // text wrapping check
-      var wrapped=[].slice.call(ftr.querySelectorAll(".footer-links a,.footer-shoplist a")).filter(function(a){
-        var r=d.createRange(); r.selectNodeContents(a);
-        return r.getBoundingClientRect().height>24;}).length;
-      // are the two link columns actually side by side?
-      var cs=[].slice.call(ftr.querySelectorAll(".footer-col"));
-      var sideBySide = cs.length>=2 &&
-        Math.abs(cs[0].getBoundingClientRect().top - cs[1].getBoundingClientRect().top)<4;
-      L.push(wpx+"px: footer h="+String(h).padStart(5)+
-             "  colWidths=["+cols.join(",")+"]"+
-             "  linkColsSideBySide="+(sideBySide?"yes":"no ")+
-             "  overflow="+over+"  wrappedLinks="+wrapped);
-      f.remove(); next();
-    }.bind(this),5000);
-  };
-  document.body.appendChild(f);
-}
-next();
+document.getElementById("f").addEventListener("load",function(){
+ var d=this.contentDocument,w=this.contentWindow,L=[];
+ setTimeout(function(){
+  [].slice.call(d.querySelectorAll(".site-footer a")).forEach(function(a){
+    var r=d.createRange(); r.selectNodeContents(a);
+    var h=r.getBoundingClientRect().height;
+    var fs=w.getComputedStyle(a).fontSize;
+    var b=a.getBoundingClientRect();
+    if(h>24) L.push("WRAPS: '"+a.textContent.trim()+"'  textH="+Math.round(h)+" font="+fs+
+                    " colW="+Math.round(b.width)+" scrollW="+a.scrollWidth);
+  });
+  if(!L.length) L.push("none wrap at 320px");
+  document.getElementById("out").textContent=L.join("\n");
+ },6000);
+});
 </script></body></html>
