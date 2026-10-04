@@ -1,64 +1,31 @@
 <!DOCTYPE html>
-<html><head><meta charset="utf-8"><title>final perf</title></head>
+<html><head><meta charset="utf-8"><title>perf one</title></head>
 <body>
 <pre id="out">running</pre>
 <script>
-var pages=["index.html","products.html","about.html","contact.html","cart.html","checkout.html","track.html"];
-var results=[],i=0;
-function next(){
-  if(i>=pages.length){ report(); return; }
-  var p=pages[i++];
-  var f=document.createElement("iframe");
-  f.style.cssText="width:390px;height:844px;border:0";
-  f.src=p;
-  f.onload=function(){
-    setTimeout(function(){
-      try{ results.push(measure(p,f.contentWindow)); }
-      catch(e){ results.push({page:p,error:String(e)}); }
-      f.remove(); next();
-    },6000);
-  };
-  document.body.appendChild(f);
-}
-function measure(p,w){
-  var nav=w.performance.getEntriesByType("navigation")[0]||{};
-  var rs=w.performance.getEntriesByType("resource");
-  var fcp=0,lcp=0,cls=0;
-  w.performance.getEntriesByType("paint").forEach(function(e){ if(e.name==="first-contentful-paint") fcp=Math.round(e.startTime); });
-  try{
-    var le=w.performance.getEntriesByType("largest-contentful-paint");
-    if(le.length) lcp=Math.round(le[le.length-1].startTime);
-  }catch(e){}
-  var lt=w.performance.getEntriesByType("longtask")||[];
-  return {
-    page:p,
-    fcp:fcp, lcp:lcp||null,
-    dcl:Math.round(nav.domContentLoadedEventEnd||0),
-    load:Math.round(nav.loadEventEnd||0),
-    reqs:rs.length+1,
-    imgReqs:rs.filter(function(r){return r.initiatorType==="img";}).length,
-    imgKB:Math.round(rs.filter(function(r){return r.initiatorType==="img";})
-              .reduce(function(a,r){return a+(r.transferSize||0);},0)/1024),
-    totalKB:Math.round(rs.reduce(function(a,r){return a+(r.transferSize||0);},0)/1024),
-    longtasks:lt.length
-  };
-}
-function report(){
-  var out="page          FCP    LCP    DCL   load  reqs imgReqs  imgKB  totalKB longtask\n";
-  out+="-".repeat(83)+"\n";
-  results.forEach(function(r){
-    if(r.error){ out+=r.page+"  ERROR "+r.error+"\n"; return; }
-    out+=r.page.padEnd(13)+String(r.fcp).padStart(5)+" "+
-      String(r.lcp==null?"n/a":r.lcp).padStart(5)+" "+
-      String(r.dcl).padStart(5)+" "+
-      String(r.load).padStart(6)+" "+
-      String(r.reqs).padStart(5)+" "+
-      String(r.imgReqs).padStart(7)+" "+
-      String(r.imgKB+"K").padStart(7)+" "+
-      String(r.totalKB+"K").padStart(8)+" "+
-      String(r.longtasks).padStart(8)+"\n";
-  });
-  document.getElementById("out").textContent=out;
-}
-next();
+var p=new URLSearchParams(location.search).get("page")||"index.html";
+var f=document.createElement("iframe");
+f.style.cssText="width:390px;height:844px;border:0";
+f.src=p;
+f.onload=function(){
+  setTimeout(function(){
+    var w=this.contentWindow;
+    var nav=w.performance.getEntriesByType("navigation")[0]||{};
+    var rs=w.performance.getEntriesByType("resource");
+    var fcp=0;
+    w.performance.getEntriesByType("paint").forEach(function(e){
+      if(e.name==="first-contentful-paint") fcp=Math.round(e.startTime); });
+    var imgs=rs.filter(function(r){return r.initiatorType==="img";});
+    var lt=w.performance.getEntriesByType("longtask")||[];
+    var txt=fcp+" | DCL "+Math.round(nav.domContentLoadedEventEnd||0)+
+      " | load "+Math.round(nav.loadEventEnd||0)+
+      " | reqs "+(rs.length+1)+
+      " | imgReqs "+imgs.length+
+      " | imgKB "+Math.round(imgs.reduce(function(a,r){return a+(r.transferSize||0);},0)/1024)+
+      " | totalKB "+Math.round(rs.reduce(function(a,r){return a+(r.transferSize||0);},0)/1024)+
+      " | longtasks "+lt.length;
+    document.getElementById("out").textContent=txt;
+  }.bind(this),9000);
+};
+document.body.appendChild(f);
 </script></body></html>
