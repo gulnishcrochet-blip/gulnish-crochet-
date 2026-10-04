@@ -1378,6 +1378,9 @@
         return;
       }
       var card = addBtn.closest(".work-card");
+      /* Safety net: the photo is parked until the card is shown, so make sure
+         it is released before its URL is copied into the cart line. */
+      hydrateCardImages(card);
       var img = card ? card.querySelector(".work-card__media img") : null;
       var swatchEl = card ? card.querySelector(".color-swatch.selected") : null;
       addToCart({
