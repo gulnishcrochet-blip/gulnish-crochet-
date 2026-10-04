@@ -259,6 +259,10 @@
     modal.classList.add('is-open');
     modal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
+    /* .qv-modal is display:none until .is-open lands, so focusing in this same
+       task is dropped and the keyboard never enters the dialog. Force the
+       style flush first. */
+    void closeBtn.offsetWidth;
     closeBtn.focus();
   }
 
