@@ -6266,3 +6266,157 @@ body.has-topbar .site-header { top: 0; }
     transform: translateY(8px);
   }
 }
+
+/* =========================================================
+   THEME v3 — mobile refinement
+   Phones only. Nothing here changes the palette or removes a
+   feature; it fixes how the existing surfaces behave under a
+   thumb and stops touch devices from inheriting hover states.
+   ========================================================= */
+
+@media (max-width: 760px) {
+  /* ---------- 1. Touch has no hover ---------- */
+  /* iOS Safari latches :hover on after a tap, so a card the shopper
+     merely tapped stayed translated and drop-shadowed until they
+     touched something else. Every lift below is a pointer affordance
+     that has no meaning on a phone, so it is replaced with an :active
+     press - feedback the finger actually caused. */
+  .work-card:hover,
+  .category-card:hover .category-card__img,
+  .collage__panel:hover,
+  .promo-card:hover {
+    transform: none;
+  }
+
+  .work-card:hover,
+  .category-card:hover .category-card__img,
+  .collage__panel:hover,
+  .promo-card:hover {
+    box-shadow: var(--shadow-sm);
+  }
+
+  .work-card:hover .work-card__media img,
+  .collage__panel:hover .collage__art img,
+  .promo-card:hover .promo-card__art img {
+    transform: none;
+  }
+
+  .work-card:active,
+  .category-card:active .category-card__img,
+  .collage__panel:active,
+  .promo-card:active {
+    transform: scale(0.985);
+  }
+
+  .work-card:active,
+  .category-card:active .category-card__img {
+    box-shadow: var(--shadow-md);
+  }
+
+  .btn:hover,
+  .add-btn:hover,
+  .icon-btn:hover,
+  .cart-btn:hover {
+    transform: none;
+  }
+
+  .btn:active,
+  .add-btn:active,
+  .icon-btn:active,
+  .cart-btn:active {
+    transform: scale(0.97);
+  }
+
+  /* The second gallery photo crossfaded in on hover. On a phone the
+     quickest read of a card is its first photo, so the swap is left to
+     pointers and the alt image simply stays hidden. */
+  .work-card:hover .work-card__alt { opacity: 0; }
+  .work-card:hover .work-card__media .work-card__main { opacity: 1; }
+  .work-card:hover .work-card__media img { transform: none; }
+
+  /* ---------- 2. One cart affordance in the header ---------- */
+  /* The bottom nav already carries a cart button with a live count and
+     the view-cart bar appears above it, so the header icon was a third
+     control for the same job and the widest thing in the bar. */
+  .site-header .cart-btn {
+    display: none;
+  }
+
+  /* ---------- 3. Flatten the surfaces ---------- */
+  /* Cream-on-cream cards separated by soft brown shadows read muddy on
+     a phone, where the whole page is one warm tint. A hairline border
+     separates them cleanly, and the shadow is kept for lift only. */
+  .work-card {
+    border-color: var(--line-strong);
+    box-shadow: none;
+  }
+
+  .work-card:active {
+    box-shadow: var(--shadow-md);
+  }
+
+  .image-grid {
+    gap: 0.85rem;
+  }
+
+  /* ---------- 4. Type scale ---------- */
+  /* Slightly down on the card so a two-line name and the price read as
+     one block rather than competing. */
+  .work-card__name {
+    font-size: 0.92rem;
+    line-height: 1.32;
+  }
+
+  .work-card__price {
+    font-size: 0.95rem;
+  }
+
+  .work-card__body {
+    gap: 0.4rem;
+    padding: 0.75rem 0.75rem 0.8rem;
+  }
+
+  /* ---------- 5. Section rhythm ---------- */
+  /* The strip and the grid that follow read as one unit only when the
+     space above the heading matches the space under the last card. */
+  .value-strip__inner {
+    gap: 1px;
+  }
+
+  .hero-collage {
+    padding-bottom: 0.6rem;
+  }
+
+  /* ---------- 6. Softer primary shadow ---------- */
+  /* Every CTA carried a 20px coloured glow, which on a small screen reads
+     as a smudge under the button rather than depth. */
+  :root {
+    --shadow-primary: 0 4px 12px rgba(188, 106, 69, 0.26);
+  }
+}
+
+@media (max-width: 380px) {
+  /* 360px-class handsets are the tightest case: two columns of product
+     cards leave roughly 148px of content width each. */
+  .image-grid,
+  .category-grid {
+    gap: 0.7rem;
+  }
+
+  .work-card__body {
+    padding: 0.65rem 0.6rem 0.7rem;
+  }
+
+  .work-card__name {
+    font-size: 0.88rem;
+  }
+
+  .add-btn {
+    padding: 0.55rem 0.4rem;
+    font-size: 0.8rem;
+  }
+
+  .container {
+    width: 92%;
+  }
+}
