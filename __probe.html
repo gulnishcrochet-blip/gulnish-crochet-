@@ -35,13 +35,11 @@ var lines=[
  cs(".image-grid",["grid-template-columns","gap"])
 ];
 var n=document.querySelector(".work-card__name");
-var nl=document.createElement("div");
-nl.className="work-card__name"; nl.style.width=n.offsetWidth+"px";
-nl.textContent="One line";
-document.body.appendChild(nl);
-var oneLine=nl.offsetHeight;
-lines.push("name: clientWidth="+n.offsetWidth+"px oneLineH="+oneLine+"px actualH="+n.offsetHeight+
-  "px scrollH="+n.scrollHeight+"px clientH="+n.clientHeight+
-  " CLAMPED="+(n.scrollHeight>n.clientHeight+1));
+n.textContent="Handmade Crochet Flower Bouquet With Silk Wrap And Custom Colours";
+lines.push("name: display="+getComputedStyle(n).display+" w="+n.offsetWidth+
+  " h="+n.offsetHeight+" scrollH="+n.scrollHeight+" clientH="+n.clientHeight+
+  " overflows="+(n.scrollHeight>n.clientHeight+1));
+var card=document.querySelector(".work-card");
+lines.push("card h="+card.offsetHeight+" grid cols=2 -> cards must match height");
 document.getElementById("out").textContent=lines.join("\n");
 </script></body></html>
