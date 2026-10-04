@@ -164,8 +164,14 @@
     navOverlay.classList.add("open");
     if (navToggle) navToggle.setAttribute("aria-expanded", "true");
     lockScroll();
+    /* The drawer is visibility:hidden until .open lands, and visibility is
+       inherited, so focusing a link in this same task is dropped and the
+       keyboard stays outside the drawer. Force the style flush first. */
     var firstLink = mainNav.querySelector("a");
-    if (firstLink) firstLink.focus();
+    if (firstLink) {
+      void firstLink.offsetWidth;
+      firstLink.focus();
+    }
   }
 
   if (navToggle && mainNav) {
