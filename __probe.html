@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="stylesheet" href="css/style.css"></head>
+<body>
+<header class="site-header"><div class="container header-inner"><a class="logo"><span class="logo-name">x</span></a></div></header>
+<section class="hero-collage"><div class="container"><div class="collage">
+<a class="collage__panel collage__panel--hero"><div class="collage__art"><img src="images/purses/purse-1.webp"></div><div class="collage__body"><h1 class="collage__title">T</h1><p class="collage__text">x</p><span class="collage__cta">C</span></div></a>
+</div></div></section>
+<section class="value-strip"><div class="container"><div class="value-strip__inner">
+<div class="value-item"><span class="value-item__icon"><svg viewBox="0 0 24 24"></svg></span><div><div class="value-item__title">Handmade to order</div><div class="value-item__text">Stitched after you order, never mass-produced</div></div></div>
+<div class="value-item"><span class="value-item__icon"><svg viewBox="0 0 24 24"></svg></span><div><div class="value-item__title">Delivery</div><div class="value-item__text">Tracked shipping</div></div></div>
+</div></div></section>
+<section class="section"><div class="container"><div class="section-head"><span class="section-eyebrow">Shop</span><h2 class="section-title">T</h2><p class="section-lead">L</p></div>
+<div class="image-grid"><article class="work-card"><div class="work-card__media"><img src="images/purses/purse-1.webp"></div><div class="work-card__body"><h3 class="work-card__name">Handmade Crochet Flower Bouquet With Silk Wrap</h3><div class="work-card__price">Rs. 2,450</div><button class="add-btn">Add to cart</button></div></article></div>
+</div></section>
+<footer class="site-footer"><div class="container footer-inner"><div class="footer-bottom"><p>c</p></div></div></footer>
+<pre id="out"></pre>
+<script>
+function cs(sel, props){var el=document.querySelector(sel);if(!el)return sel+" :: MISSING";
+  var s=getComputedStyle(el);return sel+" :: "+props.map(function(p){return p+"="+s[p];}).join(" | ");}
+var lines=[
+ "viewport="+window.innerWidth+"x"+window.innerHeight,
+ "safeTop="+getComputedStyle(document.querySelector(".site-header")).paddingTop,
+ "safeBottomFooter="+getComputedStyle(document.querySelector(".site-footer")).paddingBottom,
+ cs("html",["-webkit-text-size-adjust","text-size-adjust"]),
+ cs(".value-strip__inner",["grid-template-columns"]),
+ cs(".value-item",["flex-direction","padding"]),
+ cs(".collage",["grid-template-columns"]),
+ cs(".collage__panel--hero",["min-height"]),
+ cs(".section",["padding-top","padding-bottom"]),
+ cs(".section-head",["margin-bottom"]),
+ cs(".work-card__name",["-webkit-line-clamp","-webkit-box-orient","display","font-size"]),
+ cs(".add-btn",["min-height","font-size"]),
+ cs(".image-grid",["grid-template-columns","gap"])
+];
+document.getElementById("out").textContent=lines.join("\n");
+</script></body></html>
