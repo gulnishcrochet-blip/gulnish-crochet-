@@ -6,40 +6,35 @@
 <script>
 document.getElementById("f").addEventListener("load", function(){
   var w=this.contentWindow,d=this.contentDocument,L=[];
-  function who(){var e=d.activeElement;if(!e)return"none";
-    return (e.id||e.className||e.tagName)+(e.id?"":"");}
+  function who(){var e=d.activeElement;if(!e)return"none";return e.id||e.className||e.tagName;}
+  function finish(){document.getElementById("out").textContent=L.join("\n");}
   setTimeout(function(){
-    // seed the cart so the drawer has content
-    w.localStorage.setItem("gulnish-cart",JSON.stringify([
-      {id:"p1",name:"Purse",price:450,color:"Cream",image:"",qty:1}]));
-    d.dispatchEvent(new w.Event("storage"));
     var btn=d.getElementById("bottomNavCart");
     L.push("bottomNavCart present: "+(btn?"yes":"NO"));
     L.push("aria-expanded before: "+btn.getAttribute("aria-expanded"));
-    L.push("focus before click: "+who());
+    L.push("focus before open: "+who());
     btn.click();
-    // check immediately (same task) and after frames
+    L.push("focus in same task as .click(): "+who()+"   (old code left it here)");
     setTimeout(function(){
-      L.push("focus immediately after click: "+who()+"   <-- old code stopped here");
-      requestAnimationFrame(function(){requestAnimationFrame(function(){
-        L.push("focus after double rAF: "+who());
-        L.push("aria-expanded after: "+btn.getAttribute("aria-expanded"));
-        L.push("drawer aria-hidden: "+d.getElementById("cartDrawer").getAttribute("aria-hidden"));
-        L.push("active element is inside drawer: "+
-          (d.getElementById("cartDrawer").contains(d.activeElement)?"yes":"NO <-- BUG"));
-        // Escape closes and returns focus
-        d.dispatchEvent(new w.KeyboardEvent("keydown",{key:"Escape",bubbles:true}));
-        setTimeout(function(){
-          L.push("");
-          L.push("after Escape -> drawer open: "+d.getElementById("cartDrawer").classList.contains("open"));
-          L.push("after Escape -> aria-expanded: "+btn.getAttribute("aria-expanded"));
-          L.push("after Escape -> focus returned to: "+who()+
-            (d.activeElement===btn?" (correct)":" <-- check"));
-          L.push("body overflow restored: "+(d.body.style.overflow===""?"yes":"NO <-- BUG"));
-          document.getElementById("out").textContent=L.join("\n");
-        },500);
-      });});
-    },50);
-  },4000);
+      L.push("focus after 200ms: "+who());
+      L.push("aria-expanded after: "+btn.getAttribute("aria-expanded"));
+      L.push("drawer aria-hidden: "+d.getElementById("cartDrawer").getAttribute("aria-hidden"));
+      var drawer=d.getElementById("cartDrawer");
+      L.push("focus is INSIDE drawer: "+(drawer.contains(d.activeElement)?"yes":"NO  <-- BUG"));
+      L.push("close btn computed visibility: "+
+        (function(){var c=d.getElementById("cartClose");
+          return c?getComputedStyle(c).visibility:"n/a";})());
+      d.dispatchEvent(new w.KeyboardEvent("keydown",{key:"Escape",bubbles:true}));
+      setTimeout(function(){
+        L.push("");
+        L.push("after Escape -> drawer open: "+drawer.classList.contains("open"));
+        L.push("after Escape -> aria-expanded: "+btn.getAttribute("aria-expanded"));
+        L.push("after Escape -> aria-hidden: "+drawer.getAttribute("aria-hidden"));
+        L.push("after Escape -> focus: "+who()+(d.activeElement===btn?"  (returned to trigger, correct)":"  <-- check"));
+        L.push("body overflow restored: "+(d.body.style.overflow===""?"yes":"NO  <-- BUG"));
+        finish();
+      },600);
+    },200);
+  },3500);
 });
 </script></body></html>
