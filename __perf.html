@@ -49,13 +49,19 @@ document.getElementById("f").addEventListener("load",function(){
         L.push("    '"+a.textContent.trim().slice(0,20)+"' "+Math.round(a.getBoundingClientRect().height)+"px");
       });
 
-      // wrapped-line check on the two link columns
+      // wrapped-line check: compare the text box against the row, not height
+      // (a 44px flex tap target is taller than 1.7 line-heights by design)
       L.push("");
-      [].slice.call(f.querySelectorAll(".footer-links a, .footer-shoplist a")).forEach(function(a){
-        var lh=parseFloat(w.getComputedStyle(a).lineHeight)||20;
-        if(a.getBoundingClientRect().height>lh*1.7){
-          L.push("    wraps to 2 lines: '"+a.textContent.trim()+"'");
-        }
+      var wrapped=[].slice.call(f.querySelectorAll(".footer-links a, .footer-shoplist a")).filter(function(a){
+        var range=d.createRange(); range.selectNodeContents(a);
+        var r=range.getBoundingClientRect();
+        var box=a.getBoundingClientRect();
+        return r.height>24;   // more than one line of ~20px text
+      });
+      L.push("links whose text wraps to 2+ lines: "+wrapped.length+
+             (wrapped.length?"  <-- tight":"  (ok)"));
+      wrapped.slice(0,6).forEach(function(a){
+        L.push("    '"+a.textContent.trim()+"'");
       });
       document.getElementById("out").textContent=L.join("\n");
     },700);
