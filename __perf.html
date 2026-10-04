@@ -1,66 +1,48 @@
 <!DOCTYPE html>
-<html><head><meta charset="utf-8"><title>search + hover</title></head>
+<html><head><meta charset="utf-8"><title>hover path</title></head>
 <body>
-<iframe id="a" src="products.html" style="width:1200px;height:900px;border:0"></iframe>
 <pre id="out">running</pre>
 <script>
-var L=[],d,w;
-function finish(){document.getElementById("out").textContent=L.join("\n");}
-document.getElementById("a").addEventListener("load",function(){
-  d=this.contentDocument; w=this.contentWindow;
-  setTimeout(function(){
-    L.push("=== DESKTOP HOVER IMAGE ===");
-    L.push("viewport: "+d.documentElement.clientWidth+"px (hover-capable: "+
-           w.matchMedia("(hover: hover)").matches+")");
-    var card=[].slice.call(d.querySelectorAll("[data-category]")).filter(function(c){
-      return c.querySelector("img.work-card__main") && c.querySelector("img.work-card__alt"); })[0];
-    if(!card){ L.push("no card with an image found"); finish(); return; }
-    var main=card.querySelector("img.work-card__main");
-    var alt=card.querySelector("img.work-card__alt");
-    L.push("main hydrated on load: "+(!!main.getAttribute("src")?"yes":"NO  <-- BUG"));
-    L.push("alt parked before hover: "+(alt?(alt.getAttribute("src")?"NO - already loaded":"yes (good)"):"no alt image on this card"));
-    // simulate a real pointer entering the card
-    var ev=new w.MouseEvent("mouseover",{bubbles:true});
-    (alt||main).dispatchEvent(ev);
-    setTimeout(function(){
-      L.push("alt hydrated after mouseover: "+(alt?(alt.getAttribute("src")?"yes (good)":"NO  <-- BUG"):"n/a"));
-      L.push("");
-      searchTest();
-    },400);
-  },5000);
-});
-function searchTest(){
-  L.push("=== SEARCH OVERLAY ===");
-  var btn=d.querySelector("[data-open-search]");
-  L.push("search trigger: "+(btn?btn.id||btn.className:"NOT FOUND"));
-  if(btn){
-    btn.click();
-    setTimeout(function(){
-      var ov=d.querySelector(".search-overlay.is-open");
-      L.push("overlay opens: "+(ov?"yes":"NO  <-- BUG"));
-      if(ov){
-        var inp=ov.querySelector("input");
-        L.push("input focused: "+(d.activeElement===inp?"yes":"no  <-- check"));
-        inp.value="purs";
-        inp.dispatchEvent(new w.Event("input",{bubbles:true}));
-        setTimeout(function(){
-          var hits=ov.querySelectorAll(".search-hit");
-          L.push("results for 'purs': "+hits.length);
-          var hitImgs=ov.querySelectorAll("img");
-          var broken=0;
-          [].slice.call(hitImgs).forEach(function(im){
-            if(im.complete && im.naturalWidth===0 && im.getAttribute("src")) broken++;});
-          L.push("result images: "+hitImgs.length+"  broken: "+broken+(broken?"  <-- BUG":"  (ok)"));
-          var firstSrc=hitImgs[0]&&hitImgs[0].getAttribute("src");
-          L.push("first result img src: "+(firstSrc||"none")+"  <- full-size, not sm tier");
-          d.dispatchEvent(new w.KeyboardEvent("keydown",{key:"Escape",bubbles:true}));
+var KEY="gulnish-products-v53";
+var f1=document.createElement("iframe");
+f1.style.cssText="width:1190px;height:900px;border:0";
+f1.src="products.html";
+f1.onload=function(){
+  var w=this.contentWindow;
+  try{
+    var list=JSON.parse(w.localStorage.getItem(KEY)||"[]");
+    if(list.length && list[0].image){
+      list[0].gallery=[list[0].image.replace(/\.webp$/,"-2.webp")];
+      w.localStorage.setItem(KEY,JSON.stringify(list));
+      document.getElementById("out").textContent="seeded gallery on product 0: "+list[0].gallery[0]+
+        "\n(expected file exists: "+ "checking")+"\nreloading...";
+      // reload with the seeded data
+      setTimeout(function(){
+        var f2=document.createElement("iframe");
+        f2.style.cssText="width:1190px;height:900px;border:0";
+        f2.src="products.html";
+        f2.onload=function(){
+          var d=this.contentDocument, w2=this.contentWindow, L=[];
           setTimeout(function(){
-            L.push("Escape closes overlay: "+(!d.querySelector(".search-overlay.is-open")?"yes":"NO"));
-            finish();
-          },300);
-        },700);
-      } else finish();
-    },400);
-  } else finish();
-}
+            var alt=d.querySelector("img.work-card__alt");
+            L.push("hover-capable: "+w2.matchMedia("(hover: hover)").matches);
+            L.push("alt image rendered: "+(alt?"yes":"no"));
+            if(alt){
+              L.push("alt parked before hover: "+(alt.getAttribute("src")?"NO - loaded eagerly":"yes (good)"));
+              L.push("alt has data-src: "+(alt.getAttribute("data-src")||"NO  <-- BUG"));
+              alt.dispatchEvent(new w2.MouseEvent("mouseover",{bubbles:true}));
+              setTimeout(function(){
+                L.push("alt src after mouseover: "+(alt.getAttribute("src")||"STILL EMPTY  <-- BUG"));
+                L.push("data-src cleaned up: "+(alt.hasAttribute("data-src")?"NO  <-- BUG":"yes (good)"));
+                document.getElementById("out").textContent=L.join("\n");
+              },500);
+            } else document.getElementById("out").textContent=L.join("\n");
+          },6000);
+        };
+        document.body.appendChild(f2);
+      },300);
+    } else document.getElementById("out").textContent="could not seed (no products in storage)";
+  }catch(e){ document.getElementById("out").textContent="error: "+e; }
+};
+document.body.appendChild(f1);
 </script></body></html>
