@@ -4819,6 +4819,7 @@ p.about-text {
   background: linear-gradient(90deg, var(--primary-deep), var(--primary) 55%, var(--gold-deep));
   color: #fff;
   font-size: 0.82rem;
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 .topbar[hidden] { display: none; }
