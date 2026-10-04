@@ -1351,17 +1351,18 @@
     cartTriggers().forEach(function (t) { t.setAttribute("aria-expanded", "true"); });
     cartOverlay.classList.add("open");
     document.body.style.overflow = "hidden";
-    /* The drawer is visibility:hidden until .open lands, so focusing the close
-       button in this same task is a no-op - the browser still considers it
-       unfocusable and keyboard focus stays stranded on the page behind the
-       overlay. Double rAF waits until the class has been committed and the
-       drawer is genuinely visible. */
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () {
-        var closeBtn = document.getElementById("cartClose");
-        if (closeBtn) closeBtn.focus();
-      });
-    });
+    /* The drawer is visibility:hidden until .open lands, and visibility is
+       inherited, so focusing the close button in this same task is a no-op -
+       the browser still computes it as unfocusable and keyboard focus stays
+       stranded on the page behind the overlay. Reading offsetWidth forces
+       Blink to flush style, which commits visibility:visible; only then will
+       focus() take effect. (A rAF here would also work, but this is
+       deterministic and cannot be skipped by a throttled frame.) */
+    var closeBtn = document.getElementById("cartClose");
+    if (closeBtn) {
+      void closeBtn.offsetWidth;
+      closeBtn.focus();
+    }
   }
 
   function closeCart() {
