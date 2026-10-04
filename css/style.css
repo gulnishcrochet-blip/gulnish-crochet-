@@ -5171,9 +5171,24 @@ body.has-topbar .site-header { top: 0; }
 @media (max-width: 860px) {
   .value-strip__inner { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-@media (max-width: 460px) {
-  .value-strip__inner { grid-template-columns: 1fr; }
-  .value-item { padding: 0.95rem 0.9rem; }
+
+/* Phones keep the 2x2 grid instead of collapsing to four stacked rows, which
+   is a full screen of chrome between the hero and the first product. The icon
+   moves above the text because a 38px icon plus a 12px gap leaves too little
+   width for the label to wrap in anything but four or five lines. */
+@media (max-width: 560px) {
+  .value-item {
+    flex-direction: column;
+    gap: 0.55rem;
+    padding: 0.9rem 0.85rem;
+  }
+  .value-item__icon {
+    width: 34px;
+    height: 34px;
+  }
+  .value-item__icon svg { width: 17px; height: 17px; }
+  .value-item__title { font-size: 0.87rem; }
+  .value-item__text { font-size: 0.76rem; }
 }
 
 /* ============ DUAL PROMO BANNERS ============ */
