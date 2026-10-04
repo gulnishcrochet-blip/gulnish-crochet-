@@ -1,42 +1,51 @@
 <!DOCTYPE html>
 <html><head><meta charset="utf-8"><title>hover path</title></head>
 <body>
-<pre id="out">seeding...</pre>
+<pre id="out">running</pre>
 <script>
-var KEY="gulnish-products-v53";
-var list;
-try{ list=JSON.parse(localStorage.getItem(KEY)||"[]"); }catch(e){ list=[]; }
-if(!list.length){ document.getElementById("out").textContent="no products in localStorage yet"; }
-else if(!list[0].image){ document.getElementById("out").textContent="product 0 has no image"; }
-else{
-  // point the gallery at a file that really exists
-  var img=list[0].image;                      // e.g. images/purses/purse-1.webp
-  var alt=img.replace(/\.webp$/,"-2.webp");
-  list[0].gallery=[alt];
-  localStorage.setItem(KEY,JSON.stringify(list));
-  var f=document.createElement("iframe");
-  f.style.cssText="width:1190px;height:900px;border:0";
-  f.src="products.html";
-  f.onload=function(){
-    var d=this.contentDocument,w=this.contentWindow,L=[];
-    L.push("seeded gallery: "+alt);
+var KEY="gulnish-products-v53", stage=0, f, L=[];
+var out=document.getElementById("out");
+function show(){ out.textContent=L.join("\n"); }
+
+f=document.createElement("iframe");
+f.style.cssText="width:1190px;height:900px;border:0";
+f.src="products.html";
+f.onload=function(){
+  if(stage===0){
     setTimeout(function(){
+      var list;
+      try{ list=JSON.parse(localStorage.getItem(KEY)||"[]"); }catch(e){ list=[]; }
+      if(!list.length){ L.push("still no products in localStorage"); show(); return; }
+      var img=list[0].image;
+      var alt=img.replace(/\.webp$/,"-2.webp");
+      list[0].gallery=[alt];
+      localStorage.setItem(KEY,JSON.stringify(list));
+      L.push("stage 1: seeded gallery on product 0 -> "+alt);
+      L.push("          image exists? checking below");
+      show();
+      stage=1;
+      f.src="products.html?reload=1";   // reload with the seeded gallery
+    },6000);
+  } else {
+    setTimeout(function(){
+      var d=f.contentDocument,w=f.contentWindow;
       var el=d.querySelector("img.work-card__alt");
-      L.push("hover-capable: "+w.matchMedia("(hover: hover)").matches);
-      L.push("alt image in DOM: "+(el?"yes":"no  (feature dormant unless gallery set)"));
+      L.push("");
+      L.push("stage 2: hover-capable = "+w.matchMedia("(hover: hover)").matches);
+      L.push("alt image in DOM: "+(el?"yes":"no  <-- feature not rendered"));
       if(el){
         L.push("parked before hover: "+(el.getAttribute("src")?"NO - eager  <-- BUG":"yes (good)"));
-        L.push("data-src present: "+(el.getAttribute("data-src")||"NO  <-- BUG"));
+        L.push("data-src present:   "+(!!el.getAttribute("data-src")?"yes (good)":"NO  <-- BUG"));
         el.dispatchEvent(new w.MouseEvent("mouseover",{bubbles:true}));
         setTimeout(function(){
           L.push("src after mouseover: "+(el.getAttribute("src")||"STILL EMPTY  <-- BUG"));
-          L.push("data-src cleaned: "+(el.hasAttribute("data-src")?"NO  <-- BUG":"yes (good)"));
-          L.push("alt srcset: "+el.getAttribute("srcset"));
-          document.getElementById("out").textContent=L.join("\n");
-        },600);
-      } else document.getElementById("out").textContent=L.join("\n");
-    },7000);
-  };
-  document.body.appendChild(f);
-}
+          L.push("data-src cleaned:    "+(el.hasAttribute("data-src")?"NO  <-- BUG":"yes (good)"));
+          L.push("alt srcset:          "+(el.getAttribute("srcset")||"none"));
+          show();
+        },700);
+      } else show();
+    },6000);
+  }
+};
+document.body.appendChild(f);
 </script></body></html>
