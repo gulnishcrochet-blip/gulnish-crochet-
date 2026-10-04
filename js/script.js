@@ -448,19 +448,55 @@
   var productCountLabel = document.getElementById("productCountLabel");
   var featuredGrid = document.getElementById("featuredGrid");
 
+  /* Catalog images are parked in data-src and only promoted to a real src
+     once their card is on screen. Writing src into innerHTML starts the fetch
+     straight away: the browser committed the request before applyFilters() had
+     a chance to hide the 106 cards past the first page, and a display:none
+     arriving afterwards cannot cancel an in-flight request. That pulled the
+     whole 114-piece catalogue - about 1.4MB - to show eight products. */
+  function hydrateCardImages(card) {
+    if (!card) return;
+    var imgs = card.querySelectorAll("img[data-src]");
+    for (var i = 0; i < imgs.length; i++) {
+      var im = imgs[i];
+      if (im.dataset.srcset) im.srcset = im.dataset.srcset;
+      if (im.dataset.sizes) im.sizes = im.dataset.sizes;
+      im.src = im.dataset.src;
+      im.removeAttribute("data-src");
+      im.removeAttribute("data-srcset");
+      im.removeAttribute("data-sizes");
+    }
+  }
+
+  /* The second gallery photo only ever shows on hover, which a touch screen
+     cannot do. It stays parked until a real pointer arrives, so phones never
+     download a second image per card. */
+  function hydrateHoverImage(card) {
+    if (!card || !window.matchMedia("(hover: hover)").matches) return;
+    var alt = card.querySelector("img.work-card__alt[data-src]");
+    if (!alt) return;
+    if (alt.dataset.srcset) alt.srcset = alt.dataset.srcset;
+    if (alt.dataset.sizes) alt.sizes = alt.dataset.sizes;
+    alt.src = alt.dataset.src;
+    alt.removeAttribute("data-src");
+    alt.removeAttribute("data-srcset");
+    alt.removeAttribute("data-sizes");
+  }
+
   function cardHTML(p, index) {
     var imgSrc = displayImage(p.image);
     var isFirst = typeof index === "number" && index === 0;
     var image = imgSrc
-      ? '<img class="work-card__main" src="' + imgSrc + '"' + imgSrcset(p.image) + ' alt="' + escapeHtml(p.name) + '"' +
+      ? '<img class="work-card__main" data-src="' + imgSrc + '"' + imgSrcset(p.image, true) +
+        ' alt="' + escapeHtml(p.name) + '"' +
         (isFirst ? ' fetchpriority="high" decoding="async"' : ' loading="lazy" decoding="async"') + ">"
       : "";
-    /* Second gallery photo as the hover state. Same lazy tier as the main
-       image so a phone never pulls the 800px file just to hover. */
+    /* Second gallery photo as the hover state. Parked like the main image and
+       released by hydrateHoverImage() only where hovering is possible. */
     var altImage =
       p.image && p.gallery && p.gallery.length
-        ? '<img class="work-card__alt" src="' + displayImage(p.gallery[0]) +
-          '"' + imgSrcset(p.gallery[0]) +
+        ? '<img class="work-card__alt" data-src="' + displayImage(p.gallery[0]) +
+          '"' + imgSrcset(p.gallery[0], true) +
           ' alt="" aria-hidden="true" loading="lazy" decoding="async">'
         : "";
     var colors =
