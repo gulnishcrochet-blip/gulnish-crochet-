@@ -1,84 +1,38 @@
 <!DOCTYPE html>
-<html><head><meta charset="utf-8"><title>perf probe</title></head>
+<html><head><meta charset="utf-8"><title>img audit</title></head>
 <body>
-<iframe id="f" src="index.html" style="width:390px;height:844px;border:0"></iframe>
-<iframe id="f2" src="products.html" style="width:390px;height:844px;border:0"></iframe>
+<iframe id="f" src="products.html" style="width:390px;height:844px;border:0"></iframe>
 <pre id="out">waiting</pre>
 <script>
-function observe(w){
-  var L = [];
-  // layout shifts
-  var cls = 0, shifts = [];
-  try {
-    new w.PerformanceObserver(function(list){
-      list.getEntries().forEach(function(e){
-        if(!e.hadRecentInput){ cls += e.value; shifts.push(Math.round(e.value*10000)/10000); }
-      });
-    }).observe({type:'layout-shift', buffered:true});
-  } catch(e){ L.push('CLS observer unsupported'); }
-
-  // long tasks
-  var longs = [];
-  try {
-    new w.PerformanceObserver(function(list){
-      list.getEntries().forEach(function(e){ longs.push(Math.round(e.duration)); });
-    }).observe({type:'longtask', buffered:true});
-  } catch(e){ L.push('longtask observer unsupported'); }
-
-  return {
-    paint: function(){
-      var nav = w.performance.getEntriesByType('navigation')[0] || {};
-      var fcp = w.performance.getEntriesByName('first-contentful-paint')[0];
-      var out = {
-        fcp: fcp ? Math.round(fcp.startTime) : null,
-        domContentLoaded: Math.round(nav.domContentLoadedEventEnd||0),
-        load: Math.round(nav.loadEventEnd||0),
-        transferKB: Math.round((nav.transferSize||0)/1024),
-        resources: w.performance.getEntriesByType('resource').length,
-        cls: Math.round(cls*10000)/10000,
-        longTasks: longs,
-        longest: longs.length?Math.max.apply(null,longs):0
-      };
-      // LCP
-      try {
-        new w.PerformanceObserver(function(list){
-          var es = list.getEntries();
-          if (es.length) out.lcp = Math.round(es[es.length-1].startTime);
-        }).observe({type:'largest-contentful-paint', buffered:true});
-      } catch(e){}
-      return out;
-    },
-    shiftDetail: shifts,
-    heaviest: function(){
-      return w.performance.getEntriesByType('resource')
-        .map(function(r){ return {n:r.name.split('/').pop().slice(0,42), kb:Math.round((r.transferSize||0)/1024), ms:Math.round(r.duration), init:r.initiatorType}; })
-        .sort(function(a,b){return b.kb-a.kb;}).slice(0,12);
-    }
-  };
-}
-function fmt(name, o, shifts, heavy){
-  var s = '── '+name+' ──\n';
-  s += '  FCP='+o.fcp+'ms  DCL='+o.domContentLoaded+'ms  load='+o.load+'ms\n';
-  s += '  LCP='+(o.lcp||'n/a')+'ms  CLS='+o.cls+'  longTasks='+o.longTasks.length+
-       (o.longTasks.length?' ['+o.longTasks.join(',')+']ms':'none')+'\n';
-  s += '  transfer='+o.transferKB+'KB across '+o.resources+' subresources\n';
-  s += '  CLS shifts: '+(shifts.length?shifts.join(', '):'none')+'\n';
-  s += '  heaviest subresources:\n';
-  heavy.forEach(function(r){ s += '    '+String(r.kb).padStart(5)+'KB  '+String(r.ms).padStart(5)+'ms  '+r.init+': '+r.n+'\n'; });
-  return s;
-}
-var done = 0;
-function run(id, label){
-  var fr = document.getElementById(id);
-  fr.addEventListener('load', function(){
-    var w = fr.contentWindow;
-    setTimeout(function(){
-      var o = observe(w);
-      var p = o.paint();
-      document.getElementById('out').textContent += '\n' + fmt(label, p, o.shiftDetail, o.heaviest());
-    }, 4000);
-  });
-}
-run('f','index.html');
-run('f2','products.html');
+document.getElementById("f").addEventListener("load", function(){
+  var w = this.contentWindow, d = this.contentDocument;
+  setTimeout(function(){
+    var imgs = [].slice.call(d.querySelectorAll("img"));
+    var noSrcset = [], oversized = [], noDims = [], noLazy = [], totalNatural = 0;
+    var tiers = {sm:0, full:0, other:0};
+    imgs.forEach(function(im){
+      var cs = im.currentSrc || im.src || "";
+      if (/\/sm\//.test(cs)) tiers.sm++; else if (/images\//.test(cs)) tiers.full++; else tiers.other++;
+      if (!im.srcset && cs.indexOf("images/")>=0) noSrcset.push(cs.split("/").slice(-2).join("/"));
+      var nw = im.naturalWidth || 0, cw = im.clientWidth || 0;
+      totalNatural += nw * (im.naturalHeight||0) * 0.3; // rough decoded px
+      if (nw && cw && nw > cw * 2.2) oversized.push(cs.split("/").slice(-2).join("/")+" nat="+nw+" css="+Math.round(cw));
+      if (!im.getAttribute("width") || !im.getAttribute("height")) noDims.push(cs.split("/").pop());
+      if (!im.loading && cs.indexOf("images/")>=0) noLazy.push(cs.split("/").pop());
+    });
+    var res = w.performance.getEntriesByType("resource").filter(function(r){return r.initiatorType==="img";});
+    var imgKB = res.reduce(function(a,r){return a+(r.transferSize||0);},0)/1024;
+    var L = [];
+    L.push("viewport "+w.innerWidth+"x"+w.innerHeight+"  DPR="+w.devicePixelRatio);
+    L.push("img elements: "+imgs.length+"   img subresource requests: "+res.length);
+    L.push("tier chosen -> sm/: "+tiers.sm+"   full/: "+tiers.full+"   other: "+tiers.other);
+    L.push("image transfer: "+Math.round(imgKB)+"KB");
+    L.push("images WITHOUT srcset ("+noSrcset.length+"): "+noSrcset.slice(0,8).join(", "));
+    L.push("images WITHOUT width/height attrs ("+noDims.length+"): "+noDims.slice(0,10).join(", "));
+    L.push("images WITHOUT loading=lazy ("+noLazy.length+"): "+noLazy.slice(0,10).join(", "));
+    L.push("OVERSIZED natural>2.2x css ("+oversized.length+"):");
+    oversized.slice(0,12).forEach(function(s){ L.push("    "+s); });
+    document.getElementById("out").textContent = L.join("\n");
+  }, 4500);
+});
 </script></body></html>
