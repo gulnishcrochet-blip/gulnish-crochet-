@@ -21,9 +21,9 @@ document.getElementById("a").addEventListener("load",function(){
     L.push("alt parked before hover: "+(alt?(alt.getAttribute("src")?"NO - already loaded":"yes (good)"):"no alt image on this card"));
     // simulate a real pointer entering the card
     var ev=new w.MouseEvent("mouseover",{bubbles:true});
-    alt.dispatchEvent(ev);
+    (alt||main).dispatchEvent(ev);
     setTimeout(function(){
-      L.push("alt hydrated after mouseover: "+(alt.getAttribute("src")?"yes (good)":"NO  <-- BUG"));
+      L.push("alt hydrated after mouseover: "+(alt?(alt.getAttribute("src")?"yes (good)":"NO  <-- BUG"):"n/a"));
       L.push("");
       searchTest();
     },400);
