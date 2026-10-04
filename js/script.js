@@ -719,6 +719,15 @@
     if (cards.length) applyFilters();
   }
 
+  /* One delegated listener for every card's second photo, rather than one per
+     card. Pointer devices only, so the touch path never registers it. */
+  if (productGrid && window.matchMedia("(hover: hover)").matches) {
+    productGrid.addEventListener("mouseover", function (e) {
+      var card = e.target.closest ? e.target.closest(".work-card") : null;
+      if (card) hydrateHoverImage(card);
+    });
+  }
+
   function renderProducts(products) {
     var withImages = (products || []).slice();
     if (productGrid) productGrid.innerHTML = withImages.map(cardHTML).join("");
