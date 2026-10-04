@@ -1,41 +1,64 @@
 <!DOCTYPE html>
-<html><head><meta charset="utf-8"><title>404 probe</title></head>
+<html><head><meta charset="utf-8"><title>search + hover</title></head>
 <body>
+<iframe id="a" src="products.html" style="width:1200px;height:900px;border:0"></iframe>
 <pre id="out">running</pre>
 <script>
-var p=new URLSearchParams(location.search).get("page")||"index.html";
-var f=document.createElement("iframe");
-f.style.cssText="width:390px;height:844px;border:0";
-f.src=p;
-f.onload=function(){
-  var w=this.contentWindow;
+var L=[],d,w;
+function finish(){document.getElementById("out").textContent=L.join("\n");}
+document.getElementById("a").addEventListener("load",function(){
+  d=this.contentDocument; w=this.contentWindow;
   setTimeout(function(){
-    var d=w.document,L=[];
-    // PerformanceResourceTiming.responseStatus is Chromium-only but exact.
-    var bad=w.performance.getEntriesByType("resource").filter(function(r){
-      return r.responseStatus && r.responseStatus>=400;
-    }).map(function(r){return r.responseStatus+" "+r.name;});
-    // broken <img> (naturalWidth 0) that are actually meant to show a photo
-    var imgs=[].slice.call(d.images);
-    var broken=imgs.filter(function(i){
-      if(i.complete && i.naturalWidth===0){
-        var c=i.closest("[data-category]");
-        if(c && c.classList.contains("is-hidden")) return false; // hidden, not loaded yet
-        return true;
-      }
-      return false;
-    }).map(function(i){return (i.getAttribute("src")||i.getAttribute("data-src")||"?").split("/").slice(-2).join("/");});
-    // images still parked (data-src not promoted) among visible cards
-    var cards=[].slice.call(d.querySelectorAll("[data-category]")).filter(function(c){
-      return !c.classList.contains("is-hidden");});
-    var parked=cards.filter(function(c){return c.querySelector("img[data-src]");}).length;
-    L.push("http>=400: "+(bad.length?bad.join(", "):"none"));
-    L.push("broken images: "+(broken.length?broken.join(", "):"none"));
-    L.push("visible cards: "+cards.length+" | cards still parked: "+parked+(parked?"  <-- BUG":"  (ok)"));
-    L.push("imgs total: "+imgs.length+" | with src: "+imgs.filter(function(i){return !!i.getAttribute("src");}).length+
-           " | parked: "+imgs.filter(function(i){return !!i.getAttribute("data-src");}).length);
-    document.getElementById("out").textContent=L.join("\n");
-  },8000);
-};
-document.body.appendChild(f);
+    L.push("=== DESKTOP HOVER IMAGE ===");
+    L.push("viewport: "+d.documentElement.clientWidth+"px (hover-capable: "+
+           w.matchMedia("(hover: hover)").matches+")");
+    var card=d.querySelector("[data-category]");
+    var main=card.querySelector("img.work-card__main");
+    var alt=card.querySelector("img.work-card__alt");
+    L.push("main hydrated on load: "+(!!main.getAttribute("src")?"yes":"NO  <-- BUG"));
+    L.push("alt parked before hover: "+(alt.getAttribute("src")?"NO - already loaded":"yes (good)"));
+    // simulate a real pointer entering the card
+    var ev=new w.MouseEvent("mouseover",{bubbles:true});
+    alt.dispatchEvent(ev);
+    setTimeout(function(){
+      L.push("alt hydrated after mouseover: "+(alt.getAttribute("src")?"yes (good)":"NO  <-- BUG"));
+      L.push("");
+      searchTest();
+    },400);
+  },5000);
+});
+function searchTest(){
+  L.push("=== SEARCH OVERLAY ===");
+  var btn=d.querySelector("[data-search-open], .search-btn, #searchOpen");
+  L.push("search trigger: "+(btn?btn.id||btn.className:"NOT FOUND"));
+  if(btn){
+    btn.click();
+    setTimeout(function(){
+      var ov=d.querySelector(".search-overlay.is-open");
+      L.push("overlay opens: "+(ov?"yes":"NO  <-- BUG"));
+      if(ov){
+        var inp=ov.querySelector("input");
+        L.push("input focused: "+(d.activeElement===inp?"yes":"no  <-- check"));
+        inp.value="purs";
+        inp.dispatchEvent(new w.Event("input",{bubbles:true}));
+        setTimeout(function(){
+          var hits=ov.querySelectorAll(".search-hit");
+          L.push("results for 'purs': "+hits.length);
+          var hitImgs=ov.querySelectorAll("img");
+          var broken=0;
+          [].slice.call(hitImgs).forEach(function(im){
+            if(im.complete && im.naturalWidth===0 && im.getAttribute("src")) broken++;});
+          L.push("result images: "+hitImgs.length+"  broken: "+broken+(broken?"  <-- BUG":"  (ok)"));
+          var firstSrc=hitImgs[0]&&hitImgs[0].getAttribute("src");
+          L.push("first result img src: "+(firstSrc||"none")+"  <- full-size, not sm tier");
+          d.dispatchEvent(new w.KeyboardEvent("keydown",{key:"Escape",bubbles:true}));
+          setTimeout(function(){
+            L.push("Escape closes overlay: "+(!d.querySelector(".search-overlay.is-open")?"yes":"NO"));
+            finish();
+          },300);
+        },700);
+      } else finish();
+    },400);
+  } else finish();
+}
 </script></body></html>
