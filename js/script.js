@@ -498,7 +498,7 @@
     var altImage =
       p.image && p.gallery && p.gallery.length
         ? '<img class="work-card__alt" data-src="' + displayImage(p.gallery[0]) +
-          '"' + imgSrcset(p.gallery[0], true) +
+          '"' + imgSrcset(p.gallery[0], null, true) +
           ' alt="" aria-hidden="true" loading="lazy" decoding="async">'
         : "";
     var colors =
