@@ -250,6 +250,9 @@
     "seed_purses_22": { name: "Handmade Crochet 3D Daisy Flower Tote Bag with Pearl Strap", price: 5500, priceMax: 7500 },
     "seed_purses_23": { name: "Handmade Ribbed Crochet Tassel Bag with Leather Handle", price: 6500, priceMax: 9500 },
     "seed_purses_24": { name: "Handmade Crochet Crescent Shoulder Bag with Flower Charm", price: 4500, priceMax: 6000 },
+    "seed_purses_25": { name: "Handmade Crochet Ruffle Shoulder Bag with Cherry Charm", price: 4200, priceMax: 5500 },
+    "seed_purses_26": { name: "Handmade Chunky T-Shirt Yarn Baguette Bag", price: 5000, priceMax: 7000 },
+    "seed_purses_27": { name: "Handmade Crochet Daisy Drawstring Bucket Bag", price: 5500, priceMax: 7500 },
   };
   var PRODUCT_PRICES = {
     "seed_purses_6": 5500,
