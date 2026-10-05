@@ -1116,6 +1116,17 @@ body.has-topbar { scroll-padding-top: 132px; }
   color: var(--primary-deep);
 }
 
+/* Only shown for a product whose price is a published range, so the shopper
+   knows the figure shown is a span rather than the amount they will pay. */
+.product-page__price-note {
+  margin: 0.35rem 0 0;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--text-soft);
+}
+
+.product-page__price-note[hidden] { display: none; }
+
 .product-page__status {
   font-size: 0.85rem;
   font-weight: 700;
