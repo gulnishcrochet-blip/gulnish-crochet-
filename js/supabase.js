@@ -510,6 +510,29 @@ var SEED_PLACEMENT = {
       : { category: "gr1", subcategory: "sg1" };
   }
 
+  /* The seed version that first shipped the bags under School Items. Rows saved
+     at or after it are already on today's category and subcategory keys, so
+     they are carried across untouched; anything older still has to be read
+     through the map built for its own layout. Without this the v46-v48 map
+     would be applied to recent rows too, and a hand-added School Items product
+     would land in Small Gifts. */
+  var BAGS_JOINED_SCHOOL_V = 63;
+
+  /* v49 to v62 already had today's four categories, but the bags still sat
+     under Purse/Bags and School Items began at Geometry. Both moves are undone
+     here, which is also what pushed the School Items keys down one place. */
+  function reFileBagsMove(p) {
+    if (p.category === "gr1" && p.subcategory === "sg2") {
+      p.category = "gr4";
+      p.subcategory = "sg1";
+      return;
+    }
+    if (p.category === "gr4") {
+      var moved = SCHOOL_SUB_SHIFT[p.subcategory];
+      if (moved) p.subcategory = moved;
+    }
+  }
+
   /* Pull owner-created products out of any older gulnish-products-v* store and
      re-file them on the current categories. Seed rows (ids like seed_purses_1) are
      skipped because the current seed is generated fresh. */
