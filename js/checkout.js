@@ -198,13 +198,28 @@
     }
 
     var sub = cartTotalPrice(items);
+    var delivery = deliveryCharge(items);
     if (subtotalEl) subtotalEl.textContent = money(sub);
-    if (coBarTotal) coBarTotal.textContent = money(sub);
+    if (coBarTotal) coBarTotal.textContent = money(sub + delivery);
     /* A ranged item makes the subtotal a floor, not the amount owed. Relabel
        both summaries so no screen shows it as a settled total. */
     var ranged = items.some(function (item) { return livePriceMax(item) > 0; });
     if (subtotalLabel) subtotalLabel.textContent = ranged ? "Subtotal (from)" : "Subtotal";
     if (coBarLabel) coBarLabel.textContent = ranged ? "Subtotal (from)" : "Subtotal";
+
+    /* The delivery rows appear only for a basket holding a keychain. The
+       grand total is a floor too, so it says so rather than claiming to be
+       the amount owed. */
+    if (deliveryRow) deliveryRow.hidden = !delivery;
+    if (deliveryEl) deliveryEl.textContent = money(delivery);
+    if (grandRow) grandRow.hidden = !delivery;
+    if (grandEl) grandEl.textContent = money(sub + delivery);
+    if (grandLabel) {
+      grandLabel.textContent = ranged ? "Total to pay (from)" : "Total to pay";
+    }
+    if (coBarLabel && delivery) {
+      coBarLabel.textContent = ranged ? "Total (from)" : "Total";
+    }
 
     setBarVisible(true);
   }
