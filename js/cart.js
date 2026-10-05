@@ -102,16 +102,20 @@
             ? item.image
             : window.location.origin + "/" + String(item.image).replace(/^\/+/, ""))
         : "";
-      lines.push(
-        "\u2022 " + (item.name || "Item") +
-        (imageUrl ? " \u2014 Photo: " + imageUrl : "") +
+lines.push(
+        "• " + (item.name || "Item") +
+        (imageUrl ? " — Photo: " + imageUrl : "") +
         (item.qty > 1 ? " x" + item.qty : "") +
         (item.color ? " (" + item.color + ")" : "") +
-        " \u2014 " + money(unitPrice(item) * item.qty)
+        " — " + linePrice(item)
       );
     });
     lines.push("");
-    lines.push("Items total: " + money(subtotal));
+    /* With a ranged item the base-price total is a floor, so it is labelled
+       as one and the shop is asked for the real figure rather than the shop
+       reading it as agreed. */
+    var anyRange = cart.some(function (item) { return hasRange(item); });
+    lines.push((anyRange ? "Items total (from): " : "Items total: ") + money(subtotal));
     var profile = GC && GC.getCustomerProfile ? GC.getCustomerProfile() : null;
     if (profile && (profile.name || profile.phone || profile.city)) {
       lines.push("");
