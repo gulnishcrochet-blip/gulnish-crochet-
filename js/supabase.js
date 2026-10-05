@@ -441,7 +441,10 @@ var SEED_PLACEMENT = {
      the same gr key means, so the map is chosen by which stored version the rows
      came from rather than by the key alone.  A subcategory of null means "keep
      whatever the product already had", which is what the two layouts that
-     already had subcategories need. */
+     already had subcategories need.  "subs" re-points those kept keys when the
+     branch has grown a subcategory since: Bags was added at the front of
+     School Items, so every later key there moved down one place. */
+  var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
   var LEGACY_CATEGORY_MAP = {
     /* v46-v48: Headband was a top-level gr3 and Gifts was gr4. The
        two are now one Small Gifts at gr3, so gr4 has to land there too. */
@@ -449,7 +452,7 @@ var SEED_PLACEMENT = {
     gr2: { category: "gr2", subcategory: null },          /* Wedding Gift (sg keys same) */
     gr3: { category: "gr3", subcategory: "sg2" },         /* Headband    -> Headband     */
     gr4: { category: "gr3", subcategory: null },          /* Gifts       -> Small Gifts  */
-    gr5: { category: "gr4", subcategory: null }           /* School Items-> School Items */
+    gr5: { category: "gr4", subcategory: null, subs: SCHOOL_SUB_SHIFT } /* School Items, keys shifted */
   };
   var LEGACY_CATEGORY_MAP_SIX = {
     /* v45: six categories, keychains already under Gifts. */
