@@ -571,8 +571,9 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
         if (!Array.isArray(old)) continue;
         /* Rows saved under v46-v48 used the layout where Headband and Gifts
            were separate top-level categories, v45 the six category one, v49 to
-           v62 today's categories but with the bags still under Purse/Bags, and
-           v63 onwards the layout as it stands now. */
+           v62 today's categories but with the bags still under Purse/Bags, v63
+           onwards the bags under School Items, and v67 onwards the Wedding Gift
+           branches in their current order. */
         var version = parseInt(String(key).replace(/^gulnish-products-v/, ""), 10);
         var map = version >= 46
           ? LEGACY_CATEGORY_MAP
@@ -582,28 +583,31 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
           if (String(raw.id || "").indexOf("seed_") === 0) return;
 
           var p = normalizeProduct(raw);
-          if (version >= BAGS_JOINED_SCHOOL_V) {
-            /* Already today's keys: keep the row exactly as the owner filed it. */
-          } else if (version >= 49) {
-            reFileBagsMove(p);
-          } else if (map[raw.category]) {
-            var target = map[raw.category];
-            p.category = target.category;
-            if (target.subcategory != null) p.subcategory = target.subcategory;
-            /* Purse/Bags used to be one flat list, so the old row cannot say
-               which branch it belonged to. Fall back to the product's own
-               name: anything calling itself a bag is a backpack and goes to
-               School Items, the rest to Purses, which is the far larger of
-               the two. */
-            if (target.guess) {
-              var guess = target.guess(p);
-              p.category = guess.category;
-              if (guess.subcategory != null) p.subcategory = guess.subcategory;
-            }
-            if (target.subs && target.subs[p.subcategory]) {
-              p.subcategory = target.subs[p.subcategory];
+          if (version < BAGS_JOINED_SCHOOL_V) {
+            if (version >= 49) reFileBagsMove(p);
+            else if (map[raw.category]) {
+              var target = map[raw.category];
+              p.category = target.category;
+              if (target.subcategory != null) p.subcategory = target.subcategory;
+              /* Purse/Bags used to be one flat list, so the old row cannot say
+                 which branch it belonged to. Fall back to the product's own
+                 name: anything calling itself a bag is a backpack and goes to
+                 School Items, the rest to Purses, which is the far larger of
+                 the two. */
+              if (target.guess) {
+                var guess = target.guess(p);
+                p.category = guess.category;
+                if (guess.subcategory != null) p.subcategory = guess.subcategory;
+              }
+              if (target.subs && target.subs[p.subcategory]) {
+                p.subcategory = target.subs[p.subcategory];
+              }
             }
           }
+          /* Every map above is written in its own era's numbering, and so is a
+             row carried from v49 onwards, so the Wedding Gift reorder is the
+             one move every older row still needs. */
+          if (version < GAJRAYS_LAST_V) shiftWeddingBranches(p);
           if (carried.some(function (c) { return c.id === p.id; })) return;
           carried.push(p);
         });
