@@ -522,7 +522,10 @@
           : 0;
         out.push({
           id: id,
-          name: real ? real.name : name + " " + (i + 1),
+          /* A real entry may carry a price but no name yet (jewellery 9 was
+             sent that way), so fall back to the generated label rather than
+             printing "undefined". */
+          name: real && real.name ? real.name : name + " " + (i + 1),
           price: price,
           /* Only meaningful alongside a real published price, and only when it
              sits above it - a max at or under the base would print a
