@@ -59,3 +59,25 @@ create policy "Service role all"
   for all
   using (auth.role() = 'service_role')
   with check (auth.role() = 'service_role');
+
+-- =========================================================
+-- v22: price ranges
+-- =========================================================
+-- A handmade piece is quoted as a range, so products carry a published top as
+-- well as a base: price is the figure the cart adds up to and price_max the
+-- highest it can come to. The shop displays "Rs. X - Rs. Y" and confirms the
+-- exact price on WhatsApp.
+--
+-- Until this is run, the app still saves every other field - it detects the
+-- missing column, drops it from the upsert and shows a notice in the admin
+-- panel. Products keep working as single fixed prices until then.
+-- =========================================================
+
+alter table public.products
+  add column if not exists price_max numeric not null default 0;
+
+-- A max at or below the base is meaningless (it would print a back-to-front
+-- range), so it is normalised away rather than stored.
+alter table public.products
+  add constraint products_price_max_above_price
+  check (price_max = 0 or price_max > price);
