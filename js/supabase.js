@@ -546,10 +546,10 @@ var SEED_PLACEMENT = {
 
         var old = lsGet(key, []);
         if (!Array.isArray(old)) continue;
-        /* Rows saved under v46 and v47 used the layout where Headband and Gifts
-           were separate top-level categories, v45 the six category one, and
-           anything older the original eight - where the same gr key meant
-           something completely different. */
+        /* Rows saved under v46-v48 used the layout where Headband and Gifts
+           were separate top-level categories, v45 the six category one, v49 to
+           v62 today's categories but with the bags still under Purse/Bags, and
+           v63 onwards the layout as it stands now. */
         var version = parseInt(String(key).replace(/^gulnish-products-v/, ""), 10);
         var map = version >= 46
           ? LEGACY_CATEGORY_MAP
@@ -558,9 +558,13 @@ var SEED_PLACEMENT = {
           if (!raw || typeof raw !== "object") return;
           if (String(raw.id || "").indexOf("seed_") === 0) return;
 
-          var target = map[raw.category];
           var p = normalizeProduct(raw);
-          if (target) {
+          if (version >= BAGS_JOINED_SCHOOL_V) {
+            /* Already today's keys: keep the row exactly as the owner filed it. */
+          } else if (version >= 49) {
+            reFileBagsMove(p);
+          } else if (map[raw.category]) {
+            var target = map[raw.category];
             p.category = target.category;
             if (target.subcategory != null) p.subcategory = target.subcategory;
             /* Purse/Bags used to be one flat list, so the old row cannot say
