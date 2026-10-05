@@ -311,6 +311,22 @@ var SEED_PLACEMENT = {
     "seed_geometry_6": { name: "Handmade Crochet Striped Pastel Pencil Case", price: 2400, priceMax: 3500 },
     "seed_geometry_7": { name: "Handmade Crochet Amigurumi Animal Pencil Case Set (Per Single Pouch)", price: 2800, priceMax: 4000 },
     "seed_geometry_8": { name: "Handmade Crochet Coquette Heart Pencil Case", price: 2400, priceMax: 3800 },
+    /* School Items, filed under the Pencil branch. Each range is the price of
+       one pen, so a bulk order is costed on WhatsApp rather than guessed at
+       here - the titles that are sold per piece say so. */
+    "seed_pencil_1": { name: "Handmade Crochet Rose Pen (Per Single Piece)", price: 450, priceMax: 850 },
+    "seed_pencil_2": { name: "Premium Full-Wrapped Crochet Rose Pen", price: 550, priceMax: 1000 },
+    "seed_pencil_3": { name: "Handmade Crochet Leafy Rose Pen (Per Single Piece)", price: 600, priceMax: 1200 },
+    "seed_pencil_4": { name: "Handmade Crochet Pastel Rose Pen (Per Single Piece)", price: 550, priceMax: 1100 },
+    "seed_pencil_5": { name: "Handmade Crochet Star Pencil Topper (Per Single Piece)", price: 300, priceMax: 650 },
+    "seed_pencil_6": { name: "Handmade Crochet Half-Wrapped Rose Pen (Per Single Piece)", price: 500, priceMax: 1000 },
+    "seed_pencil_7": { name: "Handmade Full-Wrapped Crochet Sunflower Pen", price: 550, priceMax: 1100 },
+    "seed_pencil_8": { name: "Handmade Full-Wrapped Crochet Sunflower Pen (Per Single Piece)", price: 550, priceMax: 1100 },
+    "seed_pencil_9": { name: "Handmade Crochet Button Flower Pencil Topper (Per Single Piece)", price: 250, priceMax: 600 },
+    "seed_pencil_10": { name: "Handmade Full-Wrapped Minimalist Crochet Rose Pen (Per Single Piece)", price: 500, priceMax: 1100 },
+    "seed_pencil_11": { name: "Handmade Crochet Rose Pencil Topper Set (Per Single Piece)", price: 450, priceMax: 900 },
+    "seed_pencil_12": { name: "Handmade Full-Wrapped Crochet Tulip Pen (Per Single Piece)", price: 550, priceMax: 1100 },
+    "seed_pencil_13": { name: "Handmade Full-Wrapped Crochet Daisy Pen", price: 550, priceMax: 1100 },
   };
   var PRODUCT_PRICES = {
     "seed_purses_6": 5500,
