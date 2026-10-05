@@ -1368,6 +1368,10 @@
         '<div class="cart-empty"><span class="cart-empty__ph">&#128722;</span>' +
         "<p>Your cart is empty</p></div>";
       if (cartSubtotalEl) cartSubtotalEl.textContent = money(0);
+      /* Clear the delivery rows with the rest of the drawer, or an emptied
+         basket would keep showing a Rs. 250 charge and a grand total. */
+      if (cartDeliveryRow) cartDeliveryRow.hidden = true;
+      if (cartGrandRow) cartGrandRow.hidden = true;
       return;
     }
 
