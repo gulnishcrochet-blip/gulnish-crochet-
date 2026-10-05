@@ -211,7 +211,17 @@ function emailBody(order) {
   });
 
   lines.push("");
-  lines.push((anyRange ? "Total (from): " : "Total: ") + total);
+  lines.push((anyRange ? "Items total (from): " : "Items total: ") + total);
+  /* The flat keychain delivery charge is a real, known cost rather than a
+     quote, so it is itemised separately and the grand total repeated. */
+  const delivery = order.deliveryCharge || 0;
+  const grand = order.grandTotal != null ? order.grandTotal : order.total + delivery;
+  if (delivery) {
+    lines.push("Keychain delivery: " + money(delivery));
+    lines.push((anyRange ? "Total to pay (from): " : "Total to pay: ") + money(grand));
+  } else {
+    lines.push((anyRange ? "Total (from): " : "Total: ") + money(grand));
+  }
   if (anyRange) {
     lines.push("Some items are quoted as a price range. We will confirm the final price for each on WhatsApp.");
   }
