@@ -134,11 +134,17 @@ function cleanOrder(order) {
     const name = str(it.name, 120);
     if (!name) continue;
     const qty = Math.min(Math.max(Math.floor(num(it.qty) || 1), 1), 99);
+    const price = Math.round(num(it.price) * 100) / 100;
+    /* priceMax is the top of a published price range. It only counts when it
+       sits above the price the order was totalled on, so a blank or stale
+       value cannot turn into a back-to-front range in the email. */
+    const rawMax = Math.round(num(it.priceMax) * 100) / 100;
     items.push({
       name: name,
       color: str(it.color, 40),
       qty: qty,
-      price: Math.round(num(it.price) * 100) / 100
+      price: price,
+      priceMax: rawMax > price ? rawMax : 0
     });
   }
   if (!items.length) return null;
