@@ -217,12 +217,12 @@
      priceMax is a single fixed price and is printed on its own. */
   var REAL_PRODUCTS = {
     /* The four bags were their own category until they were merged into
-       Purse/Bags, so they now sit at the end of gr1's list. Their names and
-       prices are carried over unchanged. */
-    "seed_bags_1": { name: "Bag 1", price: 5999 },
-    "seed_bags_2": { name: "Bag 2", price: 5999 },
-    "seed_bags_3": { name: "Bag 3", price: 1500 },
-    "seed_bags_4": { name: "Bag 4", price: 1550 },
+       Purse/Bags, so they now sit at the end of gr1's list. They are the
+       backpacks, filed under the Bags subcategory rather than Purses. */
+    "seed_bags_1": { name: "Handmade Chunky Crochet Bunny Backpack", price: 6500, priceMax: 9500 },
+    "seed_bags_2": { name: "Handmade Minimalist Crochet Backpack with Tassel", price: 6500, priceMax: 9500 },
+    "seed_bags_3": { name: "Handmade Floral Granny Square Crochet Backpack", price: 7000, priceMax: 11500 },
+    "seed_bags_4": { name: "Handmade Sunflower Granny Square Crochet Backpack", price: 6800, priceMax: 10500 },
     "seed_bouquets_1": { name: "Crochet Bridal Bouquet", price: 5500 },
     "seed_bouquets_2": { name: "Handmade Crochet Rose Flower Gift Bouquet", price: 3999 },
     "seed_bouquets_3": { name: "Handmade Crochet Flower Bouquet with Heart Accent", price: 3999 },
