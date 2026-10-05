@@ -181,6 +181,7 @@
       .join("");
 
     if (subtotalEl) subtotalEl.textContent = money(subtotal);
+    updateSubtotalLabel(cart);
 
     if (waLink) waLink.href = buildWaHref(cart, subtotal);
   }
