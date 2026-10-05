@@ -1636,6 +1636,26 @@ body:has(.co-bar.show) .cart-bar {
   font-size: 1.1rem;
 }
 
+/* Delivery sits under the subtotal as a quieter row; the grand total below it
+   is the figure being asked for, so a rule sets it apart from the item lines. */
+.cart-total--delivery {
+  margin-top: 0.5rem;
+  font-weight: 500;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+.cart-total--delivery span:last-child {
+  color: var(--ink);
+  font-size: 0.98rem;
+}
+
+.cart-total--grand {
+  margin-top: 0.55rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid var(--line-strong);
+}
+
 .cart-checkout {
   width: 100%;
 }
