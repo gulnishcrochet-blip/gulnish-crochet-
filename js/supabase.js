@@ -466,11 +466,11 @@ var SEED_PLACEMENT = {
   var LEGACY_CATEGORY_MAP_ORIGINAL = {
     /* v44 and older: the original eight separate categories, before
        subcategories existed, so nothing here keeps an old sg key. */
-    gr1: { category: "gr1", subcategory: "sg1" },        /* Purses    -> Purse/Bags    */
+    gr1: { category: "gr1", subcategory: "sg1" },        /* Purses    -> Purses        */
     gr2: { category: "gr2", subcategory: "sg1" },        /* Gajrays   -> Wedding Gift  */
     gr3: { category: "gr3", subcategory: "sg1" },        /* Keychains -> Small Gifts   */
-    gr4: { category: "gr1", subcategory: "sg2" },        /* Bags      -> Purse/Bags    */
-    gr5: { category: "gr2", subcategory: "sg2" },        /* Jewellery -> Wedding Gift  */
+    gr4: { category: "gr4", subcategory: "sg1" },        /* Bags      -> School Items  */
+    gr5: { category: "gr4", subcategory: "sg2" },        /* School Items -> Geometry   */
     gr6: { category: "gr3", subcategory: "sg2" },        /* Headband  -> Small Gifts   */
     gr7: { category: "gr2", subcategory: "sg3" },        /* Bouquet   -> Wedding Gift  */
     gr8: { category: "gr3", subcategory: "" }            /* Gifts     -> Small Gifts   */
@@ -478,10 +478,13 @@ var SEED_PLACEMENT = {
 
   /* Used only by the migrations above: a flat Purse/Bags row is filed under
      whichever branch its name points at. "bag" wins over "purse" only when the
-     name says bag and never purse, so "Purse Bag" stays a purse. */
+     name says bag and never purse, so "Purse Bag" stays a purse. A bag is a
+     backpack now, so it lands in School Items rather than beside the purses. */
   function guessPurseOrBag(p) {
     var n = String(p.name || "").toLowerCase();
-    return /bag/.test(n) && !/purse/.test(n) ? "sg2" : "sg1";
+    return /bag/.test(n) && !/purse/.test(n)
+      ? { category: "gr4", subcategory: "sg1" }
+      : { category: "gr1", subcategory: "sg1" };
   }
 
   /* Pull owner-created products out of any older gulnish-products-v* store and
