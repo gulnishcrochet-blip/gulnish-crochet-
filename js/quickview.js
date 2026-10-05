@@ -287,7 +287,7 @@
     lines.push('Hi Gulnish Crochet, I\'d like to order:');
     lines.push('• ' + (p.name || ''));
     if (p.category) lines.push('Category: ' + (sl ? (cl + ' · ' + sl) : cl));
-    if (parseFloat(p.price) > 0) lines.push('Price: ' + money(p.price));
+    if (parseFloat(p.price) > 0) lines.push('Price: ' + displayPrice(p));
     lines.push('');
     lines.push('Is it available?');
     waBtn.href = 'https://wa.me/' + intl + '?text=' + encodeURIComponent(lines.join('\n'));
