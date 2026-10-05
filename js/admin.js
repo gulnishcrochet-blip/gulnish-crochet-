@@ -941,7 +941,10 @@
       '<div class="ad-order-block">' +
       "<h4>Totals</h4>" +
       '<div class="ad-order-items">' + (itemsHTML || '<span class="muted">No items</span>') + "</div>" +
-      '<div class="ad-order-total-row"><span>Total</span><strong>' + money(o.total) + "</strong></div>" +
+      (deliveryHTML || "") +
+      '<div class="ad-order-total-row"><span>' +
+      (anyRange ? "Total (from)" : "Total") +
+      "</span><strong>" + money(o.grandTotal != null ? o.grandTotal : o.total) + "</strong></div>" +
       "</div>" +
       "</div>" +
       '<div class="ad-order-grid-r">' +
