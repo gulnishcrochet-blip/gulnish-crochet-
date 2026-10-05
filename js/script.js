@@ -818,35 +818,58 @@
     });
   }
 
-  /* How many pieces each category contributes to the featured strip. Two a
-     category keeps every category represented and lands exactly on the eight
-     cards the grid is sized for. */
-  var FEATURED_PER_CATEGORY = 2;
+  /* How many pieces each featured group contributes. */
+  var FEATURED_PER_GROUP = 2;
+
+  /* The strip covers every branch a shopper can filter by rather than the tail
+     of its parent category, which would only ever show the last branch - just
+     bouquets for Wedding Gift, just pencils for School Items. A flat category
+     is one group; a category with branches is one group per branch, so all of
+     them get the same amount of space. Branch keys are positional "sgN", the
+     same convention buildSubFilters and theme.js read them by. */
+  function featuredGroups() {
+    var groups = [];
+    (getSettings().categories || []).forEach(function (label, i) {
+      var key = "gr" + (i + 1);
+      var subs = subcategoriesOf(key);
+      if (!subs.length) {
+        groups.push({ category: key, subcategory: "" });
+        return;
+      }
+      subs.forEach(function (name, si) {
+        groups.push({ category: key, subcategory: "sg" + (si + 1) });
+      });
+    });
+    return groups;
+  }
 
   function renderFeatured() {
     if (!featuredGrid) return;
     var products = getProducts();
-    /* The newest end of each category, so the strip reads as "fresh off the
-       hook" and no single category can crowd the others out. Products without
-       a photo are skipped rather than rendered as a placeholder: this section
-       is a set of pictures first, and the catalogue grids cover the rest. */
+    /* The newest end of each group, so the strip reads as "fresh off the hook".
+       Products without a photo are skipped rather than rendered as a
+       placeholder: this section is a set of pictures first, and the catalogue
+       grids cover the rest. */
     var items = [];
-    var cats = (getSettings().categories || []);
-    cats.forEach(function (label, i) {
-      var key = "gr" + (i + 1);
-      var inCategory = products.filter(function (p) {
-        return p.category === key && p.image;
+    var groups = featuredGroups();
+    groups.forEach(function (g) {
+      var rows = products.filter(function (p) {
+        return p.category === g.category &&
+          (p.subcategory || "") === g.subcategory && p.image;
       });
-      items = items.concat(inCategory.slice(-FEATURED_PER_CATEGORY));
+      items = items.concat(rows.slice(-FEATURED_PER_GROUP));
     });
-    /* A product filed under a category key the settings no longer list would
-       otherwise never reach the strip at all. This also covers a catalogue with
-       no categories configured, where the loop above picks nothing. */
-    var known = cats.map(function (label, i) { return "gr" + (i + 1); });
-    var strays = products.filter(function (p) {
-      return p.image && known.indexOf(p.category) < 0;
-    });
-    items = items.concat(strays.slice(0, FEATURED_PER_CATEGORY * 4));
+    /* A product on a category key the settings no longer list, or on a branch
+       key that has since been removed, would otherwise never reach the strip at
+       all. This also covers a catalogue with no categories configured, where
+       the loop above picks nothing. */
+    var inGroup = function (p) {
+      return groups.some(function (g) {
+        return p.category === g.category && (p.subcategory || "") === g.subcategory;
+      });
+    };
+    var strays = products.filter(function (p) { return p.image && !inGroup(p); });
+    items = items.concat(strays.slice(0, FEATURED_PER_GROUP * 4));
     featuredGrid.innerHTML = items.map(cardHTML).join("");
     /* The featured grid is never filtered, so applyFilters never runs over it
        and nothing would promote its parked photos. */
