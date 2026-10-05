@@ -206,6 +206,14 @@ lines.push(
     if (subtotalEl) subtotalEl.textContent = money(subtotal);
     updateSubtotalLabel(cart);
 
+    /* The delivery row only exists for a basket holding a keychain, and the
+       grand total follows it so the shopper sees one figure to expect. */
+    var delivery = deliveryCharge(cart);
+    if (deliveryRow) deliveryRow.hidden = !delivery;
+    if (deliveryEl) deliveryEl.textContent = money(delivery);
+    if (grandRow) grandRow.hidden = !delivery;
+    if (grandEl) grandEl.textContent = money(subtotal + delivery);
+
     if (waLink) waLink.href = buildWaHref(cart, subtotal);
   }
 
