@@ -818,11 +818,32 @@
     });
   }
 
+  /* How many pieces each category contributes to the featured strip. Two a
+     category keeps every category represented and lands exactly on the eight
+     cards the grid is sized for. */
+  var FEATURED_PER_CATEGORY = 2;
+
   function renderFeatured() {
     if (!featuredGrid) return;
-    /* No image filter here: pieces without a photo render the
-       photoPending placeholder, so nothing silently disappears. */
-    var items = getProducts().slice(0, 8);
+    var products = getProducts();
+    /* The newest end of each category, so the strip reads as "fresh off the
+       hook" and no single category can crowd the others out. Products without
+       a photo are skipped rather than rendered as a placeholder: this section
+       is a set of pictures first, and the catalogue grids cover the rest. */
+    var items = [];
+    var cats = (getSettings().categories || []);
+    cats.forEach(function (label, i) {
+      var key = "gr" + (i + 1);
+      var inCategory = products.filter(function (p) {
+        return p.category === key && p.image;
+      });
+      items = items.concat(inCategory.slice(-FEATURED_PER_CATEGORY));
+    });
+    /* A product filed under a category key the settings no longer list would
+       otherwise never reach the strip at all. */
+    if (!items.length) {
+      items = products.filter(function (p) { return p.image; }).slice(0, FEATURED_PER_CATEGORY * 4);
+    }
     featuredGrid.innerHTML = items.map(cardHTML).join("");
     /* The featured grid is never filtered, so applyFilters never runs over it
        and nothing would promote its parked photos. */
