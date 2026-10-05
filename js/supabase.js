@@ -422,11 +422,11 @@ var SEED_PLACEMENT = {
     gr1: ["handbag", "purse", "crochet bag", "tote", "shopper bag", "handmade", "gift", "woolen"],
     gr2: ["wedding gift", "wedding", "shaadi", "doli", "mehndi", "haldi", "bridal", "bride", "party", "gift"],
     gr3: ["small gift", "keychain", "keyring", "headband", "hairband", "hair accessory", "cute", "handmade", "gift", "wholesale"],
-    gr4: ["school", "school supplies", "stationery", "back to school", "student", "pencil", "pencil box", "geometry box", "maths", "handmade"]
+    gr4: ["school", "school supplies", "stationery", "back to school", "student", "school bag", "backpack", "pencil", "pencil box", "geometry box", "maths", "handmade"]
   };
   var GROUP_KEYWORDS = {
     purses: ["purse", "handbag", "clutch", "hobo", "shoulder bag"],
-    bags: ["bag", "tote", "shopper", "carry bag", "travelling"],
+    bags: ["backpack", "school bag", "rucksack", "book bag", "bag"],
     gajrays: ["gajray", "gajra", "hair", "eid", "flowers", "party"],
     jewellery: ["jewellery", "jewelry", "necklace", "earrings", "accessory"],
     bouquets: ["bouquet", "flowers", "rose", "bride"],
