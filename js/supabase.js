@@ -1048,14 +1048,20 @@
         gallery: product.gallery || []
       };
       if (!subcategoryColumnMissing) row.subcategory = product.subcategory || "";
+      if (!priceMaxColumnMissing) row.price_max = product.priceMax || 0;
       var res = await sb.from("products").upsert(row, { onConflict: "id" });
+      /* An un-migrated database rejects the whole row over a new column.
+         Drop it, remember that, and keep saving everything else rather than
+         losing the product edit. GC.subcategoryColumnMissing /
+         GC.priceMaxColumnMissing turn the admin panel warnings on. */
       if (res.error && isMissingSubcategoryColumn(res.error)) {
-        /* An un-migrated database rejects the whole row over the new column.
-           Drop it, remember that, and keep saving everything else rather than
-           losing the product edit. GC.subcategoryColumnMissing turns the admin
-           panel warning on. */
         subcategoryColumnMissing = true;
         delete row.subcategory;
+        res = await sb.from("products").upsert(row, { onConflict: "id" });
+      }
+      if (res.error && isMissingPriceMaxColumn(res.error)) {
+        priceMaxColumnMissing = true;
+        delete row.price_max;
         res = await sb.from("products").upsert(row, { onConflict: "id" });
       }
       return { ok: !res.error, error: res.error };
