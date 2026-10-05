@@ -339,8 +339,7 @@
 
       var price = document.createElement('div');
       price.className = 'search-hit__price';
-      var pr = parseFloat(p.price) > 0 ? money(p.price) : '';
-      price.textContent = pr;
+      price.textContent = displayPrice(p);
       row.appendChild(price);
 
       resultsEl.appendChild(row);
