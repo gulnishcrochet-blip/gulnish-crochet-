@@ -88,6 +88,9 @@
      admin panel can say so out loud. */
   var subcategoryColumnMissing = false;
   var priceMaxColumnMissing = false;
+  /* Same story for the two orders columns added with the keychain delivery
+     charge: an unmigrated database rejects the whole order upsert. */
+  var orderDeliveryColumnMissing = false;
   function isMissingColumn(err, column) {
     if (!err) return false;
     var text = [err.code, err.message, err.details, err.hint]
