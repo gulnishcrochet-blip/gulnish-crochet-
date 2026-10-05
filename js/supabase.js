@@ -1200,6 +1200,13 @@
       if (!configured) return { ok: true };
       var row = orderToRow(order);
       var res = await sb.from("orders").upsert(row, { onConflict: "id" });
+      /* First rejection means the columns are not there yet: drop them and try
+         once more so the order itself is never lost over a delivery field. */
+      if (res.error && isMissingOrderDeliveryColumns(res.error)) {
+        orderDeliveryColumnMissing = true;
+        var retry = orderToRow(order);
+        res = await sb.from("orders").upsert(retry, { onConflict: "id" });
+      }
       return { ok: !res.error, error: res.error };
     },
 
