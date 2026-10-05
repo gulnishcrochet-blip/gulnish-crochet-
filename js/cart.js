@@ -128,7 +128,9 @@ lines.push(
       lines.push("My delivery name, phone and city:");
     }
     lines.push("");
-    lines.push("Please confirm availability, and the delivery charge and date.");
+    lines.push(anyRange
+      ? "Some items are quoted as a price range - please confirm the final price for each."
+      : "Please confirm availability, and the delivery charge and date.");
     return base + "?text=" + encodeURIComponent(lines.join("\n"));
   }
 
