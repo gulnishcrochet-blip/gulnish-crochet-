@@ -461,7 +461,7 @@ var SEED_PLACEMENT = {
     keychains: ["keychain", "keyring", "key holder", "wholesale"],
     headbands: ["headband", "head band", "hairband", "hair band", "hair accessory", "girl"],
     geometry: ["pencil case", "pencil pouch", "pencil case pouch", "pouch", "case"],
-    pencil: ["pencil", "pencils", "colour pencil", "color pencil", "writing"],
+    pencil: ["pen", "pen cover", "crochet pen", "pencil", "pencils", "colour pencil", "color pencil", "writing"],
     pencilbox: ["pencil box", "pencil case", "pen holder", "pouch"]
   };
 
