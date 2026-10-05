@@ -377,7 +377,14 @@
     "seed_jewellery_5": ["4-piece floral pearl jewelry set", "floral pearl jewelry set", "pearl set", "4-piece set"],
     "seed_jewellery_6": ["hibiscus earring and headband set", "hibiscus set", "earring headband set"],
     "seed_jewellery_7": ["crochet mehndi jewelry set", "mehndi jewelry set", "mehndi set"],
-    "seed_jewellery_8": ["sunflower granny square jewelry set", "sunflower granny square jewelry", "granny square jewelry set"]
+    "seed_jewellery_8": ["sunflower granny square jewelry set", "sunflower granny square jewelry", "granny square jewelry set"],
+    "seed_bouquets_1": ["bridal rose bouquet", "rose bridal bouquet", "bridal bouquet", "wedding bouquet"],
+    "seed_bouquets_2": ["long stem rose bouquet", "long-stem roses", "rose gift bouquet"],
+    "seed_bouquets_3": ["rose and heart gift bouquet", "heart accent bouquet", "rose heart bouquet"],
+    "seed_bouquets_4": ["rose and daisy bridal bouquet", "daisy bridal bouquet", "rose daisy wedding"],
+    "seed_bouquets_5": ["jasmine bridal bouquet", "jasmine wedding bouquet", "jasmine"],
+    "seed_bouquets_6": ["rose and gypsophila gift bouquet", "gypsophila bouquet", "gypsophila", "baby's breath bouquet"],
+    "seed_bouquets_7": ["lily and rosebud mixed bouquet", "lily rosebud bouquet", "mixed bouquet"]
   };
   /* Search terms per category, plus a per-group list for the subcategories of
      Wedding Gift so "gajray" or "bouquet" still finds the right product even
