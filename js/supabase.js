@@ -463,12 +463,17 @@
         var id = "seed_" + key + "_" + (i + 1);
         var real = REAL_PRODUCTS[id];
         if (PRODUCT_KEYWORDS[id]) kw = kw.concat(PRODUCT_KEYWORDS[id]);
+        var price = photos.length
+          ? (PRODUCT_PRICES[id] || (real ? real.price : (BASE_PRICE[key] || 500) + (i % 4) * 50))
+          : 0;
         out.push({
           id: id,
           name: real ? real.name : name + " " + (i + 1),
-          price: photos.length
-            ? (PRODUCT_PRICES[id] || (real ? real.price : (BASE_PRICE[key] || 500) + (i % 4) * 50))
-            : 0,
+          price: price,
+          /* Only meaningful alongside a real published price, and only when it
+             sits above it - a max at or under the base would print a
+             back-to-front range. */
+          priceMax: price > 0 && real && real.priceMax > price ? real.priceMax : 0,
           category: place.category,
           subcategory: place.subcategory,
           image: photos.length && !(HIDE_PRODUCT_IMAGES[key] || HIDE_PRODUCT_IMAGES[id]) ? photos[i] : "",
