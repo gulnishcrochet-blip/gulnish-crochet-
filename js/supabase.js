@@ -81,21 +81,29 @@
   var _orderSubscriptions = [];
   var _onOrdersChanged = null;
 
-  /* products.subcategory arrived after the rest of the products table, so a
-     database that has not run supabase-v20.sql rejects the entire upsert with
-     PGRST204. Rather than lose the edit, we detect that once, drop the column
-     from the row and flag it so the admin panel can say so out loud. */
+  /* products.subcategory and products.price_max both arrived after the rest of
+     the products table, so a database that has not run the latest supabase
+     SQL rejects the entire upsert with PGRST204. Rather than lose the edit,
+     we detect that once, drop the column from the row and flag it so the
+     admin panel can say so out loud. */
   var subcategoryColumnMissing = false;
-  function isMissingSubcategoryColumn(err) {
+  var priceMaxColumnMissing = false;
+  function isMissingColumn(err, column) {
     if (!err) return false;
     var text = [err.code, err.message, err.details, err.hint]
       .filter(Boolean)
       .join(" ")
       .toLowerCase();
-    return text.indexOf("subcategory") !== -1 &&
+    return text.indexOf(column) !== -1 &&
       (text.indexOf("could not find") !== -1 ||
         text.indexOf("pgrst204") !== -1 ||
         text.indexOf("does not exist") !== -1);
+  }
+  function isMissingSubcategoryColumn(err) {
+    return isMissingColumn(err, "subcategory");
+  }
+  function isMissingPriceMaxColumn(err) {
+    return isMissingColumn(err, "price_max");
   }
 
   /* ---------- default settings (mirrors original) ---------- */
