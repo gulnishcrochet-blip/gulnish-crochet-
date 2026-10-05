@@ -339,10 +339,13 @@
         notes: notes
       },
       items: items.map(function (i) {
+        /* priceMax rides along so the admin order view and the order email can
+           say "from Rs. X" rather than presenting the base price as final. */
         return {
           id: i.id,
           name: i.name,
           price: livePrice(i),
+          priceMax: livePriceMax(i),
           color: i.color,
           image: i.image,
           qty: i.qty
