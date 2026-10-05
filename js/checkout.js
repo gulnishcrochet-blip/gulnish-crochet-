@@ -376,6 +376,11 @@
         };
       }),
       total: total,
+      /* Charged once per order when the basket holds a keychain, and stored on
+         the order so the admin panel, the order email and the confirmation all
+         quote the same figure the customer saw. */
+      deliveryCharge: deliveryCharge(items),
+      grandTotal: total + deliveryCharge(items),
       payment: {
         method: currentPayment(),
         status: "Pending"
