@@ -288,6 +288,17 @@
     "seed_keychains_7": { name: "Handmade Mini Crochet Handbag Keychain", price: 500, priceMax: 800 },
     "seed_keychains_8": { name: "Handmade Crochet Amigurumi Fruit Keychain Set", price: 350, priceMax: 600 },
     "seed_keychains_9": { name: "Handmade Crochet Amigurumi Jellyfish Keychain", price: 300, priceMax: 500 },
+    "seed_keychains_10": { name: "Handmade Crochet Summer Botanical Keychain Set", price: 350, priceMax: 600 },
+    "seed_keychains_11": { name: "Handmade Crochet Plush Heart Keychain with Wooden Beads", price: 350, priceMax: 550 },
+    "seed_keychains_12": { name: "Handmade 3D Crochet Rose Bag Charm with Pearl Strap", price: 500, priceMax: 750 },
+    "seed_keychains_13": { name: "Handmade Crochet Hugging Hearts Keychain", price: 450, priceMax: 700 },
+    "seed_keychains_14": { name: "Handmade Crochet Mini Bouquet Keychain", price: 450, priceMax: 700 },
+    "seed_keychains_15": { name: "Handmade Crochet Lily of the Valley Keychain", price: 300, priceMax: 450 },
+    "seed_keychains_16": { name: "Handmade Crochet Sunflower Keychain with Leaf", price: 300, priceMax: 450 },
+    "seed_keychains_17": { name: "Handmade Crochet Amigurumi Bunny with Strawberry Hat Keychain", price: 500, priceMax: 750 },
+    "seed_keychains_18": { name: "Handmade Beaded Crochet Jellyfish Keychain", price: 450, priceMax: 650 },
+    "seed_keychains_19": { name: "Handmade Crochet Puff Flower Keychain", price: 250, priceMax: 400 },
+    "seed_keychains_20": { name: "Handmade Crochet Lily of the Valley Pearl Wristlet Keychain", price: 450, priceMax: 650 },
   };
   var PRODUCT_PRICES = {
     "seed_purses_6": 5500,
