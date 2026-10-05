@@ -257,9 +257,6 @@
   var PRODUCT_PRICES = {
     "seed_purses_6": 5500,
     "seed_purses_7": 4500,
-    "seed_purses_25": 2500,
-    "seed_purses_26": 5500,
-    "seed_purses_27": 4500,
     "seed_purses_28": 2500,
     "seed_purses_29": 5500,
     "seed_purses_30": 4500,
