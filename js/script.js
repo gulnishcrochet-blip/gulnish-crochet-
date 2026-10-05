@@ -847,17 +847,24 @@
     if (!featuredGrid) return;
     var products = getProducts();
     /* The newest end of each group, so the strip reads as "fresh off the hook".
-       Products without a photo are skipped rather than rendered as a
-       placeholder: this section is a set of pictures first, and the catalogue
-       grids cover the rest. */
+       A group tops up from its photo-less products rather than dropping out,
+       so a branch nobody has photographed yet still gets a card - the same
+       photoPending placeholder the catalogue grid shows - instead of quietly
+       vanishing from the strip. */
     var items = [];
     var groups = featuredGroups();
     groups.forEach(function (g) {
       var rows = products.filter(function (p) {
-        return p.category === g.category &&
-          (p.subcategory || "") === g.subcategory && p.image;
+        return p.category === g.category && (p.subcategory || "") === g.subcategory;
       });
-      items = items.concat(rows.slice(-FEATURED_PER_GROUP));
+      var chosen = rows.filter(function (p) { return p.image; }).slice(-FEATURED_PER_GROUP);
+      if (chosen.length < FEATURED_PER_GROUP) {
+        rows.forEach(function (p) {
+          if (chosen.length >= FEATURED_PER_GROUP) return;
+          if (chosen.indexOf(p) < 0) chosen.push(p);
+        });
+      }
+      items = items.concat(chosen);
     });
     /* A product on a category key the settings no longer list, or on a branch
        key that has since been removed, would otherwise never reach the strip at
