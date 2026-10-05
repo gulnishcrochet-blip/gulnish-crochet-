@@ -367,7 +367,15 @@
     "seed_bags_1": ["chunky crochet bunny backpack", "bunny backpack", "crochet backpack", "rabbit backpack"],
     "seed_bags_2": ["minimalist crochet backpack", "backpack with tassel", "tassel backpack", "minimal backpack"],
     "seed_bags_3": ["floral granny square backpack", "granny square backpack", "floral backpack"],
-    "seed_bags_4": ["sunflower granny square backpack", "sunflower backpack", "granny square backpack"]
+    "seed_bags_4": ["sunflower granny square backpack", "sunflower backpack", "granny square backpack"],
+    "seed_jewellery_1": ["micro crochet rose jewelry set", "rose jewelry set", "micro-crochet rose", "rose set"],
+    "seed_jewellery_2": ["micro crochet camellia jewelry set", "camellia jewelry set", "camellia set", "camellia"],
+    "seed_jewellery_3": ["micro crochet sunflower jewelry set", "sunflower jewelry set", "sunflower set"],
+    "seed_jewellery_4": ["crochet heart jewelry set", "heart jewelry set", "heart set"],
+    "seed_jewellery_5": ["4-piece floral pearl jewelry set", "floral pearl jewelry set", "pearl set", "4-piece set"],
+    "seed_jewellery_6": ["hibiscus earring and headband set", "hibiscus set", "earring headband set"],
+    "seed_jewellery_7": ["crochet mehndi jewelry set", "mehndi jewelry set", "mehndi set"],
+    "seed_jewellery_8": ["sunflower granny square jewelry set", "sunflower granny square jewelry", "granny square jewelry set"]
   };
   /* Search terms per category, plus a per-group list for the subcategories of
      Wedding Gift so "gajray" or "bouquet" still finds the right product even
