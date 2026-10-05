@@ -352,7 +352,10 @@
     "seed_purses_21": ["coquette bow shoulder bag", "bow shoulder bag", "coquette bag", "bow bag"],
     "seed_purses_22": ["daisy flower tote bag", "3d daisy tote", "daisy tote", "pearl strap tote"],
     "seed_purses_23": ["ribbed crochet tassel bag", "tassel bag", "leather handle bag", "ribbed bag"],
-    "seed_purses_24": ["crescent shoulder bag flower charm", "crescent bag", "flower charm bag", "shoulder bag"]
+    "seed_purses_24": ["crescent shoulder bag flower charm", "crescent bag", "flower charm bag", "shoulder bag"],
+    "seed_purses_25": ["ruffle shoulder bag", "cherry charm bag", "ruffle bag", "shoulder bag"],
+    "seed_purses_26": ["chunky t-shirt yarn bag", "t-shirt yarn bag", "baguette bag", "chunky yarn"],
+    "seed_purses_27": ["daisy drawstring bucket bag", "drawstring bucket bag", "bucket bag", "daisy bag"]
   };
   /* Search terms per category, plus a per-group list for the subcategories of
      Wedding Gift so "gajray" or "bouquet" still finds the right product even
