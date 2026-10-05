@@ -179,7 +179,7 @@
             (item.color ? '<span class="co-item__color">' + escapeHtml(item.color) + "</span>" : "") +
             '<span class="co-item__qty">Qty: ' + item.qty + "</span>" +
             "</div>" +
-            '<div class="co-item__price">' + money(livePrice(item) * item.qty) + "</div>" +
+            '<div class="co-item__price">' + linePrice(item) + "</div>" +
             "</div>"
           );
         })
