@@ -1290,6 +1290,15 @@
       : (parseFloat(item.price) || 0);
   }
 
+  /* Top of the published range, or 0 for a single fixed price. Read off the
+     live product so an admin price edit shows up in the drawer at once. */
+  function cartUnitPriceMax(item) {
+    var found = (getProducts() || []).find(function (x) { return x.id === item.id; });
+    var base = cartUnitPrice(item);
+    var top = found ? parseFloat(found.priceMax) || 0 : 0;
+    return top > base ? top : 0;
+  }
+
   function cartTotalPrice() {
     return cart.reduce(
       function (sum, item) { return sum + cartUnitPrice(item) * item.qty; }, 0
