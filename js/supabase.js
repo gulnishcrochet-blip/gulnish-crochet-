@@ -200,6 +200,13 @@
   var ITEM_NAME  = { purses: "Purse", bags: "Bag", gajrays: "Gajray", jewellery: "Jewellery", headbands: "Headband", bouquets: "Bouquet", keychains: "Keychain", geometry: "Geometry", pencil: "Pencil", pencilbox: "Pencil Box" };
   var BASE_PRICE = { purses: 850, bags: 1500, gajrays: 400, jewellery: 550, headbands: 450, bouquets: 1999, keychains: 350 };
 
+  /* Every entry carries the two ends of what the item costs. "price" is the
+     published figure and the number the cart adds up to; "priceMax" is the
+     upper end of the quote, shown as a range ("Rs. 3,000 - Rs. 6,500") so a
+     shopper sees the spread before asking for the exact figure. The real price
+     depends on the size and detail work asked for, so it is confirmed on
+     WhatsApp - the low end is only the published base. A product with no
+     priceMax is a single fixed price and is printed on its own. */
   var REAL_PRODUCTS = {
     /* The four bags were their own category until they were merged into
        Purse/Bags, so they now sit at the end of gr1's list. Their names and
@@ -213,25 +220,25 @@
     "seed_bouquets_3": { name: "Handmade Crochet Flower Bouquet with Heart Accent", price: 3999 },
     "seed_bouquets_4": { name: "Handmade Crochet Wedding Bridal Bouquet", price: 3999 },
     "seed_bouquets_5": { name: "Handmade Crochet Jasmine Wedding Bridal Bouquet", price: 4999 },
-    "seed_purses_1": { name: "Crochet Rose Purse", price: 4999 },
-    "seed_purses_2": { name: "Crochet Rose Purse", price: 4999 },
-    "seed_purses_3": { name: "3D Rose Purse", price: 4999 },
+    "seed_purses_1": { name: "Handmade 3D Crochet Rose Handbag", price: 3000, priceMax: 6500 },
+    "seed_purses_2": { name: "Handmade 3D Crochet Rose Handbag", price: 3000, priceMax: 6500 },
+    "seed_purses_3": { name: "Handmade Crochet 3D Rose Crescent Shoulder Bag", price: 3000, priceMax: 6500 },
+    "seed_purses_4": { name: "3D Rose Granny Square Tote Bag", price: 4500, priceMax: 5500 },
     "seed_purses_5": { name: "Monochromatic 3D Rose Blossom Crochet Hobo Purse", price: 5000 },
-    "seed_purses_10": { name: "Purse 10", price: 5799 },
-    "seed_purses_11": { name: "Purse 11", price: 5799 },
-    "seed_purses_12": { name: "Purse 12", price: 5799 },
+    "seed_purses_8": { name: "Handmade Crochet 3D Butterfly Crossbody Purse", price: 3800, priceMax: 5000 },
+    "seed_purses_9": { name: "Handmade Crochet Sunflower Granny Square Shoulder Bag", price: 4500, priceMax: 6000 },
+    "seed_purses_10": { name: "Handmade 3D Rose Clutch Bag with Round Metal Handle", price: 5500, priceMax: 8500 },
+    "seed_purses_11": { name: "Handmade 3D Rose Flower Sling Bag with Leaves", price: 4200, priceMax: 5500 },
+    "seed_purses_12": { name: "Handmade 3D Crochet Rose Round Cantaloupe Bag", price: 5000, priceMax: 6800 },
+    "seed_purses_13": { name: "Handmade Crochet Sunflower Flap Clutch", price: 3800, priceMax: 5000 },
     "seed_purses_15": { name: "Purse 15", price: 5799 },
     "seed_purses_16": { name: "Purse 16", price: 5799 },
     "seed_purses_19": { name: "Purse 19", price: 5799 },
     "seed_purses_20": { name: "Purse 20", price: 5799 },
   };
   var PRODUCT_PRICES = {
-    "seed_purses_4": 4500,
     "seed_purses_6": 5500,
     "seed_purses_7": 4500,
-    "seed_purses_8": 5500,
-    "seed_purses_9": 5500,
-    "seed_purses_13": 4500,
     "seed_purses_14": 4500,
     "seed_purses_16": 5799,
     "seed_purses_17": 5799,
