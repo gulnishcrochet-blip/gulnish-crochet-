@@ -333,7 +333,16 @@
     "seed_geometry_8": 2499
   };
   var PRODUCT_KEYWORDS = {
-    "seed_purses_3": ["3d rose purse", "rose purse", "3d rose", "rose handbag", "crochet rose"]
+    "seed_purses_1": ["handmade 3d crochet rose handbag", "3d rose handbag", "rose handbag", "rose purse", "3d rose"],
+    "seed_purses_2": ["handmade 3d crochet rose handbag", "3d rose handbag", "rose handbag", "rose purse", "3d rose"],
+    "seed_purses_3": ["3d rose crescent shoulder bag", "crescent shoulder bag", "3d rose purse", "rose purse", "3d rose", "rose handbag", "crochet rose"],
+    "seed_purses_4": ["3d rose granny square tote bag", "granny square tote", "tote bag", "3d rose", "rose tote"],
+    "seed_purses_8": ["3d butterfly crossbody purse", "butterfly crossbody", "butterfly purse", "crossbody purse"],
+    "seed_purses_9": ["sunflower granny square shoulder bag", "sunflower shoulder bag", "granny square shoulder bag", "sunflower"],
+    "seed_purses_10": ["3d rose clutch bag", "round metal handle", "metal handle clutch", "clutch bag"],
+    "seed_purses_11": ["3d rose flower sling bag", "rose sling bag", "sling bag", "shoulder sling", "with leaves"],
+    "seed_purses_12": ["3d rose round cantaloupe bag", "cantaloupe bag", "round crochet bag", "rose round bag"],
+    "seed_purses_13": ["sunflower flap clutch", "flap clutch", "sunflower clutch", "clutch"]
   };
   /* Search terms per category, plus a per-group list for the subcategories of
      Wedding Gift so "gajray" or "bouquet" still finds the right product even
