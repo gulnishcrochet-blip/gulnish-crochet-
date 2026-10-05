@@ -9,6 +9,7 @@
   var itemsEl = document.getElementById("cpItems");
   var countLabel = document.getElementById("cpCountLabel");
   var subtotalEl = document.getElementById("cpSubtotal");
+  var subtotalLabel = document.getElementById("cpSubtotalLabel");
   var waLink = document.getElementById("cpWa");
 
   function getProducts() { return GC ? GC.products || [] : []; }
