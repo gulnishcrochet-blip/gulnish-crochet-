@@ -382,6 +382,8 @@
     "seed_jewellery_9": ["micro crochet mimosa jewelry collection", "mimosa jewelry", "mimosa collection", "mimosa"],
     "seed_keychains_1": ["crochet acorn keychain", "acorn keychain", "acorn"],
     "seed_keychains_2": ["crochet coffee cup keychain", "coffee cup keychain", "coffee cup"],
+    "seed_keychains_3": ["crochet headphone keychain", "headphone keychain", "headphone charm", "earphone keychain"],
+    "seed_keychains_4": ["crochet toilet paper roll keychain", "toilet paper roll keychain", "toilet roll keychain", "tissue roll keychain"],
     "seed_bouquets_1": ["bridal rose bouquet", "rose bridal bouquet", "bridal bouquet", "wedding bouquet"],
     "seed_bouquets_2": ["long stem rose bouquet", "long-stem roses", "rose gift bouquet"],
     "seed_bouquets_3": ["rose and heart gift bouquet", "heart accent bouquet", "rose heart bouquet"],
