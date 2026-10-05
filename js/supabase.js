@@ -494,6 +494,13 @@
     if (s === "sold out" || s === "sold-out") status = "sold out";
     else if (s === "made to order" || s === "made-to-order") status = "made to order";
     var st = p && p.stock != null && p.stock !== "" ? Math.max(0, parseInt(p.stock, 10) || 0) : null;
+    /* priceMax is the top of the published range, so it only counts when it is
+       a number strictly above the price it sits on. Anything else (blank from
+       a form, a stale row, a max below the base) is dropped to 0, which every
+       surface reads as "single fixed price". */
+    var base = parseFloat(p && p.price) || 0;
+    var top = parseFloat(p && p.priceMax) || 0;
+    if (!(top > base)) top = 0;
     var gal = Array.isArray(p && p.gallery)
       ? p.gallery.filter(function (x) { return typeof x === "string" && x.trim(); })
       : [];
@@ -502,7 +509,7 @@
        straight under its category". */
     var sub = p && typeof p.subcategory === "string" ? p.subcategory.trim() : "";
     if (sub && subIndexOf(sub) < 0) sub = "";
-    return Object.assign({}, p, { status: status, stock: st, gallery: gal, subcategory: sub });
+    return Object.assign({}, p, { status: status, stock: st, priceMax: top, gallery: gal, subcategory: sub });
   }
 
   /* ---------- v<19>.sql also mirrors this catalog ---------- */
