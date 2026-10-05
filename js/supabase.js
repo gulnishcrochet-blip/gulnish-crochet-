@@ -17,7 +17,7 @@
 
   /* Bump LOCAL_PRODUCTS version whenever the seed catalog changes so
      returning visitors' browsers re-sync products (offline/localStorage mode). */
-  var LOCAL_PRODUCTS = "gulnish-products-v64";
+  var LOCAL_PRODUCTS = "gulnish-products-v65";
   var LOCAL_SETTINGS = "gulnish-settings-v2";
   var LOCAL_ORDERS = "gulnish-orders";
   var LOCAL_ADMIN_SESSION = "gulnish-admin-session";
@@ -348,19 +348,7 @@ var SEED_PLACEMENT = {
     "seed_headbands_1": 1299,
     "seed_headbands_2": 1299,
     "seed_headbands_3": 1299,
-    "seed_pencil_1": 799,
-    "seed_pencil_2": 799,
-    "seed_pencil_3": 799,
-    "seed_pencil_4": 799,
-    "seed_pencil_5": 799,
-    "seed_pencil_6": 799,
-    "seed_pencil_7": 799,
-    "seed_pencil_8": 799,
-    "seed_pencil_9": 799,
-    "seed_pencil_10": 799,
-    "seed_pencil_11": 799,
-    "seed_pencil_12": 799,
-    "seed_pencil_13": 799
+
   };
   var PRODUCT_KEYWORDS = {
     "seed_purses_1": ["handmade 3d crochet rose handbag", "3d rose handbag", "rose handbag", "rose purse", "3d rose"],
