@@ -348,6 +348,7 @@
 
     if (GC.saveProduct) await GC.saveProduct(product);
     if (subcategoryWarn && GC.subcategoryColumnMissing) subcategoryWarn.hidden = false;
+    if (priceMaxWarn && GC.priceMaxColumnMissing) priceMaxWarn.hidden = false;
     resetForm();
     renderList();
   }
