@@ -470,7 +470,7 @@ var SEED_PLACEMENT = {
     gr2: { category: "gr2", subcategory: "sg1" },        /* Gajrays   -> Wedding Gift  */
     gr3: { category: "gr3", subcategory: "sg1" },        /* Keychains -> Small Gifts   */
     gr4: { category: "gr4", subcategory: "sg1" },        /* Bags      -> School Items  */
-    gr5: { category: "gr4", subcategory: "sg2" },        /* School Items -> Geometry   */
+    gr5: { category: "gr2", subcategory: "sg2" },        /* Jewellery -> Wedding Gift  */
     gr6: { category: "gr3", subcategory: "sg2" },        /* Headband  -> Small Gifts   */
     gr7: { category: "gr2", subcategory: "sg3" },        /* Bouquet   -> Wedding Gift  */
     gr8: { category: "gr3", subcategory: "" }            /* Gifts     -> Small Gifts   */
