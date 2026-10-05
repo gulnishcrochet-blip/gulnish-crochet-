@@ -988,8 +988,13 @@
       if (parseFloat(currentProduct.price) > 0) {
         /* No photo means the price is agreed on WhatsApp, so it is left out
            of the pre-filled message rather than quoted. money() already
-           includes the "Rs." prefix. */
-        var quote = currentProduct.image ? money(currentProduct.price) : "Rs. ...";
+           includes the "Rs." prefix. A ranged item is quoted as the range so
+           the shop and the customer are working from the same figure. */
+        var quote = !currentProduct.image
+          ? "Rs. ..."
+          : (hasRange(currentProduct)
+            ? money(currentProduct.price) + " - " + money(currentProduct.priceMax)
+            : money(currentProduct.price));
         extra.push(quote);
       }
     if (color) extra.push("Colour: " + color);
