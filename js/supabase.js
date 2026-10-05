@@ -17,7 +17,7 @@
 
   /* Bump LOCAL_PRODUCTS version whenever the seed catalog changes so
      returning visitors' browsers re-sync products (offline/localStorage mode). */
-  var LOCAL_PRODUCTS = "gulnish-products-v66";
+  var LOCAL_PRODUCTS = "gulnish-products-v67";
   var LOCAL_SETTINGS = "gulnish-settings-v2";
   var LOCAL_ORDERS = "gulnish-orders";
   var LOCAL_ADMIN_SESSION = "gulnish-admin-session";
@@ -128,7 +128,7 @@
      A blank entry list means "no subcategories". */
   var EXTRA_SUBCATEGORY_NAMES = {
     1: ["Purses"],
-    2: ["Gajrays", "Jewellery", "Bouquet"],
+    2: ["Jewellery", "Bouquet", "Gajrays"],
     3: ["Keychains", "Headband"],
     4: ["Bags", "Pencil Case", "Pencil"]
   };
@@ -136,7 +136,7 @@
   /* Bump whenever the category list, their order, or their subcategories
      change. Saved settings stamped with an older value keep their WhatsApp
      number, bank details and delivery times, but take the new taxonomy. */
-  var TAXONOMY_VERSION = 12;
+  var TAXONOMY_VERSION = 13;
 
   function subKey(i) { return "sg" + (i + 1); }
   function subIndexOf(key) { return parseInt(String(key || "").replace("sg", ""), 10) - 1; }
@@ -199,9 +199,9 @@
 var SEED_PLACEMENT = {
     purses: { category: "gr1", subcategory: "sg1" },
     bags: { category: "gr4", subcategory: "sg1" },
-    gajrays: { category: "gr2", subcategory: "sg1" },
-    jewellery: { category: "gr2", subcategory: "sg2" },
-    bouquets: { category: "gr2", subcategory: "sg3" },
+    jewellery: { category: "gr2", subcategory: "sg1" },
+    bouquets: { category: "gr2", subcategory: "sg2" },
+    gajrays: { category: "gr2", subcategory: "sg3" },
     headbands: { category: "gr3", subcategory: "sg2" },
     keychains: { category: "gr3", subcategory: "sg1" },
     geometry: { category: "gr4", subcategory: "sg2" },
