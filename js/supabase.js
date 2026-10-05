@@ -1370,6 +1370,34 @@
     /* ---- order system constants & helpers ---- */
     ORDER_STATUSES: ["Pending", "Confirmed", "Processing", "Shipped", "Delivered", "Cancelled"],
 
+    /* Keychains ship at a flat Rs. 250 whatever is in the basket, so the
+       charge is added once per order rather than per item. It is kept out of
+       every product's price range on purpose: folding it in would repeat the
+       250 for each keychain and misstate what the piece itself costs. Every
+       other category is still quoted on WhatsApp, as before. */
+    KEYCHAIN_DELIVERY: 250,
+
+    /* True for a cart line that is one of the keychains. Seeded keychains are
+       the Small Gifts -> Keychains branch; the live catalog is consulted
+       rather than the cart copy so an owner-added keychain is recognised too. */
+    isKeychainItem: function (item) {
+      if (!item) return false;
+      var found = (GC.products || []).find(function (x) { return x.id === item.id; });
+      var p = found || item;
+      if (found) return p.category === "gr3" && p.subcategory === "sg1";
+      /* No catalog row: fall back to the id, which is how every seeded
+         keychain is named. */
+      return /^seed_keychains_/.test(String(item.id || ""));
+    },
+
+    /* The delivery charge owed by a cart, so the cart page, the drawer, the
+       checkout and the order email all quote the same figure. */
+    deliveryCharge: function (items) {
+      var list = Array.isArray(items) ? items : [];
+      if (!list.some(function (i) { return GC.isKeychainItem(i); })) return 0;
+      return GC.KEYCHAIN_DELIVERY;
+    },
+
     makeOrderId: function () {
       var d = new Date();
       var ymd = String(d.getFullYear()) +
