@@ -127,6 +127,14 @@
     return base + "?text=" + encodeURIComponent(lines.join("\n"));
   }
 
+  /* The subtotal is the sum of the base prices, so with a ranged item in the
+     basket it is a floor rather than the amount owed. Say so on the line
+     instead of letting it read as the total. */
+  function updateSubtotalLabel(cart) {
+    var ranged = cart.some(function (item) { return hasRange(item); });
+    if (subtotalLabel) subtotalLabel.textContent = ranged ? "Subtotal (from)" : "Subtotal";
+  }
+
   function render() {
     var cart = loadCart();
     var n = totalQty(cart);
