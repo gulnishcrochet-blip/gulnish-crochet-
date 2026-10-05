@@ -201,11 +201,14 @@ function emailBody(order) {
   items.forEach(function (i) {
     lines.push("- " + plain(i.name || "Item") +
       (i.color ? " (" + plain(i.color) + ")" : "") +
-      " x " + i.qty + " = " + money((i.price || 0) * i.qty));
+      " x " + i.qty + " = " + linePrice(i));
   });
 
   lines.push("");
-  lines.push("Total: " + total);
+  lines.push((anyRange ? "Total (from): " : "Total: ") + total);
+  if (anyRange) {
+    lines.push("Some items are quoted as a price range. We will confirm the final price for each on WhatsApp.");
+  }
   lines.push("Payment: " + (plain(order.payment && order.payment.method) || "Bank transfer"));
   if (order.estDelivery) {
     try {
