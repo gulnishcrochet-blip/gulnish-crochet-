@@ -298,8 +298,6 @@
     "seed_headbands_1": 1299,
     "seed_headbands_2": 1299,
     "seed_headbands_3": 1299,
-    "seed_keychains_3": 450,
-    "seed_keychains_4": 450,
     "seed_keychains_5": 450,
     "seed_keychains_6": 450,
     "seed_keychains_7": 450,
