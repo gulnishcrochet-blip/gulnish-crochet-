@@ -344,8 +344,7 @@ var SEED_PLACEMENT = {
     "seed_pencil_10": 799,
     "seed_pencil_11": 799,
     "seed_pencil_12": 799,
-    "seed_pencil_13": 799,
-    "seed_pencilbox_1": 0
+    "seed_pencil_13": 799
   };
   var PRODUCT_KEYWORDS = {
     "seed_purses_1": ["handmade 3d crochet rose handbag", "3d rose handbag", "rose handbag", "rose purse", "3d rose"],
