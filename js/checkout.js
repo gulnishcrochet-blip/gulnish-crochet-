@@ -131,6 +131,11 @@
   var itemsEl = document.getElementById("coItems");
   var subtotalEl = document.getElementById("coSubtotal");
   var subtotalLabel = document.getElementById("coSubtotalLabel");
+  var deliveryRow = document.getElementById("coDeliveryRow");
+  var deliveryEl = document.getElementById("coDelivery");
+  var grandRow = document.getElementById("coGrandRow");
+  var grandEl = document.getElementById("coGrand");
+  var grandLabel = document.getElementById("coGrandLabel");
   var emptyWrap = document.getElementById("coEmpty");
   var formWrap = document.getElementById("coForm");
   var form = document.getElementById("coFormEl");
