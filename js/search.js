@@ -45,6 +45,16 @@
     return "Rs. " + parts.join(".");
   }
 
+  /* A handmade piece is quoted as a range, so the top of it is published
+     alongside the base price. Mirrors displayPrice() in script.js. */
+  function displayPrice(p) {
+    if (!p || !(parseFloat(p.price) > 0)) return '';
+    if (parseFloat(p.priceMax) > parseFloat(p.price)) {
+      return money(p.price) + ' – ' + money(p.priceMax);
+    }
+    return money(p.price);
+  }
+
   function categoryLabel(val) {
     if (GC && GC.settings) {
       var idx = parseInt(String(val || '').replace('gr', ''), 10) - 1;
