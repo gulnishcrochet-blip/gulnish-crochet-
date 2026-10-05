@@ -300,6 +300,17 @@ var SEED_PLACEMENT = {
     "seed_keychains_18": { name: "Handmade Beaded Crochet Jellyfish Keychain", price: 450, priceMax: 650 },
     "seed_keychains_19": { name: "Handmade Crochet Puff Flower Keychain", price: 250, priceMax: 400 },
     "seed_keychains_20": { name: "Handmade Crochet Lily of the Valley Pearl Wristlet Keychain", price: 450, priceMax: 650 },
+    /* School Items, filed under the Pencil Case branch. The two "per single
+       pouch" pieces are priced per pouch, so the set size is settled on
+       WhatsApp rather than folded into the published range. */
+    "seed_geometry_1": { name: "Handmade Crochet Panda Pencil Case", price: 2500, priceMax: 3800 },
+    "seed_geometry_2": { name: "Handmade Crochet Vegetable Pencil Case Set (Per Single Pouch)", price: 2300, priceMax: 3500 },
+    "seed_geometry_3": { name: "Handmade Crochet Orange Face Pencil Case", price: 2500, priceMax: 3800 },
+    "seed_geometry_4": { name: "Handmade Crochet Pastel Cloud and Star Pencil Case", price: 2500, priceMax: 3800 },
+    "seed_geometry_5": { name: "Handmade Crochet Gingham Strawberry Pencil Case", price: 2800, priceMax: 4000 },
+    "seed_geometry_6": { name: "Handmade Crochet Striped Pastel Pencil Case", price: 2400, priceMax: 3500 },
+    "seed_geometry_7": { name: "Handmade Crochet Amigurumi Animal Pencil Case Set (Per Single Pouch)", price: 2800, priceMax: 4000 },
+    "seed_geometry_8": { name: "Handmade Crochet Coquette Heart Pencil Case", price: 2400, priceMax: 3800 },
   };
   var PRODUCT_PRICES = {
     "seed_purses_6": 5500,
