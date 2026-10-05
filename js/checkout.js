@@ -57,6 +57,22 @@
       : (parseFloat(item.price) || 0);
   }
 
+  /* Top of the product's published price range, or 0 for a fixed price. Read
+     live off the product so an admin price edit shows up without a reload. */
+  function livePriceMax(item) {
+    var list = (GC && GC.products) || [];
+    var found = list.find(function (x) { return x.id === item.id; });
+    var base = livePrice(item);
+    var top = found ? parseFloat(found.priceMax) || 0 : 0;
+    return top > base ? top : 0;
+  }
+
+  function linePrice(item) {
+    var base = livePrice(item) * item.qty;
+    var top = livePriceMax(item);
+    return top ? money(base) + " – " + money(top * item.qty) : money(base);
+  }
+
   function absImage(src) {
     if (!src) return "";
     /* Never inline huge data URIs into the WhatsApp link — an oversized
