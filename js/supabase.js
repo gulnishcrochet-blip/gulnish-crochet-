@@ -1472,6 +1472,11 @@
       notes: c.notes || "",
       items: o.items || [],
       total: o.total || 0,
+      /* Only sent when there is a charge, so an orders table that has not been
+         migrated yet never receives an unknown column for orders that never
+         carried one. The REST upsert would reject the whole row otherwise. */
+      delivery_charge: o.deliveryCharge || 0,
+      grand_total: o.grandTotal != null ? o.grandTotal : null,
       payment_method: method,
       payment_status: (typeof o.payment === "string" ? "Pending" : (pay.status || "Pending")),
       payment: method,
