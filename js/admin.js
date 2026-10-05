@@ -1298,6 +1298,7 @@
     renderCategoryInputs();
     fillCategorySelect(getSettings(), pCategory.value || "gr1");
     if (subcategoryWarn) subcategoryWarn.hidden = !GC.subcategoryColumnMissing;
+    if (priceMaxWarn) priceMaxWarn.hidden = !GC.priceMaxColumnMissing;
     renderCategoryImageEditor();
     addColorRow("", "#d9a5b0");
     renderList();
