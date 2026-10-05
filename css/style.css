@@ -1122,7 +1122,7 @@ body.has-topbar { scroll-padding-top: 132px; }
   margin: 0.35rem 0 0;
   font-size: 0.82rem;
   line-height: 1.5;
-  color: var(--text-soft);
+  color: var(--muted);
 }
 
 .product-page__price-note[hidden] { display: none; }
