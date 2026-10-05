@@ -271,6 +271,10 @@
     "seed_jewellery_7": { name: "Handmade Crochet Mehndi Jewelry Set", price: 3500, priceMax: 4500 },
     "seed_jewellery_8": { name: "Handmade Micro-Crochet Sunflower Granny Square Jewelry Set", price: 2200, priceMax: 3000 },
     "seed_jewellery_9": { name: "Handmade Micro-Crochet Mimosa Jewelry Collection", price: 1200, priceMax: 1800 },
+    /* Keychains. Delivery is a separate Rs. 250 on top of these figures, so it
+       is quoted on WhatsApp rather than folded into the range. */
+    "seed_keychains_1": { name: "Handmade Crochet Acorn Keychain", price: 450, priceMax: 750 },
+    "seed_keychains_2": { name: "Handmade Crochet Coffee Cup Keychain", price: 450, priceMax: 750 },
   };
   var PRODUCT_PRICES = {
     "seed_purses_6": 5500,
