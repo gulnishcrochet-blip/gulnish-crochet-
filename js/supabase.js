@@ -472,7 +472,7 @@ var SEED_PLACEMENT = {
 var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
   /* Gajrays used to lead Wedding Gift and now closes it, so each of its three
      branches moved: Jewellery up one, Bouquet up one, Gajrays to the end. */
-  var WEDDING_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg1" };
+  var WEDDING_SUB_SHIFT = { sg1: "sg3", sg2: "sg1", sg3: "sg2" };
   var LEGACY_CATEGORY_MAP = {
     /* v46-v48: Headband was a top-level gr3 and Gifts was gr4. The
        two are now one Small Gifts at gr3, so gr4 has to land there too. */
