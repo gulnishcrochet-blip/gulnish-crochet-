@@ -261,8 +261,7 @@
     "seed_purses_31": { name: "Handmade Crochet 3D Bow Knot Underarm Bag", price: 5000, priceMax: 6800 },
     "seed_purses_32": { name: "Handmade Crochet Rose Drawstring Bucket Bag", price: 5500, priceMax: 7500 },
     "seed_purses_33": { name: "Handmade Crochet 3D Butterfly Handbag with Pearl Strap", price: 5500, priceMax: 7800 },
-    /* Jewellery. Number 9 was sent with a price range but no name, so it is
-       left on its generated "Jewellery 9" label until one is supplied. */
+    /* Jewellery, filed under Wedding Gift's Jewellery branch. */
     "seed_jewellery_1": { name: "Handmade Micro-Crochet Rose Jewelry Set", price: 1500, priceMax: 2200 },
     "seed_jewellery_2": { name: "Handmade Micro-Crochet Camellia Jewelry Set", price: 1800, priceMax: 2500 },
     "seed_jewellery_3": { name: "Handmade Micro-Crochet Sunflower Jewelry Set", price: 1200, priceMax: 1800 },
