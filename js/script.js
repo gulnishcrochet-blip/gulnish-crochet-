@@ -967,6 +967,7 @@
   var ppImage = document.getElementById("ppImage");
   var ppName = document.getElementById("ppName");
   var ppPrice = document.getElementById("ppPrice");
+  var ppPriceNote = document.getElementById("ppPriceNote");
   var ppCategory = document.getElementById("ppCategory");
   var ppStatus = document.getElementById("ppStatus");
   var ppColors = document.getElementById("ppColors");
