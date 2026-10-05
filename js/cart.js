@@ -55,6 +55,27 @@
     return found && parseFloat(found.price) > 0 ? parseFloat(found.price) : (parseFloat(item.price) || 0);
   }
 
+  /* The top of a product's published price range, or 0 when it has a single
+     fixed price. Read live off the product rather than the cart copy so a
+     price edited in the admin panel is picked up straight away. */
+  function unitPriceMax(item) {
+    var found = getProducts().find(function (x) { return x.id === item.id; });
+    var base = unitPrice(item);
+    var top = found ? parseFloat(found.priceMax) || 0 : 0;
+    return top > base ? top : 0;
+  }
+
+  function hasRange(item) { return unitPriceMax(item) > 0; }
+
+  /* A ranged item is quoted as a range for the whole line, so the figure on
+     screen can never read as the amount actually owed. */
+  function linePrice(item) {
+    var base = unitPrice(item) * item.qty;
+    var top = unitPriceMax(item);
+    if (!top) return money(base);
+    return money(base) + " – " + money(top * item.qty);
+  }
+
   function totalPrice(cart) {
     return cart.reduce(function (sum, item) { return sum + unitPrice(item) * item.qty; }, 0);
   }
