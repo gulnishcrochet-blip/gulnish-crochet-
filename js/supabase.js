@@ -275,6 +275,8 @@
        is quoted on WhatsApp rather than folded into the range. */
     "seed_keychains_1": { name: "Handmade Crochet Acorn Keychain", price: 450, priceMax: 750 },
     "seed_keychains_2": { name: "Handmade Crochet Coffee Cup Keychain", price: 450, priceMax: 750 },
+    "seed_keychains_3": { name: "Handmade Crochet Headphone Keychain", price: 350, priceMax: 650 },
+    "seed_keychains_4": { name: "Handmade Crochet Toilet Paper Roll Keychain", price: 300, priceMax: 500 },
   };
   var PRODUCT_PRICES = {
     "seed_purses_6": 5500,
