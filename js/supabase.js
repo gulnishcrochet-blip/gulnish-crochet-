@@ -17,7 +17,7 @@
 
   /* Bump LOCAL_PRODUCTS version whenever the seed catalog changes so
      returning visitors' browsers re-sync products (offline/localStorage mode). */
-  var LOCAL_PRODUCTS = "gulnish-products-v65";
+  var LOCAL_PRODUCTS = "gulnish-products-v66";
   var LOCAL_SETTINGS = "gulnish-settings-v2";
   var LOCAL_ORDERS = "gulnish-orders";
   var LOCAL_ADMIN_SESSION = "gulnish-admin-session";
@@ -136,7 +136,7 @@
   /* Bump whenever the category list, their order, or their subcategories
      change. Saved settings stamped with an older value keep their WhatsApp
      number, bank details and delivery times, but take the new taxonomy. */
-  var TAXONOMY_VERSION = 11;
+  var TAXONOMY_VERSION = 12;
 
   function subKey(i) { return "sg" + (i + 1); }
   function subIndexOf(key) { return parseInt(String(key || "").replace("sg", ""), 10) - 1; }
@@ -205,11 +205,10 @@ var SEED_PLACEMENT = {
     headbands: { category: "gr3", subcategory: "sg2" },
     keychains: { category: "gr3", subcategory: "sg1" },
     geometry: { category: "gr4", subcategory: "sg2" },
-    pencil: { category: "gr4", subcategory: "sg3" },
-    pencilbox: { category: "gr4", subcategory: "sg4" }
+    pencil: { category: "gr4", subcategory: "sg3" }
   };
 
-  var ITEM_NAME  = { purses: "Purse", bags: "Bag", gajrays: "Gajray", jewellery: "Jewellery", headbands: "Headband", bouquets: "Bouquet", keychains: "Keychain", geometry: "Pencil Case", pencil: "Pencil", pencilbox: "Pencil Box" };
+  var ITEM_NAME  = { purses: "Purse", bags: "Bag", gajrays: "Gajray", jewellery: "Jewellery", headbands: "Headband", bouquets: "Bouquet", keychains: "Keychain", geometry: "Pencil Case", pencil: "Pencil" };
   var BASE_PRICE = { purses: 850, bags: 1500, gajrays: 400, jewellery: 550, headbands: 450, bouquets: 1999, keychains: 350 };
 
   /* Every entry carries the two ends of what the item costs. "price" is the
@@ -459,7 +458,6 @@ var SEED_PLACEMENT = {
     headbands: ["headband", "head band", "hairband", "hair band", "hair accessory", "girl"],
     geometry: ["pencil case", "pencil pouch", "pencil case pouch", "pouch", "case"],
     pencil: ["pen", "pen cover", "crochet pen", "pencil", "pencils", "colour pencil", "color pencil", "writing"],
-    pencilbox: ["pencil box", "pencil case", "pen holder", "pouch"]
   };
 
   /* Three older layouts have to be recognised, and they disagree about what
