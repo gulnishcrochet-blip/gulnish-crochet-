@@ -466,8 +466,13 @@ var SEED_PLACEMENT = {
      whatever the product already had", which is what the two layouts that
      already had subcategories need.  "subs" re-points those kept keys when the
      branch has grown a subcategory since: Bags was added at the front of
-     School Items, so every later key there moved down one place. */
-  var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
+     School Items, so every later key there moved down one place.  Every map is
+     written in the numbering of its own era; shiftWeddingBranches below then
+     moves a Wedding Gift row onto today's keys. */
+var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
+  /* Gajrays used to lead Wedding Gift and now closes it, so each of its three
+     branches moved: Jewellery up one, Bouquet up one, Gajrays to the end. */
+  var WEDDING_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg1" };
   var LEGACY_CATEGORY_MAP = {
     /* v46-v48: Headband was a top-level gr3 and Gifts was gr4. The
        two are now one Small Gifts at gr3, so gr4 has to land there too. */
