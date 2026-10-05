@@ -1386,7 +1386,25 @@
       })
       .join("");
 
-    if (cartSubtotalEl) cartSubtotalEl.textContent = money(cartTotalPrice());
+    var sub = cartTotalPrice();
+    if (cartSubtotalEl) cartSubtotalEl.textContent = money(sub);
+
+    /* A ranged item makes the subtotal a floor rather than the amount owed, so
+       say so instead of letting it read as a settled figure. */
+    var ranged = cart.some(function (item) { return cartUnitPriceMax(item) > 0; });
+    if (cartSubtotalLabelEl) {
+      cartSubtotalLabelEl.textContent = ranged ? "Subtotal (from)" : "Subtotal";
+    }
+
+    /* The delivery rows show only for a basket holding a keychain. */
+    var delivery = cartDeliveryCharge();
+    if (cartDeliveryRow) cartDeliveryRow.hidden = !delivery;
+    if (cartDeliveryEl) cartDeliveryEl.textContent = money(delivery);
+    if (cartGrandRow) cartGrandRow.hidden = !delivery;
+    if (cartGrandEl) cartGrandEl.textContent = money(sub + delivery);
+    if (cartGrandLabelEl) {
+      cartGrandLabelEl.textContent = ranged ? "Total (from)" : "Total";
+    }
   }
 
   function openCart() {
