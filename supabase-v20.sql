@@ -83,3 +83,22 @@ alter table public.products
 alter table public.products
   add constraint products_price_max_above_price
   check (price_max = 0 or price_max > price);
+
+-- =========================================================
+-- Orders: flat keychain delivery charge
+-- ------------------------------------------------------------
+-- Keychains ship at a flat Rs. 250 charged once per order, so the order has
+-- to remember it separately from the item total. grand_total is the figure
+-- the customer was shown, kept alongside rather than recomputed, because the
+-- admin panel and the order email both quote it verbatim.
+--
+-- Until this is run the columns are absent, so the app drops them from the
+-- upsert the same way it does for products.price_max and the order still
+-- saves with its item total. Delivery is then confirmed on WhatsApp, as it
+-- was before.
+-- =========================================================
+
+alter table public.orders
+  add column if not exists delivery_charge numeric not null default 0;
+alter table public.orders
+  add column if not exists grand_total numeric;
