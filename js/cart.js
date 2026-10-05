@@ -89,7 +89,11 @@
     return cart.reduce(function (sum, item) { return sum + item.qty; }, 0);
   }
 
-  /* Delivery charge and date are confirmed on WhatsApp, never quoted here. */
+  /* Keychains carry a flat Rs. 250 delivery, added once per order. Every
+     other category is still quoted on WhatsApp, never here. */
+  function deliveryCharge(cart) {
+    return GC && GC.deliveryCharge ? GC.deliveryCharge(cart) : 0;
+  }
 
   function waBase() {
     var num = GC && GC.shopWhatsApp ? GC.shopWhatsApp() : "";
