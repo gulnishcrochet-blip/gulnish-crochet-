@@ -1359,7 +1359,7 @@
     }
     if (cartBar) cartBar.classList.toggle("show", n > 0);
     if (cartBarCount) cartBarCount.textContent = n;
-    if (cartBarTotal) cartBarTotal.textContent = money(total);
+    if (cartBarTotal) cartBarTotal.textContent = money(total + cartDeliveryCharge());
     positionFloatingActions();
     if (!cartItemsEl) return;
 
