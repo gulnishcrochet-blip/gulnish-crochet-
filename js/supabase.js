@@ -127,10 +127,10 @@
      (index + 1) and is only ever read alongside the product's own category.
      A blank entry list means "no subcategories". */
   var EXTRA_SUBCATEGORY_NAMES = {
-    1: ["Purses", "Bags"],
+    1: ["Purses"],
     2: ["Gajrays", "Jewellery", "Bouquet"],
     3: ["Keychains", "Headband"],
-    4: ["Geometry", "Pencil", "Pencil Box"]
+    4: ["Bags", "Geometry", "Pencil", "Pencil Box"]
   };
 
   /* Bump whenever the category list, their order, or their subcategories
