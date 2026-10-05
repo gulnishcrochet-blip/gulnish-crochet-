@@ -156,6 +156,12 @@ function cleanOrder(order) {
     id: id,
     items: items,
     total: Math.round(num(order.total) * 100) / 100,
+    /* The flat keychain delivery charge, and the total including it. Absent on
+       orders placed before the charge existed. */
+    deliveryCharge: Math.round(num(order.deliveryCharge) * 100) / 100,
+    grandTotal: order.grandTotal == null
+      ? null
+      : Math.round(num(order.grandTotal) * 100) / 100,
     customer: { name: str(customer.name, 80), email: str(customer.email, 120) },
     payment: { method: str(payment.method, 40) || "Bank transfer" },
     estDelivery: order.estDelivery
