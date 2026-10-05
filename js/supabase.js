@@ -1221,6 +1221,8 @@
 
       if (!configured || !cfg.supabaseUrl || !cfg.supabaseAnonKey) return;
       try {
+        /* JSON.stringify drops the undefined delivery fields, so an unmigrated
+           orders table never sees a column it does not have. */
         var row = orderToRow(order);
         fetch(cfg.supabaseUrl.replace(/\/+$/, "") + "/rest/v1/orders?onConflict=id", {
           method: "POST",
