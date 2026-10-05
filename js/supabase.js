@@ -283,6 +283,11 @@
     "seed_keychains_2": { name: "Handmade Crochet Coffee Cup Keychain", price: 450, priceMax: 750 },
     "seed_keychains_3": { name: "Handmade Crochet Headphone Keychain", price: 350, priceMax: 650 },
     "seed_keychains_4": { name: "Handmade Crochet Toilet Paper Roll Keychain", price: 300, priceMax: 500 },
+    "seed_keychains_5": { name: "Handmade Crochet Slipper Keychain", price: 300, priceMax: 500 },
+    "seed_keychains_6": { name: "Handmade Crochet Rose Keychain with Pearl Accents", price: 400, priceMax: 650 },
+    "seed_keychains_7": { name: "Handmade Mini Crochet Handbag Keychain", price: 500, priceMax: 800 },
+    "seed_keychains_8": { name: "Handmade Crochet Amigurumi Fruit Keychain Set", price: 350, priceMax: 600 },
+    "seed_keychains_9": { name: "Handmade Crochet Amigurumi Jellyfish Keychain", price: 300, priceMax: 500 },
   };
   var PRODUCT_PRICES = {
     "seed_purses_6": 5500,
