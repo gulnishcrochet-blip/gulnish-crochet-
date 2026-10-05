@@ -189,6 +189,11 @@
     var sub = cartTotalPrice(items);
     if (subtotalEl) subtotalEl.textContent = money(sub);
     if (coBarTotal) coBarTotal.textContent = money(sub);
+    /* A ranged item makes the subtotal a floor, not the amount owed. Relabel
+       both summaries so no screen shows it as a settled total. */
+    var ranged = items.some(function (item) { return livePriceMax(item) > 0; });
+    if (subtotalLabel) subtotalLabel.textContent = ranged ? "Subtotal (from)" : "Subtotal";
+    if (coBarLabel) coBarLabel.textContent = ranged ? "Subtotal (from)" : "Subtotal";
 
     setBarVisible(true);
   }
