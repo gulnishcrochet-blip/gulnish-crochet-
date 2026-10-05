@@ -440,6 +440,14 @@
     return "Rs. " + parts.join(".");
   }
 
+  /* The published price of a handmade piece is a range, not a point: size and
+     detail work decide where in the range a given order lands. So the base
+     price stays the number the cart adds up to and the range is published
+     alongside it, with the real figure confirmed on WhatsApp. */
+  function hasRange(p) {
+    return !!(p && parseFloat(p.price) > 0 && parseFloat(p.priceMax) > parseFloat(p.price));
+  }
+
   /* A product with no photo is one the customer commissions through WhatsApp,
      so its price is not published - it shows as "..." instead. Cart and
      checkout still use the real p.price (carried in data-price) so the order
@@ -450,7 +458,8 @@
        quoting "Rs. ..." for them would promise something. A photo-pending
        product that does have a price keeps the "agreed on WhatsApp" hint. */
     if (!(parseFloat(p.price) > 0)) return "";
-    return p.image ? money(p.price) : "Rs. ...";
+    if (!p.image) return "Rs. ...";
+    return hasRange(p) ? money(p.price) + " \u2013 " + money(p.priceMax) : money(p.price);
   }
 
   function stockStatus(p) {
