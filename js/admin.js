@@ -243,6 +243,7 @@
   /* ---------- form refs ---------- */
   var pName = document.getElementById("pName");
   var pPrice = document.getElementById("pPrice");
+  var pPriceMax = document.getElementById("pPriceMax");
   var pStatus = document.getElementById("pStatus");
   var pStock = document.getElementById("pStock");
   var pKeywords = document.getElementById("pKeywords");
