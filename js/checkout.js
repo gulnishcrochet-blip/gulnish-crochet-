@@ -419,6 +419,10 @@ var anyRange = order.items.some(function (i) { return parseFloat(i.priceMax) > p
         })
         .join("\n") +
       "\n\nItems total" + (anyRange ? " (from)" : "") + ": " + money(order.total) +
+      (order.deliveryCharge
+        ? "\nKeychain delivery: " + money(order.deliveryCharge) +
+          "\nTotal to pay" + (anyRange ? " (from)" : "") + ": " + money(order.grandTotal)
+        : "") +
       "\nPayment: " + order.payment.method +
       (order.customer.phone
         ? "\nPhone: " + (GC && GC.formatPhone ? GC.formatPhone(order.customer.phone) : "+" + order.customer.phone)
