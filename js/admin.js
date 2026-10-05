@@ -111,6 +111,15 @@
   var imageData = "";
   var pendingImageFile = null;
 
+  /* A ranged product reads as "Rs. 3,000 - Rs. 6,500" here too, so the manager
+     sees the same figure the shopper does. */
+  function displayPrice(p) {
+    if (!p || !(parseFloat(p.price) > 0)) return "";
+    return parseFloat(p.priceMax) > parseFloat(p.price)
+      ? money(p.price) + " – " + money(p.priceMax)
+      : money(p.price);
+  }
+
   function money(value) {
     var n = parseFloat(value) || 0;
     var str = String(Math.round(n * 100) / 100);
