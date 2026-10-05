@@ -147,6 +147,7 @@
   var coBarBtnText = document.getElementById("coBarBtnText");
   var coBarBtnLoading = document.getElementById("coBarBtnLoading");
   var coBarTotal = document.getElementById("coBarTotal");
+  var coBarLabel = document.getElementById("coBarLabel");
   var payGroup = document.getElementById("coPaymentGroup");
   var payInfo = document.getElementById("coPaymentInfo");
   var moreToggle = document.getElementById("coMoreToggle");
