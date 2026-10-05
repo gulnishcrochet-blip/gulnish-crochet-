@@ -377,6 +377,7 @@
     "seed_jewellery_6": ["hibiscus earring and headband set", "hibiscus set", "earring headband set"],
     "seed_jewellery_7": ["crochet mehndi jewelry set", "mehndi jewelry set", "mehndi set"],
     "seed_jewellery_8": ["sunflower granny square jewelry set", "sunflower granny square jewelry", "granny square jewelry set"],
+    "seed_jewellery_9": ["micro crochet mimosa jewelry collection", "mimosa jewelry", "mimosa collection", "mimosa"],
     "seed_bouquets_1": ["bridal rose bouquet", "rose bridal bouquet", "bridal bouquet", "wedding bouquet"],
     "seed_bouquets_2": ["long stem rose bouquet", "long-stem roses", "rose gift bouquet"],
     "seed_bouquets_3": ["rose and heart gift bouquet", "heart accent bouquet", "rose heart bouquet"],
