@@ -451,7 +451,7 @@ var SEED_PLACEMENT = {
     bouquets: ["bouquet", "flowers", "rose", "bride"],
     keychains: ["keychain", "keyring", "key holder", "wholesale"],
     headbands: ["headband", "head band", "hairband", "hair band", "hair accessory", "girl"],
-    geometry: ["geometry", "geometry box", "maths box", "maths kit", "drafter"],
+    geometry: ["pencil case", "pencil pouch", "pencil case pouch", "pouch", "case"],
     pencil: ["pencil", "pencils", "colour pencil", "color pencil", "writing"],
     pencilbox: ["pencil box", "pencil case", "pen holder", "pouch"]
   };
