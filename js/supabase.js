@@ -121,7 +121,7 @@
      settings (localStorage or the settings table) to adopt the new shape
      instead of keeping names that now sit on the wrong products. */
   var DEFAULT_COUNT = 4;
-  var DEFAULT_NAMES = ["Purses/Bags", "Wedding Gift", "Small Gifts", "School Items"];
+  var DEFAULT_NAMES = ["Purses", "Wedding Gift", "Small Gifts", "School Items"];
 
   /* Subcategories are positional inside their parent, so the key is "sg" +
      (index + 1) and is only ever read alongside the product's own category.
