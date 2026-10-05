@@ -178,6 +178,15 @@ function emailBody(order) {
   const c = order.customer || {};
   const items = order.items || [];
   const total = money(order.total || 0);
+  /* Line price as a range when the item has one: the total below is a floor,
+     and saying so is the difference between an estimate and a bill. */
+  const linePrice = function (i) {
+    const base = (i.price || 0) * i.qty;
+    return i.priceMax > 0
+      ? money(base) + " - " + money(i.priceMax * i.qty)
+      : money(base);
+  };
+  const anyRange = items.some(function (i) { return i.priceMax > 0; });
 
   const lines = [
     "Hi " + (plain(c.name) || "there") + ",",
