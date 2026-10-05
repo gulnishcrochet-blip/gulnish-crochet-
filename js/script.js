@@ -840,10 +840,13 @@
       items = items.concat(inCategory.slice(-FEATURED_PER_CATEGORY));
     });
     /* A product filed under a category key the settings no longer list would
-       otherwise never reach the strip at all. */
-    if (!items.length) {
-      items = products.filter(function (p) { return p.image; }).slice(0, FEATURED_PER_CATEGORY * 4);
-    }
+       otherwise never reach the strip at all. This also covers a catalogue with
+       no categories configured, where the loop above picks nothing. */
+    var known = cats.map(function (label, i) { return "gr" + (i + 1); });
+    var strays = products.filter(function (p) {
+      return p.image && known.indexOf(p.category) < 0;
+    });
+    items = items.concat(strays.slice(0, FEATURED_PER_CATEGORY * 4));
     featuredGrid.innerHTML = items.map(cardHTML).join("");
     /* The featured grid is never filtered, so applyFilters never runs over it
        and nothing would promote its parked photos. */
