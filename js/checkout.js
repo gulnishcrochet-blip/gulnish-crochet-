@@ -436,7 +436,10 @@ var anyRange = order.items.some(function (i) { return parseFloat(i.priceMax) > p
       (anyRange
         ? "\n\nSome items are quoted as a price range - please confirm the final price for each."
         : "") +
-      "\n\nPlease confirm the delivery charge and delivery date with me.";
+      (order.deliveryCharge
+        ? "\n\nThe Rs. 250 keychain delivery charge is included above."
+        : "\n\nPlease confirm the delivery charge and delivery date with me.") +
+      "\nPlease confirm the delivery date with me.";
     var orderWaLink = waSendLink(waNum, waMsg);
     var orderWaShortLink = waNum ? "https://wa.me/" + waNum + "?text=" + encodeURIComponent(waMsg) : "";
 
