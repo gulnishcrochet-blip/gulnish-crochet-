@@ -224,8 +224,8 @@ var SEED_PLACEMENT = {
      priceMax is a single fixed price and is printed on its own. */
   var REAL_PRODUCTS = {
     /* The four bags were their own category until they were merged into
-       Purse/Bags, so they now sit at the end of gr1's list. They are the
-       backpacks, filed under the Bags subcategory rather than Purses. */
+       Purse/Bags; they now lead the School Items list. They are all backpacks,
+       filed under that branch's Bags subcategory rather than under Purses. */
     "seed_bags_1": { name: "Handmade Chunky Crochet Bunny Backpack", price: 6500, priceMax: 9500 },
     "seed_bags_2": { name: "Handmade Minimalist Crochet Backpack with Tassel", price: 6500, priceMax: 9500 },
     "seed_bags_3": { name: "Handmade Floral Granny Square Crochet Backpack", price: 7000, priceMax: 11500 },
