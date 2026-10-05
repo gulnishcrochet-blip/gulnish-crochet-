@@ -263,12 +263,6 @@
   var PRODUCT_PRICES = {
     "seed_purses_6": 5500,
     "seed_purses_7": 4500,
-    "seed_purses_28": 2500,
-    "seed_purses_29": 5500,
-    "seed_purses_30": 4500,
-    "seed_purses_31": 5500,
-    "seed_purses_32": 4500,
-    "seed_purses_33": 5500,
     "seed_gajrays_1": 1199,
     "seed_gajrays_2": 3999,
     "seed_gajrays_3": 2499,
