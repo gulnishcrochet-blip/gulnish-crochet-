@@ -225,11 +225,14 @@ function emailBody(order) {
     items.map(function (i) {
       return "    <tr><td>" + escapeHtml(i.name) +
         (i.color ? " <em>(" + escapeHtml(i.color) + ")</em>" : "") +
-        "</td><td align=\"right\">x " + i.qty + " &middot; " + money((i.price || 0) * i.qty) + "</td></tr>";
+        "</td><td align=\"right\">x " + i.qty + " &middot; " + linePrice(i) + "</td></tr>";
     }).join("\n") +
     "\n  </table>\n" +
-    "  <p><strong>Total: " + money(order.total || 0) + "</strong><br>" +
-    "Payment: " + escapeHtml((order.payment && order.payment.method) || "Bank transfer") + "</p>\n" +
+    "  <p><strong>" + (anyRange ? "Total (from): " : "Total: ") + money(order.total || 0) + "</strong>" +
+    (anyRange
+      ? "<br>Some items are quoted as a price range. We will confirm the final price for each on WhatsApp."
+      : "") +
+    "<br>Payment: " + escapeHtml((order.payment && order.payment.method) || "Bank transfer") + "</p>\n" +
     "  <p style=\"color:#68706b;font-size:13px\">For updates on your order, message us on WhatsApp at +92 307 5729901.</p>";
 
   return {
