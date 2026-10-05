@@ -373,6 +373,7 @@
     pendingImageFile = null;
     pName.value = product.name || "";
     pPrice.value = product.price || "";
+    if (pPriceMax) pPriceMax.value = product.priceMax || "";
     if (pStatus) pStatus.value = stockStatusOf(product);
     if (pStock) pStock.value = product.stock != null ? product.stock : "";
     if (pKeywords) pKeywords.value = (product.keywords || []).join(", ");
