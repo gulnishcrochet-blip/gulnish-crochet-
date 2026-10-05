@@ -256,6 +256,7 @@
   var deleteProductBtn = document.getElementById("deleteProduct");
   var formTitle = document.getElementById("formTitle");
   var subcategoryWarn = document.getElementById("subcategoryWarn");
+  var priceMaxWarn = document.getElementById("priceMaxWarn");
 
   function resetForm() {
     editingId = null;
