@@ -244,7 +244,11 @@ function emailBody(order) {
         "</td><td align=\"right\">x " + i.qty + " &middot; " + linePrice(i) + "</td></tr>";
     }).join("\n") +
     "\n  </table>\n" +
-    "  <p><strong>" + (anyRange ? "Total (from): " : "Total: ") + money(order.total || 0) + "</strong>" +
+    "  <p><strong>" + (anyRange ? "Items total (from): " : "Items total: ") + money(order.total || 0) + "</strong>" +
+    (delivery
+      ? "<br>Keychain delivery: " + money(delivery) +
+        "<br><strong>" + (anyRange ? "Total to pay (from): " : "Total to pay: ") + money(grand) + "</strong>"
+      : "") +
     (anyRange
       ? "<br>Some items are quoted as a price range. We will confirm the final price for each on WhatsApp."
       : "") +
