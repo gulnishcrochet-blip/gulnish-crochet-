@@ -271,7 +271,7 @@
     "seed_jewellery_6": { name: "Handmade Micro-Crochet Hibiscus Earring and Headband Set", price: 1800, priceMax: 2500 },
     "seed_jewellery_7": { name: "Handmade Crochet Mehndi Jewelry Set", price: 3500, priceMax: 4500 },
     "seed_jewellery_8": { name: "Handmade Micro-Crochet Sunflower Granny Square Jewelry Set", price: 2200, priceMax: 3000 },
-    "seed_jewellery_9": { price: 1200, priceMax: 1800 },
+    "seed_jewellery_9": { name: "Handmade Micro-Crochet Mimosa Jewelry Collection", price: 1200, priceMax: 1800 },
   };
   var PRODUCT_PRICES = {
     "seed_purses_6": 5500,
