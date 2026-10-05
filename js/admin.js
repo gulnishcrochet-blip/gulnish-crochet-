@@ -1170,7 +1170,7 @@
         "<td>" + escapeHtml(i.name) + (i.color ? " (" + escapeHtml(i.color) + ")" : "") + "</td>" +
         "<td class='ac'>" + i.qty + "</td>" +
         "<td class='ar'>" + money(i.price || 0) + "</td>" +
-        "<td class='ar'>" + money((i.price || 0) * i.qty) + "</td>" +
+        "<td class='ar'>" + orderLinePrice(i) + "</td>" +
         "</tr>";
     }).join("");
     var histHTML = (Array.isArray(o.statusHistory) ? o.statusHistory : []).map(function (h) {
