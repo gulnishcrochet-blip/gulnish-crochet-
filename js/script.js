@@ -1039,6 +1039,14 @@
       if (ppPrice) {
         ppPrice.textContent = displayPrice(p);
       }
+      /* A range needs saying out loud: read on its own, a two-figure price can
+         look like the amount due. */
+      if (ppPriceNote) {
+        ppPriceNote.hidden = !hasRange(p);
+        ppPriceNote.textContent = hasRange(p)
+          ? "Price varies with size and detailing \u2014 the exact figure is confirmed on WhatsApp."
+          : "";
+      }
     if (ppCategory) {
       /* "Small Gifts · Keychains" reads better than the bare category once a
          product is filed under a subcategory. */
