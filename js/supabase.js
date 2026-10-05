@@ -523,6 +523,20 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
      would land in Small Gifts. */
   var BAGS_JOINED_SCHOOL_V = 63;
 
+  /* The seed version that first shipped Wedding Gift as Jewellery, Bouquet,
+     Gajrays. Rows saved at or after it are already on those keys. */
+  var GAJRAYS_LAST_V = 67;
+
+  /* Moves a Wedding Gift row off the old branch order and onto today's. Safe to
+     run on any older row: a key that is not one of the three is left alone. */
+  function shiftWeddingBranches(p) {
+    if (p.category !== "gr2") return;
+    var moved = WEDDING_SUB_SHIFT[p.subcategory];
+    if (!moved) return;
+    var branches = defaultSubcategories().gr2 || [];
+    p.subcategory = subIndexOf(moved) < branches.length ? moved : "";
+  }
+
   /* v49 to v62 already had today's four categories, but the bags still sat
      under Purse/Bags and School Items began at Geometry. Both moves are undone
      here, which is also what pushed the School Items keys down one place. */
