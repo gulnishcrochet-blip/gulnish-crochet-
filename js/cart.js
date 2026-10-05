@@ -103,6 +103,7 @@
   function buildWaHref(cart, subtotal) {
     var base = waBase();
     if (!base || !cart.length) return "#";
+    var delivery = deliveryCharge(cart);
     var lines = ["Hi Gulnish Crochet, I'd like to place this order:", ""];
     cart.forEach(function (item) {
       var imageUrl = item.image
