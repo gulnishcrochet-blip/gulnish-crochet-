@@ -1296,6 +1296,12 @@
     );
   }
 
+  /* Keychains ship at a flat Rs. 250, charged once per order however many are
+     in the basket. Every other category is still quoted on WhatsApp. */
+  function cartDeliveryCharge() {
+    return GC && GC.deliveryCharge ? GC.deliveryCharge(cart) : 0;
+  }
+
   function itemKey(item) {
     return item.id + (item.color ? "__" + item.color : "");
   }
