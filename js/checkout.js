@@ -375,16 +375,21 @@
     /* Built synchronously so the hand-off happens inside the user's click,
        which is what keeps popup blockers happy. */
     var waNum = GC && GC.shopWhatsApp ? GC.shopWhatsApp() : "";
+var anyRange = order.items.some(function (i) { return parseFloat(i.priceMax) > parseFloat(i.price); });
     var waMsg =
       "New order *" + order.id + "* from " + (order.customer.name || "Customer") + "\n\n" +
       order.items
         .map(function (i) {
           return "- " + i.name + (i.color ? " (" + i.color + ")" : "") +
-            (i.image ? " \u2014 Photo: " + absImage(i.image) : "") +
-            " x " + i.qty + " = " + money(livePrice(i) * i.qty);
+            (i.image ? " — Photo: " + absImage(i.image) : "") +
+            " x " + i.qty + " = " + money(i.price * i.qty) +
+            /* A ranged item is a floor until the shop confirms it, so the top
+               of the range goes out with the order rather than being dropped. */
+            (parseFloat(i.priceMax) > parseFloat(i.price)
+              ? " (range up to " + money(i.priceMax * i.qty) + ")" : "");
         })
         .join("\n") +
-      "\n\nItems total: " + money(order.total) +
+      "\n\nItems total" + (anyRange ? " (from)" : "") + ": " + money(order.total) +
       "\nPayment: " + order.payment.method +
       (order.customer.phone
         ? "\nPhone: " + (GC && GC.formatPhone ? GC.formatPhone(order.customer.phone) : "+" + order.customer.phone)
