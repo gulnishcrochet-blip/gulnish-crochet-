@@ -144,6 +144,9 @@ lines.push(
     lines.push(anyRange
       ? "Some items are quoted as a price range - please confirm the final price for each."
       : "Please confirm availability, and the delivery charge and date.");
+    if (delivery) {
+      lines.push("The Rs. 250 keychain delivery charge is included above - please confirm the delivery date.");
+    }
     return base + "?text=" + encodeURIComponent(lines.join("\n"));
   }
 
