@@ -527,10 +527,14 @@ var SEED_PLACEMENT = {
       p.subcategory = "sg1";
       return;
     }
-    if (p.category === "gr4") {
-      var moved = SCHOOL_SUB_SHIFT[p.subcategory];
-      if (moved) p.subcategory = moved;
-    }
+    if (p.category !== "gr4") return;
+    var moved = SCHOOL_SUB_SHIFT[p.subcategory];
+    if (!moved) return;
+    /* A branch that has been removed since - the pencil boxes - has nowhere to
+       shift to, so the row falls back to sitting straight under the category
+       rather than on a key that names nothing. */
+    var branches = defaultSubcategories().gr4 || [];
+    p.subcategory = subIndexOf(moved) < branches.length ? moved : "";
   }
 
   /* Pull owner-created products out of any older gulnish-products-v* store and
