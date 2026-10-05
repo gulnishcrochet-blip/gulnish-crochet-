@@ -900,7 +900,7 @@
           "</span>" +
           '<span class="ad-order-item__name">' + escapeHtml(i.name) + (i.color ? " <span class='muted'>(" + escapeHtml(i.color) + ")</span>" : "") + "</span>" +
           '<span class="ad-order-item__qty">x' + i.qty + "</span>" +
-          '<span class="ad-order-item__price">' + money((i.price || 0) * i.qty) + "</span>" +
+          '<span class="ad-order-item__price">' + orderLinePrice(i) + "</span>" +
           "</div>";
       })
       .join("");
