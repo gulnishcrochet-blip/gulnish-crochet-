@@ -194,21 +194,22 @@
   /* How many products to generate for a group that has no photos yet. */
   var PLACEHOLDER_COUNTS = { pencilbox: 3 };
 
-  /* Which category (and subcategory) each photo group is filed under. Gajrays,
-     Jewellery and Bouquet are separate top-level categories no longer; they
-     are the three branches of Wedding Gift. The four bags used to be their own
-     category too, and are now the second branch of Purse/Bags. */
-  var SEED_PLACEMENT = {
+/* Which category (and subcategory) each photo group is filed under. Gajrays,
+   Jewellery and Bouquet are separate top-level categories no longer; they are
+   the three branches of Wedding Gift. The four bags used to be their own
+   category, then the second branch of Purse/Bags, and are now the first branch
+   of School Items - they are all backpacks. */
+var SEED_PLACEMENT = {
     purses: { category: "gr1", subcategory: "sg1" },
-    bags: { category: "gr1", subcategory: "sg2" },
+    bags: { category: "gr4", subcategory: "sg1" },
     gajrays: { category: "gr2", subcategory: "sg1" },
     jewellery: { category: "gr2", subcategory: "sg2" },
     bouquets: { category: "gr2", subcategory: "sg3" },
     headbands: { category: "gr3", subcategory: "sg2" },
     keychains: { category: "gr3", subcategory: "sg1" },
-    geometry: { category: "gr4", subcategory: "sg1" },
-    pencil: { category: "gr4", subcategory: "sg2" },
-    pencilbox: { category: "gr4", subcategory: "sg3" }
+    geometry: { category: "gr4", subcategory: "sg2" },
+    pencil: { category: "gr4", subcategory: "sg3" },
+    pencilbox: { category: "gr4", subcategory: "sg4" }
   };
 
   var ITEM_NAME  = { purses: "Purse", bags: "Bag", gajrays: "Gajray", jewellery: "Jewellery", headbands: "Headband", bouquets: "Bouquet", keychains: "Keychain", geometry: "Geometry", pencil: "Pencil", pencilbox: "Pencil Box" };
