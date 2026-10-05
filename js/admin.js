@@ -877,6 +877,15 @@
     );
   }
 
+  /* Order rows carry the range top through from checkout, so the manager sees
+     what was quoted rather than only the base figure the order added up to. */
+  function orderLinePrice(i) {
+    var base = (i.price || 0) * i.qty;
+    return parseFloat(i.priceMax) > parseFloat(i.price)
+      ? money(base) + " – " + money(i.priceMax * i.qty)
+      : money(base);
+  }
+
   /* ---------- order detail (expanded) ---------- */
   function orderDetailHTML(o) {
     var cust = o.customer || {};
