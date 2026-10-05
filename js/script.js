@@ -1233,6 +1233,12 @@
   var cartItemsEl = document.getElementById("cartItems");
   var cartCountEl = document.getElementById("cartCount");
   var cartSubtotalEl = document.getElementById("cartSubtotal");
+  var cartSubtotalLabelEl = document.getElementById("cartSubtotalLabel");
+  var cartDeliveryRow = document.getElementById("cartDeliveryRow");
+  var cartDeliveryEl = document.getElementById("cartDelivery");
+  var cartGrandRow = document.getElementById("cartGrandRow");
+  var cartGrandEl = document.getElementById("cartGrand");
+  var cartGrandLabelEl = document.getElementById("cartGrandLabel");
   var cartBar = document.getElementById("cartBar");
   var cartBarCount = document.getElementById("cartBarCount");
   var cartBarTotal = document.getElementById("cartBarTotal");
