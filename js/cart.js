@@ -11,6 +11,10 @@
   var subtotalEl = document.getElementById("cpSubtotal");
   var subtotalLabel = document.getElementById("cpSubtotalLabel");
   var waLink = document.getElementById("cpWa");
+  var deliveryRow = document.getElementById("cpDeliveryRow");
+  var deliveryEl = document.getElementById("cpDelivery");
+  var grandRow = document.getElementById("cpGrandRow");
+  var grandEl = document.getElementById("cpGrand");
 
   function getProducts() { return GC ? GC.products || [] : []; }
   function getSettings() { return GC ? GC.settings || {} : {}; }
