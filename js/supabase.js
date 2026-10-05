@@ -259,6 +259,17 @@
     "seed_purses_31": { name: "Handmade Crochet 3D Bow Knot Underarm Bag", price: 5000, priceMax: 6800 },
     "seed_purses_32": { name: "Handmade Crochet Rose Drawstring Bucket Bag", price: 5500, priceMax: 7500 },
     "seed_purses_33": { name: "Handmade Crochet 3D Butterfly Handbag with Pearl Strap", price: 5500, priceMax: 7800 },
+    /* Jewellery. Number 9 was sent with a price range but no name, so it is
+       left on its generated "Jewellery 9" label until one is supplied. */
+    "seed_jewellery_1": { name: "Handmade Micro-Crochet Rose Jewelry Set", price: 1500, priceMax: 2200 },
+    "seed_jewellery_2": { name: "Handmade Micro-Crochet Camellia Jewelry Set", price: 1800, priceMax: 2500 },
+    "seed_jewellery_3": { name: "Handmade Micro-Crochet Sunflower Jewelry Set", price: 1200, priceMax: 1800 },
+    "seed_jewellery_4": { name: "Handmade Crochet Heart Jewelry Set", price: 1000, priceMax: 1500 },
+    "seed_jewellery_5": { name: "Handmade Micro-Crochet 4-Piece Floral Pearl Jewelry Set", price: 2800, priceMax: 3800 },
+    "seed_jewellery_6": { name: "Handmade Micro-Crochet Hibiscus Earring and Headband Set", price: 1800, priceMax: 2500 },
+    "seed_jewellery_7": { name: "Handmade Crochet Mehndi Jewelry Set", price: 3500, priceMax: 4500 },
+    "seed_jewellery_8": { name: "Handmade Micro-Crochet Sunflower Granny Square Jewelry Set", price: 2200, priceMax: 3000 },
+    "seed_jewellery_9": { price: 1200, priceMax: 1800 },
   };
   var PRODUCT_PRICES = {
     "seed_purses_6": 5500,
