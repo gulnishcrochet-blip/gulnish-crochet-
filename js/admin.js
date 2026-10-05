@@ -321,10 +321,17 @@
       pendingImageFile = null;
     }
 
+    var base = parseFloat(pPrice.value) || 0;
+    /* A range top that is blank, zero or under the base is meaningless, so it
+       is stored as 0 and the product reads as a single fixed price. */
+    var top = parseFloat(pPriceMax && pPriceMax.value) || 0;
+    if (!(top > base)) top = 0;
+
     var product = {
       id: editingId || "p" + Date.now().toString(36),
       name: name,
-      price: parseFloat(pPrice.value) || 0,
+      price: base,
+      priceMax: top,
       category: pCategory.value,
       subcategory: pSubCategory ? pSubCategory.value : "",
       status: pStatus ? pStatus.value : "in stock",
