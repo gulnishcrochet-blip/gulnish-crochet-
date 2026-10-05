@@ -859,7 +859,7 @@
       });
       var chosen = rows.filter(function (p) { return p.image; }).slice(-FEATURED_PER_GROUP);
       if (chosen.length < FEATURED_PER_GROUP) {
-        rows.forEach(function (p) {
+        rows.slice().reverse().forEach(function (p) {
           if (chosen.length >= FEATURED_PER_GROUP) return;
           if (chosen.indexOf(p) < 0) chosen.push(p);
         });
