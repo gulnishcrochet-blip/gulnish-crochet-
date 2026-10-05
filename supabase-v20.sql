@@ -79,5 +79,7 @@ alter table public.products
 -- A max at or below the base is meaningless (it would print a back-to-front
 -- range), so it is normalised away rather than stored.
 alter table public.products
+  drop constraint if exists products_price_max_above_price;
+alter table public.products
   add constraint products_price_max_above_price
   check (price_max = 0 or price_max > price);
