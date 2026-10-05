@@ -241,7 +241,7 @@
     var sl = subcategoryLabel(p.category, p.subcategory);
     catEl.textContent = sl ? (cl + ' · ' + sl) : (cl || '');
     nameEl.textContent = p.name || '';
-    priceEl.textContent = parseFloat(p.price) > 0 ? money(p.price) : '';
+    priceEl.textContent = displayPrice(p);
     var s = String((p.status || '')).toLowerCase();
     /* A product can reach the admin panel with a "sold out" status (older
        rows, or a status written straight into Supabase). A card already
