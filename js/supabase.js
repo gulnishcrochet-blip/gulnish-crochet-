@@ -361,7 +361,17 @@
     "seed_purses_24": ["crescent shoulder bag flower charm", "crescent bag", "flower charm bag", "shoulder bag"],
     "seed_purses_25": ["ruffle shoulder bag", "cherry charm bag", "ruffle bag", "shoulder bag"],
     "seed_purses_26": ["chunky t-shirt yarn bag", "t-shirt yarn bag", "baguette bag", "chunky yarn"],
-    "seed_purses_27": ["daisy drawstring bucket bag", "drawstring bucket bag", "bucket bag", "daisy bag"]
+    "seed_purses_27": ["daisy drawstring bucket bag", "drawstring bucket bag", "bucket bag", "daisy bag"],
+    "seed_purses_28": ["amigurumi chick crossbody", "chick crossbody purse", "amigurumi purse", "chick purse", "cute crossbody"],
+    "seed_purses_29": ["beaded crochet hobo bag", "crystal fringe bag", "hobo bag", "beaded hobo", "fringe bag"],
+    "seed_purses_30": ["sunflower drawstring bucket bag", "sunflower bucket bag", "drawstring bucket bag", "sunflower"],
+    "seed_purses_31": ["3d bow knot underarm bag", "bow knot bag", "underarm bag", "bow bag"],
+    "seed_purses_32": ["rose drawstring bucket bag", "rose bucket bag", "drawstring bucket bag", "rose"],
+    "seed_purses_33": ["3d butterfly handbag", "butterfly handbag pearl strap", "butterfly handbag", "pearl strap handbag"],
+    "seed_bags_1": ["chunky crochet bunny backpack", "bunny backpack", "crochet backpack", "rabbit backpack"],
+    "seed_bags_2": ["minimalist crochet backpack", "backpack with tassel", "tassel backpack", "minimal backpack"],
+    "seed_bags_3": ["floral granny square backpack", "granny square backpack", "floral backpack"],
+    "seed_bags_4": ["sunflower granny square backpack", "sunflower backpack", "granny square backpack"]
   };
   /* Search terms per category, plus a per-group list for the subcategories of
      Wedding Gift so "gajray" or "bouquet" still finds the right product even
