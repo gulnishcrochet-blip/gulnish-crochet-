@@ -212,7 +212,7 @@ var SEED_PLACEMENT = {
     pencilbox: { category: "gr4", subcategory: "sg4" }
   };
 
-  var ITEM_NAME  = { purses: "Purse", bags: "Bag", gajrays: "Gajray", jewellery: "Jewellery", headbands: "Headband", bouquets: "Bouquet", keychains: "Keychain", geometry: "Geometry", pencil: "Pencil", pencilbox: "Pencil Box" };
+  var ITEM_NAME  = { purses: "Purse", bags: "Bag", gajrays: "Gajray", jewellery: "Jewellery", headbands: "Headband", bouquets: "Bouquet", keychains: "Keychain", geometry: "Pencil Case", pencil: "Pencil", pencilbox: "Pencil Box" };
   var BASE_PRICE = { purses: 850, bags: 1500, gajrays: 400, jewellery: 550, headbands: 450, bouquets: 1999, keychains: 350 };
 
   /* Every entry carries the two ends of what the item costs. "price" is the
