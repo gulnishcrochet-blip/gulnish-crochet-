@@ -448,7 +448,7 @@
           '<div class="admin-item__info">' +
           '<div class="admin-item__name">' + escapeHtml(p.name) + "</div>" +
           '<div class="admin-item__meta">' +
-          (money(p.price) || "No price") + " &middot; " + escapeHtml(catLabel(p.category)) +
+          (displayPrice(p) || "No price") + " &middot; " + escapeHtml(catLabel(p.category)) +
           (sub ? " &middot; " + escapeHtml(sub) : "") +
           " &middot; " + (p.colors || []).length + " color(s)" +
           '</div><div class="admin-stock stock-' + stockStatusOf(p).replace(" ", "-") + '">' + stockLabel(p) + "</div></div>" +
