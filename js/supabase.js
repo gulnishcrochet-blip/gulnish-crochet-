@@ -341,7 +341,18 @@
     "seed_purses_10": ["3d rose clutch bag", "round metal handle", "metal handle clutch", "clutch bag"],
     "seed_purses_11": ["3d rose flower sling bag", "rose sling bag", "sling bag", "shoulder sling", "with leaves"],
     "seed_purses_12": ["3d rose round cantaloupe bag", "cantaloupe bag", "round crochet bag", "rose round bag"],
-    "seed_purses_13": ["sunflower flap clutch", "flap clutch", "sunflower clutch", "clutch"]
+    "seed_purses_13": ["sunflower flap clutch", "flap clutch", "sunflower clutch", "clutch"],
+    "seed_purses_14": ["square 3d rose handbag", "square rose handbag", "3d rose handbag", "rose handbag"],
+    "seed_purses_15": ["tricolor rose handbag", "tricolour rose handbag", "circle handbag", "3d circle bag", "rose handbag"],
+    "seed_purses_16": ["rose circle clutch", "circle clutch", "pearl strap clutch", "3d rose clutch"],
+    "seed_purses_17": ["metallic rose clutch", "gold ring handle clutch", "metallic clutch", "rose clutch"],
+    "seed_purses_18": ["multi color granny square crossbody", "granny square crossbody", "crossbody bag", "multicolour crossbody"],
+    "seed_purses_19": ["rose handbag pearl arched handle", "pearl arched handle", "arched handle handbag", "3d rose handbag"],
+    "seed_purses_20": ["rose clutch d-ring", "d-ring metal handle", "d ring clutch", "3d rose clutch"],
+    "seed_purses_21": ["coquette bow shoulder bag", "bow shoulder bag", "coquette bag", "bow bag"],
+    "seed_purses_22": ["daisy flower tote bag", "3d daisy tote", "daisy tote", "pearl strap tote"],
+    "seed_purses_23": ["ribbed crochet tassel bag", "tassel bag", "leather handle bag", "ribbed bag"],
+    "seed_purses_24": ["crescent shoulder bag flower charm", "crescent bag", "flower charm bag", "shoulder bag"]
   };
   /* Search terms per category, plus a per-group list for the subcategories of
      Wedding Gift so "gajray" or "bouquet" still finds the right product even
