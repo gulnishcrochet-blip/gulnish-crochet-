@@ -130,6 +130,7 @@
   /* ---------- elements ---------- */
   var itemsEl = document.getElementById("coItems");
   var subtotalEl = document.getElementById("coSubtotal");
+  var subtotalLabel = document.getElementById("coSubtotalLabel");
   var emptyWrap = document.getElementById("coEmpty");
   var formWrap = document.getElementById("coForm");
   var form = document.getElementById("coFormEl");
