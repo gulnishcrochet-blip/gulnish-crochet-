@@ -905,6 +905,17 @@
       })
       .join("");
 
+    /* Orders placed before the keychain delivery charge existed have no
+       grandTotal, so fall back to the item total rather than printing NaN. */
+    var anyRange = items.some(function (i) {
+      return parseFloat(i.priceMax) > parseFloat(i.price);
+    });
+    var orderDelivery = parseFloat(o.deliveryCharge) || 0;
+    var deliveryHTML = orderDelivery
+      ? '<div class="ad-order-total-row"><span>Keychain delivery</span><strong>' +
+        money(orderDelivery) + "</strong></div>"
+      : "";
+
     var statusOpts = ORDER_STATUSES.map(function (s) {
       return '<option value="' + escapeHtml(s) + '"' + (s === (o.status || "Pending") ? " selected" : "") + ">" + escapeHtml(s) + "</option>";
     }).join("");
