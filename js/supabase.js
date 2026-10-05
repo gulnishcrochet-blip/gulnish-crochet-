@@ -253,6 +253,12 @@
     "seed_purses_25": { name: "Handmade Crochet Ruffle Shoulder Bag with Cherry Charm", price: 4200, priceMax: 5500 },
     "seed_purses_26": { name: "Handmade Chunky T-Shirt Yarn Baguette Bag", price: 5000, priceMax: 7000 },
     "seed_purses_27": { name: "Handmade Crochet Daisy Drawstring Bucket Bag", price: 5500, priceMax: 7500 },
+    "seed_purses_28": { name: "Handmade Crochet Amigurumi Chick Crossbody Purse", price: 3500, priceMax: 4800 },
+    "seed_purses_29": { name: "Handmade Beaded Crochet Hobo Bag with Crystal Fringe", price: 7500, priceMax: 11500 },
+    "seed_purses_30": { name: "Handmade Crochet Sunflower Drawstring Bucket Bag", price: 5500, priceMax: 7500 },
+    "seed_purses_31": { name: "Handmade Crochet 3D Bow Knot Underarm Bag", price: 5000, priceMax: 6800 },
+    "seed_purses_32": { name: "Handmade Crochet Rose Drawstring Bucket Bag", price: 5500, priceMax: 7500 },
+    "seed_purses_33": { name: "Handmade Crochet 3D Butterfly Handbag with Pearl Strap", price: 5500, priceMax: 7800 },
   };
   var PRODUCT_PRICES = {
     "seed_purses_6": 5500,
