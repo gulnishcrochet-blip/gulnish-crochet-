@@ -108,6 +108,9 @@
   function isMissingPriceMaxColumn(err) {
     return isMissingColumn(err, "price_max");
   }
+  function isMissingOrderDeliveryColumns(err) {
+    return isMissingColumn(err, "delivery_charge") || isMissingColumn(err, "grand_total");
+  }
 
   /* ---------- default settings (mirrors original) ---------- */
 
