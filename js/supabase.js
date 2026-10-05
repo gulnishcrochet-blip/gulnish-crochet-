@@ -768,8 +768,9 @@
     get settings() { return settings; },
     get orders() { return orders; },
     /* True once a save has proved the products table has no subcategory
-       column, so the admin panel can show the migration notice. */
+       or price_max column, so the admin panel can show the migration notice. */
     get subcategoryColumnMissing() { return subcategoryColumnMissing; },
+    get priceMaxColumnMissing() { return priceMaxColumnMissing; },
 
     /* ---- categories & subcategories ---- */
     categoryKey: function (index) { return "gr" + (index + 1); },
