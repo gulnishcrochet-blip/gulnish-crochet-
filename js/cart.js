@@ -157,7 +157,7 @@
           '<div class="cp-item__info">' +
           '<span class="cp-item__name">' + escapeHtml(item.name || "Item") + "</span>" +
           (item.color ? '<span class="cp-item__color">' + escapeHtml(item.color) + "</span>" : "") +
-          '<span class="cp-item__price">' + money(unitPrice(item) * item.qty) + "</span>" +
+          '<span class="cp-item__price">' + linePrice(item) + "</span>" +
           "</div>" +
           '<div class="cp-item__actions">' +
           '<div class="qty cp-qty">' +
