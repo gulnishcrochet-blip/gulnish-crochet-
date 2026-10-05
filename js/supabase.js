@@ -489,6 +489,10 @@
       for (var i = 0; i < count; i += 1) {
         var id = "seed_" + key + "_" + (i + 1);
         var real = REAL_PRODUCTS[id];
+        /* Built per product, not accumulated across the group: a shared
+           accumulator would hand every product the terms of the ones before
+           it, so a search for "tassel" would match 20 unrelated purses. */
+        var kw = baseKw.slice();
         if (PRODUCT_KEYWORDS[id]) kw = kw.concat(PRODUCT_KEYWORDS[id]);
         var price = photos.length
           ? (PRODUCT_PRICES[id] || (real ? real.price : (BASE_PRICE[key] || 500) + (i % 4) * 50))
