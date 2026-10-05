@@ -264,6 +264,7 @@
     pendingImageFile = null;
     pName.value = "";
     pPrice.value = "";
+    if (pPriceMax) pPriceMax.value = "";
     if (pStatus) pStatus.value = "in stock";
     if (pStock) pStock.value = "";
     if (pKeywords) pKeywords.value = "";
