@@ -1925,6 +1925,27 @@ body:has(.co-bar.show) .cart-bar {
   font-size: 1.15rem;
 }
 
+/* The delivery line sits under the subtotal as a normal-weight row, and the
+   grand total below it is the figure the customer is asked for, so it is set
+   apart with a rule rather than left looking like a third item line. */
+.co-total--delivery {
+  font-weight: 500;
+  font-size: 0.94rem;
+  color: var(--muted);
+  margin-top: 0.5rem;
+}
+
+.co-total--delivery span:last-child {
+  color: var(--ink);
+}
+
+.co-total--grand {
+  border-top: 1px solid var(--line-strong);
+  padding-top: 0.7rem;
+  margin-top: 0.7rem;
+  font-size: 1.1rem;
+}
+
 .cart-page__wa {
   width: 100%;
   margin-top: 0.7rem;
