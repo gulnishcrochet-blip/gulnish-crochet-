@@ -125,6 +125,10 @@ lines.push(
        reading it as agreed. */
     var anyRange = cart.some(function (item) { return hasRange(item); });
     lines.push((anyRange ? "Items total (from): " : "Items total: ") + money(subtotal));
+    if (delivery) {
+      lines.push("Keychain delivery: " + money(delivery));
+      lines.push("Order total (from): " + money(subtotal + delivery));
+    }
     var profile = GC && GC.getCustomerProfile ? GC.getCustomerProfile() : null;
     if (profile && (profile.name || profile.phone || profile.city)) {
       lines.push("");
