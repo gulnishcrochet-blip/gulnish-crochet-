@@ -1037,6 +1037,11 @@
 
     /* ---- products ---- */
     saveProduct: async function (product) {
+      /* Normalise before anything else: this runs before the admin form's own
+         guard on a direct call, and a priceMax that is blank, junk or below
+         the base would otherwise be written to memory, localStorage and the
+         database and only quietly dropped on the next load. */
+      product = normalizeProduct(product);
       var idx = products.findIndex(function (p) { return p.id === product.id; });
       if (idx !== -1) products[idx] = product;
       else products.unshift(product);
