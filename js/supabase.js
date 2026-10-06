@@ -153,14 +153,11 @@
     return out;
   }
 
+  /* One photo per category card, chosen by hand: the shop-by strip
+     is a look at each branch, not a slideshow. A single entry also stops
+     startCategorySlideshows from adding its cross-fade layer. */
   var CATEGORY_IMAGE_SETS = {
-    gr1: ["images/purses/purse-1.webp", "images/purses/purse-2.webp", "images/purses/purse-23.webp", "images/purses/purse-24.webp", "images/purses/purse-3.webp"],
-    /* Wedding Gift borrows the bridal bouquet shots: they are the most
-       wedding-specific photos in the catalog and they are not hidden. */
-    gr2: ["images/bouquets/bouquet-1.webp", "images/bouquets/bouquet-4.webp", "images/bouquets/bouquet-5.webp", "images/jewellery/jewellery-1.webp", "images/jewellery/jewellery-4.webp"],
-    /* Small Gifts: the keychain shots, then the headband shots. */
-    gr3: ["images/keychains/keychain-1.webp", "images/keychains/keychain-2.webp", "images/headbands/headband-1.webp", "images/headbands/headband-2.webp"],
-    /* School Items: a backpack leads, then the geometry shots and the pencils,
+    gr1: ["images/purses/purse-15.webp"],
        so the home card no longer shows the photo-pending slot. */
     gr4: ["images/bags/bag-1.webp", "images/geometry/geometry-1.webp", "images/geometry/geometry-2.webp", "images/geometry/geometry-5.webp", "images/pencil/pencil-1.webp"]
   };
