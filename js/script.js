@@ -1151,9 +1151,9 @@
         "@id": SEO_PRODUCTS_URL + "#" + p.id,
         name: p.name,
         description:
-          "Handmade crochet " +
-          String(p.name || "").replace(/^Handmade Crochet\s+/i, "").toLowerCase() +
-          (where ? " - " + where.toLowerCase() + " from Gulnish Crochet, made to order in Pakistan." : "."),
+          String(p.name || "") +
+          (where ? " - handmade crochet " + where.toLowerCase() : "") +
+          " from Gulnish Crochet, made to order in Pakistan.",
         image: seoImage(p.image),
         sku: p.id,
         url: pageUrl,
