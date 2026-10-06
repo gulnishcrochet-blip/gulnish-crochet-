@@ -158,6 +158,9 @@
      startCategorySlideshows from adding its cross-fade layer. */
   var CATEGORY_IMAGE_SETS = {
     gr1: ["images/purses/purse-15.webp"],
+    gr2: ["images/bouquets/bouquet-7.webp"],
+    gr3: ["images/keychains/keychain-3.webp"],
+    /* School Items: a backpack leads, then the geometry shots and the pencils,
        so the home card no longer shows the photo-pending slot. */
     gr4: ["images/bags/bag-1.webp", "images/geometry/geometry-1.webp", "images/geometry/geometry-2.webp", "images/geometry/geometry-5.webp", "images/pencil/pencil-1.webp"]
   };
