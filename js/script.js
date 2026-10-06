@@ -1757,7 +1757,9 @@
         name: addBtn.dataset.name || "",
         price: parseFloat(addBtn.dataset.price) || 0,
         color: swatchEl ? swatchEl.dataset.color : "",
-        image: img && img.src ? img.currentSrc || img.src : ""
+        /* On a product's own page the photo is not inside a card, so the
+           button carries it in data-image and the cart line still gets one. */
+        image: (img && img.src ? img.currentSrc || img.src : "") || addBtn.dataset.image || ""
       });
       flyToCart(addBtn);
       return;
