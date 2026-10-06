@@ -979,6 +979,34 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
       return GC.subcategoriesOf(catKey).length ? subKey(0) : "";
     },
 
+    /* ---- product URLs ----
+       Each product needs a URL of its own to be findable and linkable, and
+       that URL has to survive a rename: a name is copy the shop owner edits,
+       while the photo file is what the product is. So the slug is taken from
+       the image ("images/purses/purse-15.webp" -> "purse-15"), and only falls
+       back to the row id ("seed_purses_15" -> "purses-15") when a product has
+       no photo of its own to name it after. */
+    productSlug: function (p) {
+      if (!p) return "";
+      var img = String(p.image || "").split("?")[0];
+      var stem = img.slice(img.lastIndexOf("/") + 1).replace(/\.[a-z0-9]+$/i, "");
+      if (stem) return stem.toLowerCase();
+      var id = String(p.id || "");
+      var m = id.match(/^seed_(.+?)_(\d+)$/);
+      return m ? (m[1] + "-" + m[2]).toLowerCase() : id.toLowerCase();
+    },
+
+    /* The product a /product/<slug> URL is asking for, or null. */
+    productBySlug: function (slug) {
+      var want = String(slug || "").trim().toLowerCase();
+      if (!want) return null;
+      var list = GC.products || [];
+      for (var i = 0; i < list.length; i++) {
+        if (GC.productSlug(list[i]) === want) return list[i];
+      }
+      return null;
+    },
+
     /* ---- boot ---- */
     init: function () {
       return bootPromise;
