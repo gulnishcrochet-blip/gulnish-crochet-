@@ -103,6 +103,27 @@ function bumpAssetVersion() {
   return bumped;
 }
 
+/* Every product has its own page under product/, generated from the catalogue
+   in js/supabase.js. It has to be regenerated before the commit, or a price or
+   name edit would go out with stale pages describing the old product. Only
+   changed files are written, so this cannot loop on its own output. */
+function generateProductPages() {
+  try {
+    execSync("node scripts/generate-product-pages.js", {
+      cwd: ROOT,
+      encoding: "utf8",
+      stdio: ["pipe", "pipe", "pipe"]
+    })
+      .split("\n")
+      .filter(Boolean)
+      .forEach((line) => console.log("[auto-deploy] " + line.trim()));
+  } catch (err) {
+    /* A generator failure must not stop the site deploying: the pages on disk
+       are still valid, they are just one edit behind. */
+    console.error("[auto-deploy] product pages not regenerated:", (err.stderr || err.message).trim());
+  }
+}
+
 /* A push can be rejected as non-fast-forward (e.g. a manual push raced this
    watcher). Rebase onto the remote and try once more so the change is not
    stranded on the local branch. */
@@ -135,6 +156,7 @@ function autopush() {
 
   try {
     clearStaleLock();
+    generateProductPages();
     bumpAssetVersion();
     const status = run("git status --porcelain");
     let didCommit = false;
