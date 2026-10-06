@@ -649,6 +649,14 @@ body.has-topbar { scroll-padding-top: 132px; }
   background: var(--bg-soft);
 }
 
+/* The photo is wrapped in a link to the product's own page. It has to fill
+   the box exactly as the bare images did, so the grid layout is unchanged. */
+.work-card__link {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .work-card__media img {
   width: 100%;
   height: 100%;
