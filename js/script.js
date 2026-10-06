@@ -1163,10 +1163,17 @@
             availability: availability
           };
       var where = subcategoryLabelOf(p.category, p.subcategory) || categoryLabelOf(p.category);
+      /* Each product has an address of its own now, so the shop page points at
+         it instead of at itself: that is the page a shopper would be forwarded
+         to, and the one Google should attach this offer to. */
+      var productUrl =
+        GC && GC.canonicalProductSlug
+          ? SEO_ORIGIN + "/product/" + GC.canonicalProductSlug(p)
+          : pageUrl;
 
       return {
         "@type": "Product",
-        "@id": SEO_PRODUCTS_URL + "#" + p.id,
+        "@id": productUrl + "#product",
         name: p.name,
         description:
           String(p.name || "") +
@@ -1174,7 +1181,7 @@
           " from Gulnish Crochet, made to order in Pakistan.",
         image: seoImage(p.image),
         sku: p.id,
-        url: pageUrl,
+        url: productUrl,
         inLanguage: "en",
         itemCondition: "https://schema.org/NewCondition",
         category: where,
