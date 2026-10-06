@@ -24,13 +24,14 @@ window.GC_CONFIG = {
   storageBucket: "shop-images"
 };
 
-// Analytics — Google Analytics 4 (G-XXXXXXX) and Meta Pixel (numeric ID).
-// Leave both "" to keep the site untagged. Scripts load automatically
-// from js/analytics.js once an ID is set.
+// Analytics — GA4 (G-XXXXXXX), GTM container (GTM-XXXXXXX), Meta Pixel (numeric).
+// Leave all three "" to keep the site untagged. They load automatically from
+// js/analytics.js once an ID is set.
 window.GC_ANALYTICS = {
-  /* Google Analytics 4: still empty. Paste the G-XXXXXXXX measurement ID
-     here when you have one and it starts reporting with no other change. */
-  ga4: "",
+  /* Google Analytics 4 measurement ID. Reported to directly by js/analytics.js
+     - gtag config plus every event - so GTM needs no GA4 tag for this site,
+     and adding one inside the container would double-count every event. */
+  ga4: "G-37S91HPB60",
   /* Google Tag Manager container. This is NOT the same as a GA4 measurement
      ID: GTM is a shell that fires whatever tags you configure in its UI, so
      events are published to dataLayer as plain { event: ... } objects for it

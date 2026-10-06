@@ -574,8 +574,14 @@ var anyRange = order.items.some(function (i) { return parseFloat(i.priceMax) > p
     renderPaymentInfo();
     var items = loadCart();
     if (items && items.length && GC && GC.track) {
+      /* Without value the funnel reports every checkout as worth nothing and
+         the report says the shop takes orders but earns nothing - which is not
+         what the shop is doing. This is the same cart total shown on screen;
+         where the basket contains a price range it is the floor, not the
+         agreed figure, and it is reported as such rather than invented. */
       GC.track("begin_checkout", {
         currency: "PKR",
+        value: cartTotalPrice(items) || 0,
         items: items.map(function (i) {
           var found = (GC.products || []).find(function (x) { return x.id === i.id; }) || i;
           return GC.trackItem ? GC.trackItem(found) : { item_id: String(i.id || "") };
