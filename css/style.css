@@ -1382,7 +1382,8 @@ body.has-topbar { scroll-padding-top: 132px; }
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.26);
 }
 
-.footer-col h4 {
+.footer-col h4,
+.footer-col__title {
   font-family: var(--font-head);
   font-size: 1.05rem;
   color: #F8EAD8;
@@ -5860,7 +5861,9 @@ body.has-topbar .site-header { top: 0; }
 .footer-inner { grid-template-columns: 1.7fr 1fr 1fr 1.15fr; gap: 2.2rem; }
 
 .footer-col h2,
-.footer-col h4 {
+.footer-col__title,
+.footer-col h4,
+.footer-col__title {
   font-family: var(--font-body);
   font-size: 0.8rem;
   font-weight: 700;
@@ -6518,7 +6521,9 @@ body.has-topbar .site-header { top: 0; }
   }
 
   .footer-col h2,
-  .footer-col h4 {
+  .footer-col__title,
+  .footer-col h4,
+  .footer-col__title {
     margin-bottom: 0.6rem;
   }
 
