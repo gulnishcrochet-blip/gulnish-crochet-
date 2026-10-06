@@ -1007,6 +1007,22 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
       return null;
     },
 
+    /* Two photos of one design (the same piece shot twice) must not become two
+       pages competing under one name: the first product with a given name owns
+       the address, and the rest point at it. Keeps a duplicate title out of the
+       index and gives both photos one place to be found. */
+    canonicalProductSlug: function (p) {
+      var name = String((p && p.name) || "").trim().toLowerCase();
+      if (!name) return GC.productSlug(p);
+      var list = GC.products || [];
+      for (var i = 0; i < list.length; i++) {
+        if (String((list[i] && list[i].name) || "").trim().toLowerCase() === name) {
+          return GC.productSlug(list[i]);
+        }
+      }
+      return GC.productSlug(p);
+    },
+
     /* ---- boot ---- */
     init: function () {
       return bootPromise;
