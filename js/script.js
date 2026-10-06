@@ -1079,9 +1079,11 @@
 
     /* The subcategory is what people search for, so it leads; the branch name
        follows after a dash. "Crochet Wedding Gift Bouquet" reads badly,
-       "Crochet Bouquet - Wedding Gift" reads like a shelf. */
+       "Crochet Bouquet - Wedding Gift" reads like a shelf. "in Pakistan" only
+       rides along on the short flat titles - the branch ones are already long
+       enough to push the brand name out of the search result. */
     var title = branch
-      ? "Crochet " + (subLabel ? subLabel + " \u2013 " + label : label) + " in Pakistan | Gulnish Crochet"
+      ? "Crochet " + (subLabel ? subLabel + " \u2013 " + label : label + " in Pakistan") + " | Gulnish Crochet"
       : SEO_DEFAULT_TITLE;
     var desc = branch
       ? "Handmade crochet " +
