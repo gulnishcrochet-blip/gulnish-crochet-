@@ -1015,8 +1015,10 @@
     buildSubFilters(catKey);
     setSubFilterUI(subKey || "all");
     visibleCount = INITIAL_VISIBLE;
-    applyFilters();
+    /* Branch meta first: applyProductSeo() reads the canonical back out of the
+       head, so it has to be the branch URL and not the generic /products one. */
     applyBranchSeo(catKey, subKey);
+    applyFilters();
     if (productsView) {
       productsView.scrollIntoView({ block: "start", behavior: "smooth" });
     }
