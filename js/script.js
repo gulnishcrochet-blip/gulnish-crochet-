@@ -1016,6 +1016,7 @@
     setSubFilterUI(subKey || "all");
     visibleCount = INITIAL_VISIBLE;
     applyFilters();
+    applyBranchSeo(catKey, subKey);
     if (productsView) {
       productsView.scrollIntoView({ block: "start", behavior: "smooth" });
     }
