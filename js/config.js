@@ -28,6 +28,11 @@ window.GC_CONFIG = {
 // Leave both "" to keep the site untagged. Scripts load automatically
 // from js/analytics.js once an ID is set.
 window.GC_ANALYTICS = {
+  /* Google Analytics 4: still empty. Paste the G-XXXXXXXX measurement ID
+     here when you have one and it starts reporting with no other change. */
   ga4: "",
-  meta: ""
+  /* Meta Pixel. This ID is public by design - it appears in the page source of
+     every site running the pixel - so it belongs here rather than in an
+     environment variable, and it is not a secret. */
+  meta: "1118150207236206"
 };
