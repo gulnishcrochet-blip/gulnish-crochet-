@@ -716,6 +716,7 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
       subcategories: defaultSubcategories(),
       taxonomyVersion: TAXONOMY_VERSION,
       categoryImages: CATEGORY_IMAGE_SETS,
+      categoryImagesVersion: CATEGORY_IMAGES_VERSION,
       whatsapp: "03075729901",
       whatsappCountry: "92",
       craftDays: 5,
