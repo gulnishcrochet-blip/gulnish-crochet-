@@ -569,9 +569,19 @@
       stockStatus(p) === "sold out"
         ? '<div class="work-card__soldout"><span>Sold Out</span></div>'
         : "";
+    /* Every card links to the product's own page at /product/<slug>. That
+       address is generated ahead of time by scripts/generate-product-pages.js
+       and is the only thing a search engine can follow, so it has to be real
+       markup rather than a click handler. A photo-less product has no page to
+       point at, so it keeps the old button behaviour. */
+    var slug = GC && GC.canonicalProductSlug ? GC.canonicalProductSlug(p) : "";
+    var linkAttrs = slug ? ' href="/product/' + escapeHtml(slug) + '"' : "";
     var media =
       '<div class="work-card__media js-product-view" data-view="' + p.id + '">' +
+      '<a class="work-card__link js-product-link" data-view="' + p.id + '"' + linkAttrs +
+      ' aria-label="' + escapeHtml(p.name) + '">' +
       (p.image ? image + altImage : photoPendingHTML()) +
+      "</a>" +
       soldOut +
       "</div>";
     /* The card tool sits outside .work-card__media on purpose: the media
