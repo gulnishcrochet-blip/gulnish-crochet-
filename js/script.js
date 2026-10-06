@@ -1399,6 +1399,23 @@
       }
       return;
     }
+    /* A card photo or title is a real link to that product's page. A plain left
+       click keeps quick view, which is the fast way to shop, while a modified
+       or middle click follows the href - that is what "open in new tab",
+       "open in new window" and "copy link address" all rely on, and they all
+       pass a modifier or a non-primary button, so they are left alone. */
+    var productLink = e.target.closest("a.js-product-link");
+    if (productLink) {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+      e.preventDefault();
+      var linkId = productLink.dataset.view;
+      if (linkId && productView) {
+        showProduct(linkId);
+      } else {
+        location.href = productLink.getAttribute("href");
+      }
+      return;
+    }
     var viewBtn = e.target.closest(".js-product-view");
     if (viewBtn) {
       if (productView) {
