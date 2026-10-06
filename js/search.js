@@ -9,6 +9,30 @@
   var isOpen = false;
   var cursor = -1;
   var hitsCache = [];
+  /* Set when the shopper has finished typing by picking a suggestion, so the
+     next render reports the search exactly once. */
+  var committed = false;
+  var lastReportedSearch = '';
+
+  /* A search that found nothing is worth knowing about on its own: it means
+     either a typo, or a piece the shopper wants that the catalogue does not
+     have yet. Both point at what to stock next, and neither is visible any
+     other way.
+
+     Results re-render on every keystroke and again when a hit is opened, so
+     this guards on the term itself and counts a search once however many times
+     it is re-rendered. */
+  function reportSearch() {
+    if (!GC || !GC.track) return;
+    var query = String(input.value || '').trim();
+    if (query.length < 2 || query === lastReportedSearch) return;
+    lastReportedSearch = query;
+    GC.track('search', {
+      search_term: query,
+      results: hitsCache.length,
+      found: hitsCache.length > 0
+    });
+  }
   var firstFocusable;
   var returnFocusTo;
 
@@ -169,6 +193,8 @@
       var chip = e.target.closest('.search-chip');
       if (chip) {
         input.value = chip.dataset.q || chip.textContent;
+        /* Picking a suggestion is a deliberate search, unlike typing. */
+        committed = true;
         input.dispatchEvent(new Event('input', { bubbles: true }));
         input.focus();
       }
@@ -233,6 +259,15 @@
     return (GC && GC.products) || [];
   }
 
+  /* Search only offers pieces a shopper can actually see and buy. A product
+     with no photo has nothing to show in a result row, so surfacing it would
+     send people to a dead end from the search overlay. */
+  function shoppable(list) {
+    return (list || []).filter(function (p) {
+      return p && p.image;
+    });
+  }
+
   function tokenise(s) {
     return String(s || '')
       .toLowerCase()
@@ -265,7 +300,7 @@
   }
 
   function render(q) {
-    var products = getProducts();
+    var products = shoppable(getProducts());
     var query = String(q || '').trim();
     hitsCache = [];
 
@@ -300,6 +335,14 @@
     }
 
     hitsCache = list;
+
+    /* Only the term the shopper committed to is reported, never each
+       keystroke's intermediate prefixes. */
+    if (committed) {
+      committed = false;
+      reportSearch();
+    }
+
     resultsEl.innerHTML = '';
     emptyEl.hidden = hitsCache.length !== 0;
 
@@ -389,6 +432,10 @@
       moveCursor(-1);
     } else if (e.key === 'Enter') {
       e.preventDefault();
+      /* Enter is the shopper saying "this is what I am looking for". The term is
+         already in the box and already rendered, so the search is reported here
+         directly rather than by re-rendering. */
+      reportSearch();
       openActive();
     }
   }

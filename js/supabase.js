@@ -1475,6 +1475,37 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
     /* Returns the FULL international number (e.g. 923001234567) with no
        leading zero, which is what wa.me and api.whatsapp.com require.
        Without the country code the link silently fails to open a chat. */
+    /* Reports a shopper action to GA4 and Meta. analytics.js owns the actual
+       sending; this just exposes it as GC.track() for the rest of the site,
+       and stays a no-op when no IDs are configured or the tag scripts are
+       blocked, so calling it is always safe. */
+    track: function (name, params) {
+      if (typeof window.gcTrack === "function") window.gcTrack(name, params);
+    },
+
+    /* GA4 wants money as a plain number and a separate currency, so the two
+       figures every event needs are shaped here once. */
+    trackItem: function (p) {
+      if (!p) return {};
+      var price = parseFloat(p.price) || 0;
+      var item = {
+        item_id: String(p.id || ""),
+        item_name: String(p.name || ""),
+        currency: "PKR"
+      };
+      if (price > 0) item.price = price;
+      /* The subcategory is the more specific of the two and is what the shop
+         actually browses by, so it is the better item_category when set. */
+      var sub = p.subcategory
+        ? GC.subcategoryLabelOf(p.category, p.subcategory)
+        : "";
+      var cats = (GC.settings || {}).categories || [];
+      var i = parseInt(String(p.category || "").replace(/\D/g, ""), 10) - 1;
+      var cat = cats[i] || "";
+      if (cat) item.item_category = sub ? cat + " / " + sub : cat;
+      return item;
+    },
+
     shopWhatsApp: function () {
       var raw = String(GC.settings.whatsapp || "03075729901").replace(/[^\d]/g, "");
       var cc = String(GC.settings.whatsappCountry || "92").replace(/[^\d]/g, "") || "92";
@@ -1563,6 +1594,113 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
       /* No catalog row: fall back to the id, which is how every seeded
          keychain is named. */
       return /^seed_keychains_/.test(String(item.id || ""));
+    },
+
+    /* Pre-fills a WhatsApp message with a whole basket and returns a wa.me
+       link. The cart page and the cart drawer both order through here on
+       purpose: when each built its own message they slowly drifted, and the
+       shop then received the same basket in two different shapes.
+
+       checkout.js deliberately does NOT use this. It gathers a name, phone,
+       address, payment method and order number first, so its message is a
+       different thing: a confirmed order rather than a basket enquiry. What it
+       does share is GC.orderWhatsAppLink below, which builds the opening line
+       and the wa.me link the same way, so the number and encoding can never
+       disagree between the two.
+
+       `opts`:
+         profile  - saved customer details, appended when they exist
+         extra    - extra lines (order id, payment, notes, urgency)
+       A basket with a price range on it is labelled "from" throughout, because
+       the low figure is a floor until the shop confirms the real price. */
+    whatsappOrderLink: function (items, opts) {
+      var list = Array.isArray(items) ? items.filter(function (i) { return i && i.qty; }) : [];
+      var num = GC.shopWhatsApp ? GC.shopWhatsApp() : "";
+      if (!num || !list.length) return "";
+      var o = opts || {};
+
+      /* Same formatting as the rest of the shop (script.js and cart.js), so a
+         total reads identically whichever path wrote the message. */
+      var money = function (v) {
+        var n = parseFloat(v) || 0;
+        var str = String(Math.round(n * 100) / 100);
+        var parts = str.split(".");
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return "Rs. " + parts.join(".");
+      };
+      /* Catalogue prices win over the copy saved in the basket, so a price
+         change is reflected in the message instead of the stale figure the
+         customer added weeks ago. */
+      var priceOf = function (item) {
+        var found = (GC.products || []).find(function (x) { return x.id === item.id; });
+        return found && parseFloat(found.price) > 0 ? parseFloat(found.price) : parseFloat(item.price) || 0;
+      };
+      var priceMaxOf = function (item) {
+        var found = (GC.products || []).find(function (x) { return x.id === item.id; });
+        var max = found ? parseFloat(found.priceMax) : parseFloat(item.priceMax);
+        return max > priceOf(item) ? max : 0;
+      };
+      var absImage = function (img) {
+        var v = String(img || "");
+        if (!v) return "";
+        if (/^https?:\/\//i.test(v)) return v;
+        return location.origin + "/" + v.replace(/^\/+/, "");
+      };
+
+      var lines = ["Hi Gulnish Crochet, I'd like to place this order:", ""];
+      var subtotal = 0;
+      var anyRange = false;
+      list.forEach(function (item) {
+        var price = priceOf(item);
+        var max = priceMaxOf(item);
+        var found = (GC.products || []).find(function (x) { return x.id === item.id; });
+        var name = (found && found.name) || item.name || "Item";
+        var qty = Math.max(1, parseInt(item.qty, 10) || 1);
+        subtotal += price * qty;
+        if (max) anyRange = true;
+        var photo = absImage((found && found.image) || item.image);
+        lines.push(
+          "\u2022 " + name +
+          (item.color ? " (" + item.color + ")" : "") +
+          (photo ? " \u2014 Photo: " + photo : "") +
+          (qty > 1 ? " x" + qty : "") +
+          " \u2014 " + money(price * qty) +
+          (max ? " (range up to " + money(max * qty) + ")" : "")
+        );
+      });
+
+      var delivery = GC.deliveryCharge(list);
+      lines.push("");
+      lines.push((anyRange ? "Items total (from): " : "Items total: ") + money(subtotal));
+      if (delivery) {
+        lines.push("Keychain delivery: " + money(delivery));
+        lines.push((anyRange ? "Order total (from): " : "Order total: ") + money(subtotal + delivery));
+      }
+
+      (o.extra || []).forEach(function (line) {
+        if (line) lines.push(line);
+      });
+
+      var profile = o.profile !== undefined ? o.profile : GC.getCustomerProfile();
+      if (profile && (profile.name || profile.phone || profile.city || profile.address)) {
+        lines.push("");
+        if (profile.name) lines.push("Name: " + profile.name);
+        if (profile.phone) lines.push("Phone: " + (GC.formatPhone ? GC.formatPhone(profile.phone) : profile.phone));
+        if (profile.city) lines.push("City: " + profile.city);
+        if (profile.address) lines.push("Address: " + profile.address);
+      } else {
+        lines.push("");
+        lines.push("My delivery name, phone and city:");
+      }
+
+      lines.push("");
+      lines.push(anyRange
+        ? "Some items are quoted as a price range - please confirm the final price for each."
+        : "Please confirm availability, and the delivery charge and date.");
+      if (delivery) {
+        lines.push("The Rs. " + GC.KEYCHAIN_DELIVERY + " keychain delivery charge is included above - please confirm the delivery date.");
+      }
+      return "https://wa.me/" + encodeURIComponent(num) + "?text=" + encodeURIComponent(lines.join("\n"));
     },
 
     /* The delivery charge owed by a cart, so the cart page, the drawer, the

@@ -46,8 +46,11 @@ function buildCart() {
     '                <div class="cart-delivery-bar"><div class="cart-delivery-fill" id="cpProgressFill"></div></div>\n' +
     '                <p class="cart-delivery-msg" id="cpProgressMsg"></p>\n' +
     "              </div>\n" +
-    '              <button class="btn co-place" type="button" id="cpCheckout">Proceed to Checkout &rarr;</button>\n' +
-    '              <a class="btn btn--ghost cart-page__wa" id="cpWa" href="#" target="_blank" rel="noopener">Order on WhatsApp</a>\n' +
+    '              <!-- WhatsApp is the main way this shop takes orders, so it is the\n' +
+    '                   first thing offered here, not the fallback. Both paths stay:\n' +
+    '                   some customers prefer to type their details into a form. -->\n' +
+    '              <a class="btn btn--wa cart-page__wa" id="cpWa" href="#" target="_blank" rel="noopener">Order on WhatsApp</a>\n' +
+    '              <button class="btn btn--ghost co-place" type="button" id="cpCheckout">Fill in details instead &rarr;</button>\n' +
     '              <p class="cart-note co-trust">Pay in advance &mdash; we confirm payment and delivery details on WhatsApp before we start stitching.</p>\n' +
     "            </div>\n" +
     "          </aside>\n" +

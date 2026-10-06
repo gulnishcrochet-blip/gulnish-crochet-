@@ -100,54 +100,13 @@
     return num ? "https://wa.me/" + encodeURIComponent(num) : "";
   }
 
-  function buildWaHref(cart, subtotal) {
-    var base = waBase();
-    if (!base || !cart.length) return "#";
-    var delivery = deliveryCharge(cart);
-    var lines = ["Hi Gulnish Crochet, I'd like to place this order:", ""];
-    cart.forEach(function (item) {
-      var imageUrl = item.image
-        ? (/^https?:\/\//i.test(item.image)
-            ? item.image
-            : window.location.origin + "/" + String(item.image).replace(/^\/+/, ""))
-        : "";
-lines.push(
-        "• " + (item.name || "Item") +
-        (imageUrl ? " — Photo: " + imageUrl : "") +
-        (item.qty > 1 ? " x" + item.qty : "") +
-        (item.color ? " (" + item.color + ")" : "") +
-        " — " + linePrice(item)
-      );
-    });
-    lines.push("");
-    /* With a ranged item the base-price total is a floor, so it is labelled
-       as one and the shop is asked for the real figure rather than the shop
-       reading it as agreed. */
-    var anyRange = cart.some(function (item) { return hasRange(item); });
-    lines.push((anyRange ? "Items total (from): " : "Items total: ") + money(subtotal));
-    if (delivery) {
-      lines.push("Keychain delivery: " + money(delivery));
-      lines.push("Order total (from): " + money(subtotal + delivery));
-    }
-    var profile = GC && GC.getCustomerProfile ? GC.getCustomerProfile() : null;
-    if (profile && (profile.name || profile.phone || profile.city)) {
-      lines.push("");
-      lines.push("Name: " + (profile.name || "-"));
-      if (profile.phone) lines.push("Phone: " + (GC && GC.formatPhone ? GC.formatPhone(profile.phone) : "+" + String(profile.phone).replace(/^0+/, "")));
-      if (profile.city) lines.push("City: " + profile.city);
-      if (profile.address) lines.push("Address: " + profile.address);
-    } else {
-      lines.push("");
-      lines.push("My delivery name, phone and city:");
-    }
-    lines.push("");
-    lines.push(anyRange
-      ? "Some items are quoted as a price range - please confirm the final price for each."
-      : "Please confirm availability, and the delivery charge and date.");
-    if (delivery) {
-      lines.push("The Rs. 250 keychain delivery charge is included above - please confirm the delivery date.");
-    }
-    return base + "?text=" + encodeURIComponent(lines.join("\n"));
+  /* The message itself is built by GC.whatsappOrderLink so the cart page, the
+     cart drawer and checkout all send the same wording. This only has to supply
+     the basket. */
+  function buildWaHref(cart) {
+    if (!cart || !cart.length) return "#";
+    if (GC && GC.whatsappOrderLink) return GC.whatsappOrderLink(cart) || "#";
+    return "#";
   }
 
   /* The subtotal is the sum of the base prices, so with a ranged item in the
@@ -214,7 +173,7 @@ lines.push(
     if (grandRow) grandRow.hidden = !delivery;
     if (grandEl) grandEl.textContent = money(subtotal + delivery);
 
-    if (waLink) waLink.href = buildWaHref(cart, subtotal);
+    if (waLink) waLink.href = buildWaHref(cart);
   }
 
   function broadcastAndRender(cart) {

@@ -448,6 +448,27 @@ var anyRange = order.items.some(function (i) { return parseFloat(i.priceMax) > p
     saveCart([]);
     saveProfile();
     if (GC && GC.saveOrderKeepalive) GC.saveOrderKeepalive(order);
+
+    /* Reported here rather than after the hand-off, because this line runs
+       whether or not the browser is allowed to open WhatsApp: a shopper whose
+       popup was blocked still started a real order and still needs to appear in
+       the numbers. Only the completed-checkout path reports a purchase, so this
+       is not double counting the whatsapp_order event above it. */
+    if (GC && GC.track) {
+      GC.track("purchase", {
+        transaction_id: order.id,
+        currency: "PKR",
+        value: order.total || 0,
+        shipping: order.deliveryCharge || 0,
+        payment_type: (order.payment && order.payment.method) || "unknown",
+        items: (order.items || []).map(function (i) {
+          var found = (GC.products || []).find(function (x) { return x.id === i.id; }) || i;
+          var line = GC.trackItem ? GC.trackItem(found) : { item_id: String(i.id || "") };
+          line.quantity = i.qty || 1;
+          return line;
+        })
+      });
+    }
     if (GC && GC.reserveProducts && order.items && order.items.length) {
       GC.reserveProducts(order.items.slice()).catch(function () {});
     }
@@ -551,6 +572,16 @@ var anyRange = order.items.some(function (i) { return parseFloat(i.priceMax) > p
     renderSummary(loadCart());
     autoFillProfile();
     renderPaymentInfo();
+    var items = loadCart();
+    if (items && items.length && GC && GC.track) {
+      GC.track("begin_checkout", {
+        currency: "PKR",
+        items: items.map(function (i) {
+          var found = (GC.products || []).find(function (x) { return x.id === i.id; }) || i;
+          return GC.trackItem ? GC.trackItem(found) : { item_id: String(i.id || "") };
+        })
+      });
+    }
   }
 
   if (GC && GC.init) {

@@ -844,6 +844,31 @@ body.has-topbar { scroll-padding-top: 132px; }
     transform 0.22s var(--ease), opacity 0.22s var(--ease);
 }
 
+/* Sits directly under "Add to Cart" on the card. Full width like its
+   neighbour, a little quieter because it is the alternative to the cart rather
+   than the main path, and clearly separated from it by a hairline. */
+.work-card__wa {
+  margin-top: 0.4rem;
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.5rem 1rem;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 700;
+  box-shadow: none;
+}
+
+.work-card__wa:hover {
+  box-shadow: 0 6px 14px rgba(63, 150, 79, 0.28);
+}
+
+.work-card__wa svg {
+  flex: none;
+}
+
 .add-btn:hover {
   background: var(--primary);
   color: #fff;
@@ -1838,6 +1863,20 @@ body:has(.co-bar.show) .cart-bar {
 
 .cart-call {
   width: 100%;
+}
+
+/* The drawer's WhatsApp action sits under the item list as a full-width
+   button, with its icon beside the label like the other buttons in the foot. */
+.cart-drawer__wa {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.cart-drawer__wa svg {
+  flex: none;
 }
 
 .cart-note {

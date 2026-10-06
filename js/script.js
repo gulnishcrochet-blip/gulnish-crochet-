@@ -65,6 +65,19 @@
      small files, so a phone on wifi still downloads every 800px original.
      Local images/ paths only - Supabase URLs have no sm/ twin.
      deferred=true emits data-srcset/data-sizes for the parked images above. */
+  /* The catalogue stores photos relative to the site root, so a link pasted
+     into a chat needs the full address or it arrives broken. */
+  function absoluteProductImage(src) {
+    var v = String(src || "");
+    if (!v) return "";
+    if (/^https?:\/\//i.test(v)) return v;
+    return location.origin + "/" + v.replace(/^\/+/, "");
+  }
+
+  var WA_SVG =
+    '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">' +
+    '<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-.386.549-.439.697-.081.223-.154.48-.221.754-.87 2.878 1.235 5.637 3.842 8.095a9.33 9.33 0 0 0 3.354 2.254c.635.283 1.263.42 1.694.52.693.164 1.323.094 1.821-.116.555-.234.945-.612 1.074-.951.14-.366.196-.748.22-1.047.026-.3.026-.553 0-.676-.023-.124-.089-.232-.198-.316zM12.001 0C5.384 0 0 5.384 0 12.001c0 2.117.554 4.19 1.606 6.009L0 24l6.146-1.612c1.79.977 4.306 1.492 6.855 1.492 6.627 0 12.001-5.384 12.001-12.001C24 5.384 18.616 0 12.001 0z"/></svg>';
+
   function imgSrcset(src, sizes, deferred) {
     if (!src || src.lastIndexOf("data:", 0) === 0) return "";
     if (src.indexOf("images/") !== 0) return "";
@@ -416,6 +429,19 @@
     return GC.products || [];
   }
 
+  /* What the shopper is shown. A piece with no photo cannot be judged, so it
+     cannot be bought either: showing it as an empty "photo pending" card only
+     makes the shop look unfinished and costs trust. These stay in the catalogue
+     and in the admin, so adding a photo later brings the piece straight back -
+     this filters the shop grid, the home page strip and search results, and
+     deliberately does NOT touch the cart or order history, where an older
+     order may still refer to a piece that has since lost its photo. */
+  function shopProducts(list) {
+    return (list || []).filter(function (p) {
+      return p && p.image;
+    });
+  }
+
   function getSettings() {
     return GC.settings || {};
   }
@@ -613,6 +639,7 @@
       stockBadgeHTML(p) +
       colors +
       buildCardAddBtn(p) +
+      buildCardWaBtn(p) +
       "</div></article>"
     );
   }
@@ -638,6 +665,31 @@
       "Add to Cart</button>";
   }
 
+  /* Order straight from the card over WhatsApp, with this one piece already
+     written out. Most orders here come through WhatsApp, and a shopper who has
+     just found the piece they want should not have to open it, add it, open the
+     cart and choose checkout first. It is a link, not a button, so it opens in
+     a new tab like the other outbound links. */
+  function buildCardWaBtn(p) {
+    var num = GC && GC.shopWhatsApp ? GC.shopWhatsApp() : "";
+    if (!num || stockStatus(p) === "sold out") return "";
+    var quote = hasRange(p)
+      ? " \u2022 " + money(p.price) + " - " + money(p.priceMax)
+      : " \u2022 " + money(p.price);
+    var msg =
+      "Hi Gulnish Crochet, I'd like to order:\n\n*" +
+      (p.name || "this item") + "*" + quote +
+      "\n\nPhoto: " + absoluteProductImage(p.image) +
+      "\n\nIs it available?";
+    return (
+      '<a class="btn btn--wa btn--wa-sm work-card__wa js-card-wa" data-id="' + escapeHtml(p.id) + '"' +
+      ' href="https://wa.me/' + encodeURIComponent(num) + "?text=" + encodeURIComponent(msg) + '"' +
+      ' target="_blank" rel="noopener" aria-label="Order ' + escapeHtml(p.name) + ' on WhatsApp">' +
+      WA_SVG +
+      "Buy on WhatsApp</a>"
+    );
+  }
+
   function buildFilters(settings) {
     if (!filterWrap) return;
     filterWrap.innerHTML = "";
@@ -650,7 +702,7 @@
       return btn;
     };
     filterWrap.appendChild(makeBtn("all", "All", true));
-    var products = getProducts();
+    var products = shopProducts(getProducts());
     (settings.categories || []).forEach(function (label, i) {
       var key = "gr" + (i + 1);
       if (!products.some(function (p) { return p.category === key; })) return;
@@ -670,7 +722,7 @@
       activeSubFilter = "all";
       return;
     }
-    var products = getProducts().filter(function (p) { return p.category === catKey; });
+    var products = shopProducts(getProducts()).filter(function (p) { return p.category === catKey; });
     var makeBtn = function (filter, label, active) {
       var btn = document.createElement("button");
       btn.type = "button";
@@ -803,7 +855,7 @@
   }
 
   function renderProducts(products) {
-    var withImages = (products || []).slice();
+    var withImages = shopProducts(products);
     if (productGrid) productGrid.innerHTML = withImages.map(cardHTML).join("");
     if (noProducts) noProducts.hidden = withImages.length > 0;
     if (productCountLabel) {
@@ -836,7 +888,7 @@
 
   if (sortSelect) {
     sortSelect.addEventListener("change", function () {
-      var withImages = sortProducts(getProducts(), sortSelect.value);
+      var withImages = sortProducts(shopProducts(getProducts()), sortSelect.value);
       if (productGrid) productGrid.innerHTML = withImages.map(cardHTML).join("");
       buildColorSwatches();
       refreshCards();
@@ -870,26 +922,17 @@
 
   function renderFeatured() {
     if (!featuredGrid) return;
-    var products = getProducts();
+    var products = shopProducts(getProducts());
     /* The newest end of each group, so the strip reads as "fresh off the hook".
-       A group tops up from its photo-less products rather than dropping out,
-       so a branch nobody has photographed yet still gets a card - the same
-       photoPending placeholder the catalogue grid shows - instead of quietly
-       vanishing from the strip. */
+       Only photographed pieces appear: a group with nothing photographed yet
+       simply contributes no card rather than showing an empty placeholder. */
     var items = [];
     var groups = featuredGroups();
     groups.forEach(function (g) {
       var rows = products.filter(function (p) {
         return p.category === g.category && (p.subcategory || "") === g.subcategory;
       });
-      var chosen = rows.filter(function (p) { return p.image; }).slice(-FEATURED_PER_GROUP);
-      if (chosen.length < FEATURED_PER_GROUP) {
-        rows.slice().reverse().forEach(function (p) {
-          if (chosen.length >= FEATURED_PER_GROUP) return;
-          if (chosen.indexOf(p) < 0) chosen.push(p);
-        });
-      }
-      items = items.concat(chosen);
+      items = items.concat(rows.slice(-FEATURED_PER_GROUP));
     });
     /* A product on a category key the settings no longer list, or on a branch
        key that has since been removed, would otherwise never reach the strip at
@@ -1267,6 +1310,7 @@
     var p = getProducts().find(function (x) { return x.id === id; });
     if (!p) return;
     currentProduct = p;
+    if (GC && GC.track) GC.track("view_item", { items: [GC.trackItem ? GC.trackItem(p) : {}] });
     currentQty = 1;
     if (ppQtyVal) ppQtyVal.textContent = "1";
 
@@ -1442,6 +1486,38 @@
     if (backP) showProductList();
   });
 
+  /* Every WhatsApp order button on the page reports through this one listener:
+     the per-card button, the cart drawer's and the product detail link. This is
+     the conversion that matters for this shop, because orders are paid for in
+     advance over WhatsApp rather than completed in the site, so a report built
+     only from completed checkouts would show a shop doing no trade while it is
+     doing steady business. */
+  document.addEventListener("click", function (e) {
+    var wa = e.target.closest(".js-card-wa, #cartDrawerWa, #ppWa");
+    if (!wa || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    if (wa.getAttribute("href") === "#") return;
+    if (GC && GC.track) {
+      var p = null;
+      var id = wa.dataset.id || (currentProduct ? currentProduct.id : "");
+      if (id) p = getProducts().find(function (x) { return x.id === id; }) || null;
+      /* value is left undefined when a range makes the figure provisional,
+         rather than reporting the low end as though it were the order value. */
+      var price = p && !hasRange(p) ? parseFloat(p.price) || 0 : 0;
+      GC.track("whatsapp_order", {
+        currency: "PKR",
+        value: price || undefined,
+        source: wa.classList.contains("js-card-wa")
+          ? "card"
+          : wa.id === "cartDrawerWa"
+            ? "cart_drawer"
+            : wa.id === "ppWa"
+              ? "product_detail"
+              : "other",
+        items: p && GC.trackItem ? [GC.trackItem(p)] : undefined
+      });
+    }
+  });
+
   document.addEventListener("click", function (e) {
     var btn = e.target.closest(".filter-btn");
     if (!btn) return;
@@ -1498,6 +1574,7 @@
   var cartDrawer = document.getElementById("cartDrawer");
   var cartItemsEl = document.getElementById("cartItems");
   var cartCountEl = document.getElementById("cartCount");
+  var cartDrawerWa = document.getElementById("cartDrawerWa");
   var cartSubtotalEl = document.getElementById("cartSubtotal");
   var cartSubtotalLabelEl = document.getElementById("cartSubtotalLabel");
   var cartDeliveryRow = document.getElementById("cartDeliveryRow");
@@ -1594,6 +1671,14 @@
     renderCart();
     bumpBadge();
     showToast("Added to cart");
+    if (GC && GC.track) {
+      var found = getProducts().find(function (x) { return x.id === product.id; }) || product;
+      GC.track("add_to_cart", {
+        currency: "PKR",
+        value: (parseFloat(found.price) || 0) * qty,
+        items: [GC.trackItem ? GC.trackItem(found) : {}]
+      });
+    }
   }
 
   function removeFromCart(key) {
@@ -1638,6 +1723,7 @@
          basket would keep showing a Rs. 250 charge and a grand total. */
       if (cartDeliveryRow) cartDeliveryRow.hidden = true;
       if (cartGrandRow) cartGrandRow.hidden = true;
+      if (cartDrawerWa) cartDrawerWa.href = "#";
       return;
     }
 
@@ -1683,6 +1769,15 @@
     if (cartGrandEl) cartGrandEl.textContent = money(sub + delivery);
     if (cartGrandLabelEl) {
       cartGrandLabelEl.textContent = ranged ? "Total (from)" : "Total";
+    }
+
+    /* The drawer's WhatsApp button carries the basket, so its link has to be
+       rebuilt whenever the basket changes. It sits below the item list, so an
+       empty basket cannot reach it; the href is still cleared so a stale link
+       from a previous basket is never left behind in the markup. */
+    if (cartDrawerWa) {
+      cartDrawerWa.href =
+        GC && GC.whatsappOrderLink ? GC.whatsappOrderLink(cart) || "#" : "#";
     }
   }
 
