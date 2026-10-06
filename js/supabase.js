@@ -136,6 +136,11 @@
   /* Bump whenever the category list, their order, or their subcategories
      change. Saved settings stamped with an older value keep their WhatsApp
      number, bank details and delivery times, but take the new taxonomy. */
+  
+  /* Bump when the bundled category photos change. Saved photos are kept
+     while this matches; raising it hands every browser the new bundled
+     sets once, without touching names, subcategories or shop details. */
+  var CATEGORY_IMAGES_VERSION = 2;
   var TAXONOMY_VERSION = 13;
 
   function subKey(i) { return "sg" + (i + 1); }
