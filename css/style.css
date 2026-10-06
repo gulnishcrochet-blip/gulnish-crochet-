@@ -782,6 +782,12 @@ body.has-topbar { scroll-padding-top: 132px; }
   overflow: hidden;
 }
 
+/* The name is also a link to the product page, so the hover cue the photo
+   already has is repeated here. */
+.work-card__name a:hover {
+  text-decoration: underline;
+}
+
 .work-card__price {
   font-weight: 700;
   color: var(--primary-deep);
