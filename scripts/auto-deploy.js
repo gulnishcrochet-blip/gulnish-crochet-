@@ -24,7 +24,11 @@ const WATCH_DIRS = [
   path.join(ROOT, "api"),
   path.join(ROOT, "css"),
   path.join(ROOT, "js"),
-  path.join(ROOT, "images")
+  path.join(ROOT, "images"),
+  /* fs.watch is not recursive, so ROOT alone would never notice the generated
+     product pages and they would sit uncommitted until something else changed. */
+  path.join(ROOT, "product"),
+  path.join(ROOT, "scripts")
 ];
 
 let timer = null;

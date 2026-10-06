@@ -58,6 +58,16 @@ function stockStatus(p) {
   return "in stock";
 }
 
+/* The catalogue stores image paths relative to the site root
+   ("images/purses/purse-1.webp"). That works on products.html, which sits at
+   the root, but a product page lives one directory down: "images/..." there
+   would resolve to /product/images/... and 404. Every src and href the
+   generator emits has to be anchored to the root. */
+function rootPath(rel) {
+  const s = String(rel || "");
+  return s.charAt(0) === "/" ? s : "/" + s;
+}
+
 function escapeHtml(s) {
   return String(s == null ? "" : s)
     .replace(/&/g, "&amp;")
@@ -207,6 +217,47 @@ function buildDescription(p, catLabel, subLabel) {
 
 /* ---------- page ---------- */
 
+/* Walks the catalogue in order, starting just after this product and wrapping
+   around, and returns up to `limit` products that have a page of their own.
+   Skipping photo-less and unpriced products matters: they are never turned
+   into pages, so linking to them would be a dead link. Results are returned by
+   slug, which also drops the second copy of a duplicated name. */
+function relatedProducts(p, limit) {
+  const pool = (GC.products || []).filter(
+    (o) => o.image && parseFloat(o.price) > 0 && o.id !== p.id
+  );
+  const near = pool.filter((o) => o.category === p.category);
+  const mine = (GC.products || []).filter(
+    (o) => o.category === p.category && o.image && parseFloat(o.price) > 0
+  );
+  const at = mine.findIndex((o) => o.id === p.id);
+
+  const picked = [];
+  const seen = new Set([GC.canonicalProductSlug(p)]);
+  const take = (o) => {
+    const slug = GC.canonicalProductSlug(o);
+    if (seen.has(slug)) return;
+    seen.add(slug);
+    picked.push(o);
+  };
+
+  if (at > -1) {
+    for (let step = 1; step <= mine.length && picked.length < limit; step++) {
+      take(mine[(at + step) % mine.length]);
+    }
+  } else {
+    near.slice(0, limit).forEach(take);
+  }
+
+  /* A category with one product in it would otherwise show nothing, so top up
+     from the rest of the shop and keep the list useful rather than empty. */
+  for (const o of pool) {
+    if (picked.length >= limit) break;
+    take(o);
+  }
+  return picked;
+}
+
 function jsonLd(p, catLabel, subLabel, canonical, description, canonicalIsSelf) {
   const slug = GC.productSlug(p);
   const url = `${ORIGIN}/product/${slug}`;
@@ -241,7 +292,10 @@ function jsonLd(p, catLabel, subLabel, canonical, description, canonicalIsSelf) 
     { name: "Home", url: `${ORIGIN}/` },
     { name: "Products", url: `${ORIGIN}/products` },
   ];
-  if (subLabel) {
+  const sameShelf = !!subLabel && subLabel === catLabel;
+  if (sameShelf) {
+    crumbs.push({ name: catLabel, url: `${ORIGIN}/products?cat=${p.category}&sub=${p.subcategory}` });
+  } else if (subLabel) {
     crumbs.push({ name: catLabel, url: `${ORIGIN}/products?cat=${p.category}` });
     crumbs.push({ name: subLabel, url: `${ORIGIN}/products?cat=${p.category}&sub=${p.subcategory}` });
   } else if (catLabel) {
@@ -252,6 +306,22 @@ function jsonLd(p, catLabel, subLabel, canonical, description, canonicalIsSelf) 
   return {
     "@context": "https://schema.org",
     "@graph": [
+      /* manufacturer and seller below point at this node, so it has to be part
+         of this page's own graph. It is the same node the home page publishes,
+         repeated here so a product page read on its own still resolves. */
+      {
+        "@type": "Organization",
+        "@id": `${ORIGIN}/#org`,
+        name: "Gulnish Crochet",
+        url: `${ORIGIN}/`,
+        logo: `${ORIGIN}/images/logo/logo-badge.png`,
+        email: "gulnishcrochet@gmail.com",
+        sameAs: [
+          "https://wa.me/923075729901",
+          "https://www.instagram.com/gulnishcrochet/",
+          "https://www.facebook.com/profile.php?id=61594481514536",
+        ],
+      },
       product,
       {
         "@type": "BreadcrumbList",
@@ -281,19 +351,27 @@ function renderPage(p, catLabel, subLabel, shell) {
   const size = imageSize(p.image) || { w: 800, h: 800 };
   const twin = smallTwin(p.image);
   const imgTag =
-    `<img src="${escapeAttr(p.image)}" ` +
-    (twin ? `srcset="${escapeAttr(twin)} 480w, ${escapeAttr(p.image)} ${size.w}w" ` : "") +
+    `<img src="${escapeAttr(rootPath(p.image))}" ` +
+    (twin
+      ? `srcset="${escapeAttr(rootPath(twin))} 480w, ${escapeAttr(rootPath(p.image))} ${size.w}w" `
+      : "") +
     `sizes="(max-width: 760px) 92vw, 520px" width="${size.w}" height="${size.h}" ` +
     `alt="${escapeAttr(p.name)}" decoding="async" fetchpriority="high">`;
 
-  const related = (GC.products || [])
-    .filter((o) => o.id !== p.id && o.category === p.category && parseFloat(o.price) > 0 && o.image)
-    .slice(0, 6)
+  /* Related products are picked by walking the category from just after this
+     product and wrapping around, instead of always taking the first few. Taking
+     the first few left every product past the sixth in a large category (the
+     later purses, keychains, pencils) with no inbound link from any other page.
+     Walking the list means the six products before it in the catalogue point at
+     it, so the whole category is linked up in both directions, and the products
+     it links to are the ones next to it in the catalogue - usually the same
+     subcategory, which is what a shopper wants to see anyway. */
+  const related = relatedProducts(p, 6)
     .map((o) => {
       const oSlug = GC.canonicalProductSlug(o);
       return (
         `<li class="product-page__related-item"><a class="product-page__related-link" href="/product/${escapeAttr(oSlug)}">` +
-        `<img src="${escapeAttr(o.image)}" width="200" height="200" loading="lazy" decoding="async" alt="${escapeAttr(o.name)}">` +
+        `<img src="${escapeAttr(rootPath(o.image))}" width="200" height="200" loading="lazy" decoding="async" alt="${escapeAttr(o.name)}">` +
         `<span class="product-page__related-name">${escapeHtml(o.name)}</span>` +
         `<span class="product-page__related-price">${escapeHtml(priceText(o))}</span>` +
         `</a></li>`
@@ -307,16 +385,23 @@ function renderPage(p, catLabel, subLabel, shell) {
     `Hello Gulnish Crochet, I would like to order "${p.name}" (${priceText(p)}). Here is the page: ${url}`
   );
 
+  /* Several subcategory shelves are named after their category ("Purses >
+     Purses"). Printing both would read as a mistake, so when the two labels are
+     the same the trail shows one hop and links it to the more specific shelf,
+     which is the page that actually lists these products. */
+  const sameShelf = !!subLabel && subLabel === catLabel;
   const breadcrumbHtml =
     `<nav class="product-page__crumbs" aria-label="Breadcrumb">` +
     `<a href="/">Home</a> <span aria-hidden="true">/</span> ` +
     `<a href="/products">Products</a>` +
-    (subLabel
-      ? ` <span aria-hidden="true">/</span> <a href="${escapeAttr(catUrl)}">${escapeHtml(catLabel)}</a>` +
-        ` <span aria-hidden="true">/</span> <a href="${escapeAttr(subUrl)}">${escapeHtml(subLabel)}</a>`
-      : catLabel
-        ? ` <span aria-hidden="true">/</span> <a href="${escapeAttr(catUrl)}">${escapeHtml(catLabel)}</a>`
-        : "") +
+    (sameShelf
+      ? ` <span aria-hidden="true">/</span> <a href="${escapeAttr(subUrl)}">${escapeHtml(catLabel)}</a>`
+      : subLabel
+        ? ` <span aria-hidden="true">/</span> <a href="${escapeAttr(catUrl)}">${escapeHtml(catLabel)}</a>` +
+          ` <span aria-hidden="true">/</span> <a href="${escapeAttr(subUrl)}">${escapeHtml(subLabel)}</a>`
+        : catLabel
+          ? ` <span aria-hidden="true">/</span> <a href="${escapeAttr(catUrl)}">${escapeHtml(catLabel)}</a>`
+          : "") +
     ` <span aria-hidden="true">/</span> <span aria-current="page">${escapeHtml(p.name)}</span>` +
     `</nav>`;
 
@@ -426,14 +511,38 @@ ${body}
 }
 
 /* The shell is products.html with its own <main> removed, so a product page
-   gets the same header, footer, styles and scripts as every other page. */
+   gets the same header, footer, styles and scripts as every other page.
+   products.html sits at the root of the site and refers to its assets without
+   a leading slash ("css/style.css"). A product page is a directory down, where
+   that resolves to /product/css/style.css - the page would arrive with no
+   stylesheet and no JavaScript at all. Anchoring every relative src and href to
+   the root is what makes the copied shell work from the new location. */
 function loadShell() {
   const src = fs.readFileSync(path.join(ROOT, "products.html"), "utf8");
   const mainStart = src.indexOf("<main>");
   const mainEnd = src.indexOf("</main>") + "</main>".length;
+  const rootRelative = (chunk) =>
+    chunk
+      .replace(
+        /\b(src|href)="(?!https?:|\/\/|\/|#|data:|mailto:|tel:)([^"]+)"/g,
+        (m, attr, value) => `${attr}="/${value}"`
+      )
+      /* A srcset is a list, and a browser picks from it in preference to src,
+         so every candidate in it has to be anchored as well. */
+      .replace(
+        /\bsrcset="(?!https?:|\/\/|\/|#|data:)([^"]+)"/g,
+        (m, list) =>
+          `srcset="${list
+            .split(",")
+            .map((c) => {
+              const parts = c.trim().split(/\s+/);
+              return `/${parts[0]}${parts[1] ? " " + parts.slice(1).join(" ") : ""}`;
+            })
+            .join(", ")}"`
+      );
   return {
-    head: src.slice(0, mainStart),
-    tail: src.slice(mainEnd),
+    head: rootRelative(src.slice(0, mainStart)),
+    tail: rootRelative(src.slice(mainEnd)),
   };
 }
 
