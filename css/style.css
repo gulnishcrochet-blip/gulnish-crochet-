@@ -6657,6 +6657,20 @@ body.has-topbar .site-header { top: 0; }
    and contact blocks spanning the full width where their content is wide.
    Same markup, same colours, no new elements. */
 @media (max-width: 760px) {
+  /* The product detail page drops to one column and the related grid to two
+     across, which keeps the photo large without a long thumb-scrolling row. */
+  .product-detail .product-page {
+    grid-template-columns: 1fr;
+  }
+
+  .product-page__specs {
+    grid-template-columns: 1fr;
+  }
+
+  .product-page__related-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   /* padding-top only, deliberately: the shorthand would also clear the
      padding-bottom set above for browsers without :has(), and the fixed
      60px bottom-nav would then sit on top of the copyright line. */
