@@ -572,9 +572,11 @@
     /* Every card links to the product's own page at /product/<slug>. That
        address is generated ahead of time by scripts/generate-product-pages.js
        and is the only thing a search engine can follow, so it has to be real
-       markup rather than a click handler. A photo-less product has no page to
-       point at, so it keeps the old button behaviour. */
-    var slug = GC && GC.canonicalProductSlug ? GC.canonicalProductSlug(p) : "";
+       markup rather than a click handler. The condition matches the
+       generator's exactly - a photo and a price - because a card pointing at an
+       address that was never generated would just be a dead link. */
+    var slug =
+      p.image && parseFloat(p.price) > 0 && GC && GC.canonicalProductSlug ? GC.canonicalProductSlug(p) : "";
     var linkAttrs = slug ? ' href="/product/' + escapeHtml(slug) + '"' : "";
     var media =
       '<div class="work-card__media js-product-view" data-view="' + p.id + '">' +
