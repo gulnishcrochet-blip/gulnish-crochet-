@@ -771,11 +771,16 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
       });
       s.subcategories = sb2;
     }
-    /* Category images are keyed by grN too, so they are only reusable while
+    /* Category photos are keyed by grN, so a re-laid-out shop must not
+       keep them - a saved keychain photo would end up on whatever now sits
+       at gr3. CATEGORY_IMAGES_VERSION covers the gentler case: the layout
+       is unchanged but the bundled photos are not, so the new sets win once
+       and any photo the owner uploads afterwards is kept from then on. */
+    var sameCategoryImages = base.categoryImagesVersion === CATEGORY_IMAGES_VERSION;
        the layout is unchanged - otherwise a saved keychain photo would end up
        on whatever now sits at gr3. A re-laid-out shop falls back to the
        bundled defaults and the owner re-uploads from the admin panel. */
-    if (sameTaxonomy && base.categoryImages && typeof base.categoryImages === "object") {
+    if (sameCategoryImages && base.categoryImages && typeof base.categoryImages === "object") {
       var ci = {};
       s.categories.forEach(function (_, i) {
         var k = "gr" + (i + 1);
