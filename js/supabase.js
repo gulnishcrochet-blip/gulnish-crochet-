@@ -777,9 +777,6 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
        is unchanged but the bundled photos are not, so the new sets win once
        and any photo the owner uploads afterwards is kept from then on. */
     var sameCategoryImages = base.categoryImagesVersion === CATEGORY_IMAGES_VERSION;
-       the layout is unchanged - otherwise a saved keychain photo would end up
-       on whatever now sits at gr3. A re-laid-out shop falls back to the
-       bundled defaults and the owner re-uploads from the admin panel. */
     if (sameCategoryImages && base.categoryImages && typeof base.categoryImages === "object") {
       var ci = {};
       s.categories.forEach(function (_, i) {
