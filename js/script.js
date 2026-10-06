@@ -719,6 +719,7 @@
     var filtering = isFiltering();
 
     var visible = 0;
+    var shown = [];
     cards.forEach(function (card, index) {
       var inRange = filtering || index < visibleCount;
       var categoryMatch = target === "all" || card.dataset.category === target;
@@ -749,11 +750,15 @@
       /* Release the parked photo only once the card is actually shown, which
          covers the first page, "Show more", and every filter change. */
       if (show) hydrateCardImages(card);
-      if (show) visible += 1;
+      if (show) {
+        visible += 1;
+        if (prod) shown.push(prod);
+      }
     });
 
     if (noResults) noResults.hidden = visible > 0;
     updateShowMoreBtn();
+    applyProductSeo(shown);
   }
 
   if (showMoreBtn) {
@@ -1014,6 +1019,161 @@
     if (productsView) {
       productsView.scrollIntoView({ block: "start", behavior: "smooth" });
     }
+  }
+
+/* ---------- SEO for the branch on screen ----------
+     The catalogue is one page of filters, so on its own /products is a single
+     URL standing in for 111 products. Two things fix that without a rewrite:
+     Product schema for the cards actually on screen, and a real title,
+     description and canonical for each branch the URL names
+     (?cat=gr1&sub=sg2). Both are progressive - a crawler that never runs JS
+     still sees the correct static head in products.html. */
+
+  var SEO_ORIGIN = "https://gulnishcrochet.vercel.app";
+  var SEO_PRODUCTS_URL = SEO_ORIGIN + "/products";
+  var SEO_DEFAULT_TITLE = "Shop Handmade Crochet Products | Gulnish Crochet";
+  var SEO_DEFAULT_DESC =
+    "Browse handmade crochet purses, gajrays, keychains, bags, jewellery and headbands by Gulnish Crochet. Custom designs and made-to-order gifts available.";
+
+  function seoAttr(selector, name, value) {
+    var el = document.querySelector(selector);
+    if (el && value) el.setAttribute(name, value);
+  }
+
+  /* Reuses the id on products.html's own breadcrumb block when it is there, so
+     a filtered view updates it instead of adding a second BreadcrumbList. */
+  function seoJsonLd(id, payload) {
+    var el = document.getElementById(id);
+    if (!el) {
+      el = document.createElement("script");
+      el.type = "application/ld+json";
+      el.id = id;
+      document.head.appendChild(el);
+    }
+    el.textContent = JSON.stringify(payload);
+  }
+
+  /* Only catalogue photos get a schema image: an admin upload can be a data
+     URL, which is not something a crawler can fetch. */
+  function seoImage(src) {
+    if (!src || String(src).indexOf("images/") !== 0) return "";
+    return SEO_ORIGIN + "/" + String(src).replace(/^\/+/, "");
+  }
+
+  function seoBranchUrl(catKey, subKey) {
+    var url = new URL(SEO_PRODUCTS_URL);
+    if (catKey && catKey !== "all") url.searchParams.set("cat", catKey);
+    if (subKey && subKey !== "all") url.searchParams.set("sub", subKey);
+    return url.toString();
+  }
+
+  function applyBranchSeo(catKey, subKey) {
+    if (!productsView) return;
+    var cat = catKey && catKey !== "all" ? catKey : "";
+    var sub = cat && subKey && subKey !== "all" ? subKey : "";
+    var label = cat ? categoryLabelOf(cat) : "";
+    var subLabel = cat && sub ? subcategoryLabelOf(cat, sub) : "";
+    var branch = [label, subLabel].filter(Boolean).join(" ");
+    var url = seoBranchUrl(cat, sub);
+
+    var title = branch
+      ? "Crochet " + branch + " in Pakistan | Gulnish Crochet"
+      : SEO_DEFAULT_TITLE;
+    var desc = branch
+      ? "Handmade crochet " +
+        branch.toLowerCase() +
+        " from Gulnish Crochet. Stitched to order in Pakistan in your choice of colours, with delivery confirmed on WhatsApp."
+      : SEO_DEFAULT_DESC;
+
+    document.title = title;
+    seoAttr('meta[name="description"]', "content", desc);
+    seoAttr('meta[property="og:title"]', "content", title);
+    seoAttr('meta[property="og:description"]', "content", desc);
+    seoAttr('meta[property="og:url"]', "content", url);
+    seoAttr('meta[name="twitter:title"]', "content", title);
+    seoAttr('meta[name="twitter:description"]', "content", desc);
+    /* A named branch points at itself; the unfiltered grid keeps the one
+       canonical /products URL so the filters never compete with it. */
+    seoAttr('link[rel="canonical"]', "href", branch ? url : SEO_PRODUCTS_URL);
+
+    var crumbs = [
+      { "@type": "ListItem", position: 1, name: "Home", item: SEO_ORIGIN + "/" },
+      { "@type": "ListItem", position: 2, name: "Products", item: SEO_PRODUCTS_URL }
+    ];
+    if (label) crumbs.push({ "@type": "ListItem", position: crumbs.length + 1, name: label, item: seoBranchUrl(cat, "") });
+    if (subLabel) crumbs.push({ "@type": "ListItem", position: crumbs.length + 1, name: subLabel, item: url });
+
+    seoJsonLd("seoBreadcrumbLd", {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: crumbs
+    });
+  }
+
+  /* Product markup follows what the shopper can actually see: only priced
+     products with a real photo, and only the ones applyFilters() left
+     visible. A price range becomes an AggregateOffer because that is exactly
+     what the card prints. */
+  function applyProductSeo(visible) {
+    if (!productsView) return;
+    var list = (visible || []).filter(function (p) {
+      return p && seoImage(p.image) && parseFloat(p.price) > 0;
+    });
+
+    var url = document.querySelector('link[rel="canonical"]');
+    var pageUrl = url ? url.href : SEO_PRODUCTS_URL;
+    var products = list.map(function (p, i) {
+      var sold = stockStatus(p) === "sold out";
+      var availability = sold ? "https://schema.org/OutOfStock" : "https://schema.org/InStock";
+      var offer = hasRange(p)
+        ? {
+            "@type": "AggregateOffer",
+            lowPrice: String(parseFloat(p.price)),
+            highPrice: String(parseFloat(p.priceMax)),
+            priceCurrency: "PKR",
+            offerCount: 1,
+            availability: availability
+          }
+        : {
+            "@type": "Offer",
+            price: String(parseFloat(p.price)),
+            priceCurrency: "PKR",
+            availability: availability
+          };
+      var where = subcategoryLabelOf(p.category, p.subcategory) || categoryLabelOf(p.category);
+
+      return {
+        "@type": "Product",
+        "@id": SEO_PRODUCTS_URL + "#" + p.id,
+        name: p.name,
+        description:
+          "Handmade crochet " +
+          String(p.name || "").replace(/^Handmade Crochet\s+/i, "").toLowerCase() +
+          (where ? " - " + where.toLowerCase() + " from Gulnish Crochet, made to order in Pakistan." : "."),
+        image: seoImage(p.image),
+        sku: p.id,
+        url: pageUrl,
+        inLanguage: "en",
+        itemCondition: "https://schema.org/NewCondition",
+        category: where,
+        brand: { "@type": "Brand", name: "Gulnish Crochet" },
+        offers: offer
+      };
+    });
+
+    seoJsonLd("seoProductLd", {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "ItemList",
+          name: document.title,
+          numberOfItems: products.length,
+          itemListElement: products.map(function (p, i) {
+            return { "@type": "ListItem", position: i + 1, item: { "@id": p["@id"] } };
+          })
+        }
+      ].concat(products)
+    });
   }
 
   /* ---------- Product page ---------- */
