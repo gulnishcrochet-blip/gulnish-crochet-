@@ -1077,13 +1077,16 @@
     var branch = [label, subLabel].filter(Boolean).join(" ");
     var url = seoBranchUrl(cat, sub);
 
+    /* The subcategory is what people search for, so it leads; the branch name
+       follows after a dash. "Crochet Wedding Gift Bouquet" reads badly,
+       "Crochet Bouquet - Wedding Gift" reads like a shelf. */
     var title = branch
-      ? "Crochet " + branch + " in Pakistan | Gulnish Crochet"
+      ? "Crochet " + (subLabel ? subLabel + " \u2013 " + label : label) + " in Pakistan | Gulnish Crochet"
       : SEO_DEFAULT_TITLE;
     var desc = branch
       ? "Handmade crochet " +
-        branch.toLowerCase() +
-        " from Gulnish Crochet. Stitched to order in Pakistan in your choice of colours, with delivery confirmed on WhatsApp."
+        (subLabel ? subLabel.toLowerCase() + " from our " + label + " collection." : label.toLowerCase() + " from Gulnish Crochet.") +
+        " Stitched to order in Pakistan, custom colours and sizes, delivery confirmed on WhatsApp."
       : SEO_DEFAULT_DESC;
 
     document.title = title;
