@@ -1,8 +1,15 @@
 /* =========================================================
-   Gulnish Crochet — Analytics loader (GA4 + Meta Pixel)
+   Gulnish Crochet — Analytics loader (GTM, GA4, Meta Pixel)
 
    Put your IDs in js/config.js under window.GC_ANALYTICS and
    they load here automatically. Leave empty to stay untagged.
+
+   Three slots, three different things:
+     gtm  - a Tag Manager container (GTM-XXXXXXX). Fires whatever tags you
+            configure in its own UI, so events are published to dataLayer.
+     ga4  - a GA4 measurement ID (G-XXXXXXX). Talks to GA4 directly, no
+            container involved. Setting a GTM ID here does nothing useful.
+     meta - the Meta Pixel.
    ========================================================= */
 (function () {
   "use strict";
@@ -12,6 +19,25 @@
      preview. Reporting those hits would mix development traffic into the real
      GA4 / Meta numbers and skew them, so never tag a local file. */
   if (location.protocol === "file:") return;
+
+  /* Google Tag Manager. Loaded verbatim from Google's snippet so behaviour
+     matches what their docs describe: it creates dataLayer itself and pushes
+     gtm.start/gtm.js before fetching the container. It has to run before the
+     GA4 block below, because both write to the same dataLayer array. */
+  if (cfg.gtm && !window.__gtmLoaded) {
+    window.__gtmLoaded = true;
+    window.dataLayer = window.dataLayer || [];
+    (function (w, d, s, l, i) {
+      w[l] = w[l] || [];
+      w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+      var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s),
+        dl = l != "dataLayer" ? "&l=" + l : "";
+      j.async = true;
+      j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+      f.parentNode.insertBefore(j, f);
+    })(window, document, "script", "dataLayer", cfg.gtm);
+  }
 
   if (cfg.ga4 && !window.gtag) {
     var g = document.createElement("script");
@@ -30,9 +56,22 @@
     f.src = "https://connect.facebook.net/en_US/fbevents.js";
     document.head.appendChild(f);
 
-    window.fbq = window.fbq = window.fbq || function () {
-      (fbq.q = fbq.q || []).push(arguments);
+    /* This must mirror Meta's own stub character for character: same queue
+       property, same version and loaded flags. When a stub looks half-built
+       Meta's library reports "Multiple pixels with conflicting versions", and
+       it replays only `.queue` when the real library lands - so events queued
+       through an invented `.q` in the first second after load would sit in an
+       array nobody reads and quietly never reach Meta. */
+    window.fbq = window.fbq || function () {
+      fbq.callMethod
+        ? fbq.callMethod.apply(fbq, arguments)
+        : fbq.queue.push(arguments);
     };
+    if (!window._fbq) window._fbq = window.fbq;
+    window.fbq.push = window.fbq;
+    window.fbq.loaded = true;
+    window.fbq.version = "2.0";
+    window.fbq.queue = [];
     fbq("init", cfg.meta);
     fbq("track", "PageView");
 
@@ -76,7 +115,35 @@
 
   window.gcTrack = function (name, params) {
     var p = params || {};
+    var k;
+
+    /* Direct GA4, when a measurement ID is configured. */
     if (window.gtag) window.gtag("event", name, p);
+
+    /* Tag Manager reads dataLayer looking for plain objects carrying an
+       `event` key - that is what makes a GTM trigger fire. Pushing the gtag
+       Arguments object instead would arrive as an opaque array-like with no
+       `event` property and the container would ignore it, which is the easy
+       mistake to make here. Numbers and strings stay as they are so a GTM
+       variable can read them.
+
+       GA4's ecommerce tags in GTM look for their figures inside `ecommerce`,
+       not at the top level, so anything carrying items gets mirrored in there
+       as well as kept on the payload. */
+    if (window.dataLayer) {
+      var payload = {};
+      for (k in p) if (Object.prototype.hasOwnProperty.call(p, k)) payload[k] = p[k];
+      payload.event = name;
+      if (p.items && p.items.length) {
+        var ecommerce = {};
+        for (k in p) if (Object.prototype.hasOwnProperty.call(p, k)) ecommerce[k] = p[k];
+        payload.ecommerce = ecommerce;
+      }
+      window.dataLayer.push(payload);
+    }
+
+    /* Meta takes its own event names - see META_NAMES above - because that is
+       what its algorithm optimises towards. */
     if (window.fbq) window.fbq("trackCustom", META_NAMES[name] || name, p);
   };
 })();
