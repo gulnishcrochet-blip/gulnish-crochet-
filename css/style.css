@@ -5862,8 +5862,7 @@ body.has-topbar .site-header { top: 0; }
 
 .footer-col h2,
 .footer-col__title,
-.footer-col h4,
-.footer-col__title {
+.footer-col h4 {
   font-family: var(--font-body);
   font-size: 0.8rem;
   font-weight: 700;
@@ -6522,8 +6521,7 @@ body.has-topbar .site-header { top: 0; }
 
   .footer-col h2,
   .footer-col__title,
-  .footer-col h4,
-  .footer-col__title {
+  .footer-col h4 {
     margin-bottom: 0.6rem;
   }
 
