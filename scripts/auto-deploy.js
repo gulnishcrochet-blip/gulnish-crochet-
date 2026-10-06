@@ -124,6 +124,24 @@ function generateProductPages() {
   }
 }
 
+/* The sitemap is committed too, so it has to be rebuilt from the same
+   catalogue in the same pass, or a new product would ship without being
+   listed. */
+function generateProductSitemap() {
+  try {
+    execSync("node scripts/sitemap-products.js", {
+      cwd: ROOT,
+      encoding: "utf8",
+      stdio: ["pipe", "pipe", "pipe"]
+    })
+      .split("\n")
+      .filter(Boolean)
+      .forEach((line) => console.log("[auto-deploy] " + line.trim()));
+  } catch (err) {
+    console.error("[auto-deploy] sitemap not updated:", (err.stderr || err.message).trim());
+  }
+}
+
 /* A push can be rejected as non-fast-forward (e.g. a manual push raced this
    watcher). Rebase onto the remote and try once more so the change is not
    stranded on the local branch. */
@@ -157,6 +175,7 @@ function autopush() {
   try {
     clearStaleLock();
     generateProductPages();
+    generateProductSitemap();
     bumpAssetVersion();
     const status = run("git status --porcelain");
     let didCommit = false;

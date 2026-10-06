@@ -578,12 +578,16 @@
     var slug =
       p.image && parseFloat(p.price) > 0 && GC && GC.canonicalProductSlug ? GC.canonicalProductSlug(p) : "";
     var linkAttrs = slug ? ' href="/product/' + escapeHtml(slug) + '"' : "";
+    /* No address means no anchor at all: an <a> without href is not a link, and
+       wrapping the photo in one would only add a stray element for the
+       photo-pending cards, which keep exactly the markup they had before. */
+    var inner = p.image ? image + altImage : photoPendingHTML();
     var media =
       '<div class="work-card__media js-product-view" data-view="' + p.id + '">' +
-      '<a class="work-card__link js-product-link" data-view="' + p.id + '"' + linkAttrs +
-      ' aria-label="' + escapeHtml(p.name) + '">' +
-      (p.image ? image + altImage : photoPendingHTML()) +
-      "</a>" +
+      (slug
+        ? '<a class="work-card__link js-product-link" data-view="' + p.id + '"' + linkAttrs +
+          ' aria-label="' + escapeHtml(p.name) + '">' + inner + "</a>"
+        : inner) +
       soldOut +
       "</div>";
     /* The card tool sits outside .work-card__media on purpose: the media
