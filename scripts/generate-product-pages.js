@@ -159,7 +159,14 @@ function describe(p, catLabel, subLabel) {
    the name leads and the suffix is the longest one that still fits. */
 function buildTitle(p, catLabel) {
   const name = p.name;
-  const suffixes = [` | ${catLabel} | Gulnish Crochet`, ` | ${catLabel}`, " | Handmade Crochet", " | Pakistan", ""];
+  const suffixes = [
+    " | Gulnish Crochet",
+    ` | ${catLabel} | Gulnish Crochet`,
+    ` | ${catLabel}`,
+    " | Handmade Crochet",
+    " | Pakistan",
+    "",
+  ];
   for (const s of suffixes) {
     const t = name + s;
     if (t.length <= 60) return t;
@@ -167,18 +174,35 @@ function buildTitle(p, catLabel) {
   return name.slice(0, 60);
 }
 
-function buildDescription(p, catLabel) {
-  const base = describe(p, catLabel, "");
-  if (base.length <= 155) return base;
-  /* Trim at a sentence boundary so the description never ends mid-clause. */
-  const parts = base.split(". ");
+/* Clauses are added in order and the first one that would overflow the limit
+   ends the description, so it always ends on a whole sentence and can never
+   run long however long the product name is. */
+function buildDescription(p, catLabel, subLabel) {
+  const status = stockStatus(p);
+  /* Half these names already say "handmade", so repeating the word straight
+     after them reads as stuffing. */
+  const opener = /\bhandmade\b/i.test(p.name)
+    ? `${p.name} \u2014 from Gulnish Crochet, Wazirabad.`
+    : `${p.name} \u2014 handmade crochet by Gulnish Crochet, Wazirabad.`;
+  const clauses = [
+    opener,
+    `${priceText(p)}.`,
+    `In our ${(subLabel || catLabel || "crochet").toLowerCase()} collection.`,
+    status === "sold out"
+      ? "Sold out, but the same design can usually be commissioned again."
+      : status === "made to order"
+        ? "Made to order, allow about five days."
+        : "In stock and ready to post.",
+    "Delivery across Pakistan.",
+    "Colours can be changed on request.",
+  ];
   let out = "";
-  for (const part of parts) {
-    const next = out ? out + ". " + part : part;
-    if (next.length > 155 && out) break;
+  for (const c of clauses) {
+    const next = out ? out + " " + c : c;
+    if (next.length > 155) break;
     out = next;
   }
-  return (out || base).replace(/\s+/g, " ").trim();
+  return out || `${p.name} \u2014 handmade crochet by Gulnish Crochet.`.slice(0, 155);
 }
 
 /* ---------- page ---------- */
@@ -249,13 +273,15 @@ function renderPage(p, catLabel, subLabel, shell) {
   const canonical = `${ORIGIN}/product/${canonicalSlug}`;
   const canonicalIsSelf = canonicalSlug === slug;
   const url = canonicalIsSelf ? canonical : `${ORIGIN}/product/${slug}`;
-  const description = buildDescription(p, catLabel);
+  const description = buildDescription(p, catLabel, subLabel);
   const title = canonicalIsSelf ? buildTitle(p, catLabel) : `${p.name} | Gulnish Crochet`;
   const status = stockStatus(p);
+  const statusClass = status === "sold out" ? "status-out" : status === "made to order" ? "status-made" : "status-in";
+  const statusText = status === "sold out" ? "Sold out" : status === "made to order" ? "Made to order" : "In stock";
   const size = imageSize(p.image) || { w: 800, h: 800 };
   const twin = smallTwin(p.image);
   const imgTag =
-    `<img class="product-page__img" src="${escapeAttr(p.image)}" ` +
+    `<img src="${escapeAttr(p.image)}" ` +
     (twin ? `srcset="${escapeAttr(twin)} 480w, ${escapeAttr(p.image)} ${size.w}w" ` : "") +
     `sizes="(max-width: 760px) 92vw, 520px" width="${size.w}" height="${size.h}" ` +
     `alt="${escapeAttr(p.name)}" decoding="async" fetchpriority="high">`;
@@ -294,36 +320,40 @@ function renderPage(p, catLabel, subLabel, shell) {
     ` <span aria-hidden="true">/</span> <span aria-current="page">${escapeHtml(p.name)}</span>` +
     `</nav>`;
 
+  /* Mirrors the in-page detail view on products.html class for class, so the
+     same design language and the same cart handler apply on both. */
   const buyRow =
-    `<div class="product-page__buy">` +
+    `<div class="product-page__btn-row">` +
     (status === "sold out"
-      ? `<button class="add-btn add-btn--sold is-disabled" disabled aria-disabled="true">Sold Out</button>`
-      : `<button class="add-btn" data-id="${escapeAttr(p.id)}" data-name="${escapeAttr(p.name)}" ` +
-        `data-price="${parseFloat(p.price) || 0}" data-image="${escapeAttr(p.image)}">` +
-        `Add to cart</button>`) +
-    `<a class="btn btn--wa" href="https://wa.me/923075729901?text=${waText}" target="_blank" rel="noopener">Order on WhatsApp</a>` +
+      ? `<button class="btn add-btn add-btn--sold is-disabled product-page__add" disabled aria-disabled="true">Sold Out</button>`
+      : `<button class="btn add-btn product-page__add" data-id="${escapeAttr(p.id)}" data-name="${escapeAttr(p.name)}" ` +
+        `data-price="${parseFloat(p.price) || 0}" data-image="${escapeAttr(p.image)}">Add to Cart</button>`) +
+    `<a class="btn btn--wa product-page__wa" href="https://wa.me/923075729901?text=${waText}" target="_blank" rel="noopener">Order on WhatsApp</a>` +
     `</div>`;
 
   const notCanonical =
     canonicalIsSelf
       ? ""
-      : `<p class="muted">This piece is listed under <a href="/product/${escapeAttr(canonicalSlug)}">${escapeHtml(
+      : `<p class="product-page__alt">Also photographed under <a href="/product/${escapeAttr(canonicalSlug)}">${escapeHtml(
           (GC.products || []).find((o) => GC.productSlug(o) === canonicalSlug) || p
-        ).name}</a>, which is the page to bookmark and share.</p>`;
+        ).name}</a>, which is the page to bookmark.</p>`;
 
   const body =
     `${breadcrumbHtml}
-    <div class="product-page__grid">
-      <div class="product-page__media">${imgTag}</div>
+    <div class="product-page">
+      <div class="product-page__media">
+        <div class="product-page__img">${imgTag}</div>
+      </div>
       <div class="product-page__info">
+        <a class="product-page__cat" href="${escapeAttr(subUrl || catUrl)}">${escapeHtml(subLabel || catLabel)}</a>
         <h1 class="product-page__name">${escapeHtml(p.name)}</h1>
-        <p class="product-page__price">${escapeHtml(priceText(p))}</p>
-        <p class="product-page__status">${status === "in stock" ? "In stock" : status === "made to order" ? "Made to order" : "Sold out"}</p>
+        <div class="product-page__price">${escapeHtml(priceText(p))}</div>
+        <div class="product-page__status ${statusClass}">${statusText}</div>
         <dl class="product-page__specs">
           <div><dt>Collection</dt><dd><a href="${escapeAttr(subUrl || catUrl)}">${escapeHtml(subLabel || catLabel)}</a></dd></div>
           <div><dt>Category</dt><dd><a href="${escapeAttr(catUrl)}">${escapeHtml(catLabel)}</a></dd></div>
           <div><dt>Price</dt><dd>${escapeHtml(priceText(p))}</dd></div>
-          <div><dt>Availability</dt><dd>${status === "in stock" ? "In stock" : status === "made to order" ? "Made to order" : "Sold out"}</dd></div>
+          <div><dt>Availability</dt><dd>${statusText}</dd></div>
           <div><dt>Made in</dt><dd>Wazirabad, Pakistan</dd></div>
         </dl>
         ${buyRow}
@@ -374,13 +404,17 @@ function renderPage(p, catLabel, subLabel, shell) {
 
   const ld = jsonLd(p, catLabel, subLabel, canonical, description, canonicalIsSelf);
 
-  let page = head.replace(/<main>[\s\S]*?<\/main>/, `<main>
+  /* The shell is split either side of its <main>, so the body is put back
+     between the two halves rather than substituted into either of them. `head`
+     is the copy the per-product title, description, canonical and social tags
+     were written into above. */
+  let page = head + `<main>
     <section class="section">
-      <div class="container product-page">
+      <div class="container product-detail">
 ${body}
       </div>
     </section>
-  </main>`);
+  </main>` + shell.tail;
 
   /* The shell carries the shop's own breadcrumb block for /products; a product
      page states its own trail, so that block is replaced, not duplicated. */
@@ -388,8 +422,6 @@ ${body}
     /<script type="application\/ld\+json" id="seoBreadcrumbLd">[\s\S]*?<\/script>/,
     `<script type="application/ld+json" id="productLd">${JSON.stringify(ld, null, 2)}</script>`
   );
-  page = page.replace(/<\/main>\s*/, "</main>\n");
-  page = page.replace(shell.tail, shell.tail);
   return { page, title, description, canonical: url, canonicalIsSelf, slug };
 }
 
@@ -427,6 +459,7 @@ function build() {
   const shell = loadShell();
   const cats = (GC.settings || {}).categories || [];
   const written = [];
+  const expected = new Set();
   const seenNames = new Set();
 
   for (const p of products) {
@@ -441,6 +474,9 @@ function build() {
     const subLabel = GC.subcategoryLabelOf(p.category, p.subcategory) || "";
 
     const { page, slug } = renderPage(p, catLabel, subLabel, shell);
+    /* Every page this run is responsible for, changed or not: the cleanup
+       below has to keep the unchanged ones too. */
+    expected.add(slug);
     const file = path.join(OUT_DIR, slug + ".html");
     fs.mkdirSync(OUT_DIR, { recursive: true });
     const old = fs.existsSync(file) ? fs.readFileSync(file, "utf8") : null;
@@ -452,12 +488,11 @@ function build() {
 
   /* A renamed or deleted product must not leave a page behind for a product
      that no longer exists. */
-  const keep = new Set(written);
   let removed = 0;
   if (fs.existsSync(OUT_DIR)) {
     for (const f of fs.readdirSync(OUT_DIR)) {
       if (!f.endsWith(".html")) continue;
-      if (!keep.has(f.replace(/\.html$/, ""))) {
+      if (!expected.has(f.replace(/\.html$/, ""))) {
         fs.unlinkSync(path.join(OUT_DIR, f));
         removed++;
       }

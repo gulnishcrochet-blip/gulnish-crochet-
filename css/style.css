@@ -1303,6 +1303,167 @@ body.has-topbar { scroll-padding-top: 132px; }
   flex: none;
 }
 
+/* ============ PRODUCT DETAIL PAGE (/product/<slug>) ============
+   The card, media, name, price, status and buy row reuse the classes the
+   in-page detail view on products.html already uses, so both look the same.
+   Only the pieces unique to a standalone page are styled here. */
+.product-detail {
+  padding-top: 1.5rem;
+}
+
+.product-page__crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 1.3rem;
+}
+
+.product-page__crumbs a:hover {
+  color: var(--primary-deep);
+  text-decoration: underline;
+}
+
+.product-page__crumbs [aria-current="page"] {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.product-detail .product-page__media {
+  cursor: default;
+}
+
+.product-detail .product-page__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-detail .product-page__cat {
+  display: inline-block;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--primary-deep);
+}
+
+.product-detail .product-page__cat:hover {
+  text-decoration: underline;
+}
+
+.product-detail .product-page__name {
+  font-size: clamp(1.6rem, 3vw, 2.3rem);
+  margin: 0.15rem 0 0.2rem;
+}
+
+.product-detail .product-page__desc {
+  color: var(--muted);
+  font-size: 0.98rem;
+  line-height: 1.7;
+  margin-top: 0.9rem;
+  max-width: 56ch;
+}
+
+.product-detail .product-page__alt {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-top: 0.6rem;
+}
+
+.product-detail .product-page__alt a {
+  color: var(--primary-deep);
+  text-decoration: underline;
+}
+
+/* Facts worth stating plainly: what it is, what it costs, when it ships. */
+.product-page__specs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem 1.2rem;
+  width: 100%;
+  margin-top: 0.4rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.9rem;
+}
+
+.product-page__specs > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.product-page__specs dt {
+  color: var(--muted);
+}
+
+.product-page__specs dd {
+  font-weight: 600;
+  text-align: right;
+}
+
+.product-page__specs dd a {
+  color: var(--primary-deep);
+  text-decoration: underline;
+}
+
+/* ---------- related pieces: also how one product page links to others ---------- */
+.product-page__related {
+  margin-top: 3.2rem;
+}
+
+.product-page__related-title {
+  font-size: 1.5rem;
+  margin-bottom: 1.2rem;
+}
+
+.product-page__related-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.1rem;
+}
+
+.product-page__related-link {
+  display: block;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+
+.product-page__related-link:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.product-page__related-link img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.product-page__related-name {
+  display: block;
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.35;
+  padding: 0.7rem 0.8rem 0.2rem;
+}
+
+.product-page__related-price {
+  display: block;
+  font-size: 0.86rem;
+  color: var(--primary-deep);
+  font-weight: 700;
+  padding: 0 0.8rem 0.85rem;
+}
+
 /* ============ FOOTER ============ */
 .site-footer {
   background: linear-gradient(160deg, #2C241D, #201A15);
