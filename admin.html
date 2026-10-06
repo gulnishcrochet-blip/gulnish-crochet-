@@ -19,8 +19,10 @@
   <link rel="icon" type="image/x-icon" href="images/favicon.ico">
 </head>
 <body class="admin-page">
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MW9G6L84"
-                height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- Deliberately untagged. Your own visits through this panel would otherwise
+       land in GA4 and Meta as ordinary customer traffic, which quietly inflates
+       sessions and, worse, could be attributed to a real conversion. config.js
+       stays because supabase.js reads GC_CONFIG from it; only analytics.js goes. -->
 
   <header class="site-header">
     <div class="container header-inner">
@@ -343,7 +345,6 @@
   <!-- Back to top -->
   <button class="back-to-top" id="backToTop" type="button" aria-label="Back to top">&#8593;</button>
   <script src="js/config.js?v=552" defer></script>
-  <script src="js/analytics.js?v=552" defer></script>
   <script src="js/supabase.js?v=552" defer></script>
   <script src="js/admin.js?v=552" defer></script>
 
