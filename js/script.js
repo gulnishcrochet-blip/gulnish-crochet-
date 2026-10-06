@@ -50,9 +50,9 @@
     "images/jewellery/jewellery-1.webp": 600,
     "images/keychains/keychain-1.webp": 600, "images/keychains/keychain-2.webp": 600,
     "images/purses/purse-1.webp": 597, "images/purses/purse-2.webp": 597,
-    "images/purses/purse-3.webp": 597,
+    "images/purses/purse-3.webp": 597, "images/purses/purse-4.webp": 800,
     "images/purses/sm/purse-1.webp": 358, "images/purses/sm/purse-2.webp": 358,
-    "images/purses/sm/purse-3.webp": 358
+    "images/purses/sm/purse-3.webp": 358, "images/purses/sm/purse-4.webp": 480
   };
 
   function imageWidth(src) {
