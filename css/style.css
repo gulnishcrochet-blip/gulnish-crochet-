@@ -5866,6 +5866,7 @@ body.has-topbar .site-header { top: 0; }
   font-family: var(--font-body);
   font-size: 0.8rem;
   font-weight: 700;
+  line-height: 1.18;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--gold-light);
