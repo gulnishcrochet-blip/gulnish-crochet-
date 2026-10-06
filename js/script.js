@@ -598,7 +598,11 @@
       media +
       tools +
       '<div class="work-card__body">' +
-      '<h3 class="work-card__name">' + escapeHtml(p.name) + "</h3>" +
+      '<h3 class="work-card__name">' +
+      (slug
+        ? '<a class="js-product-link" data-view="' + p.id + '"' + linkAttrs + ">" + escapeHtml(p.name) + "</a>"
+        : escapeHtml(p.name)) +
+      "</h3>" +
       price +
       stockBadgeHTML(p) +
       colors +
