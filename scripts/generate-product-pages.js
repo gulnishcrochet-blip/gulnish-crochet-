@@ -410,6 +410,13 @@ function loadShell() {
 const GC = loadCatalog();
 
 function main() {
+  /* The catalogue is populated by boot(), which resolves off the event loop
+     (localStorage seed, or Supabase when it is configured), so the pages have
+     to wait for it rather than reading an empty array. */
+  return GC.init().then(build);
+}
+
+function build() {
   const products = (GC.products || []).slice();
   if (!products.length) {
     console.error("[product-pages] catalogue is empty - nothing generated");
@@ -465,7 +472,10 @@ function main() {
 }
 
 if (require.main === module) {
-  main();
+  main().catch((err) => {
+    console.error("[product-pages]", err.message.trim());
+    process.exitCode = 1;
+  });
 }
 
 module.exports = { main, loadCatalog, priceText, buildTitle, buildDescription };
