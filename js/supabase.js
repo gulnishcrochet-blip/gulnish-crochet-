@@ -138,6 +138,11 @@
      number, bank details and delivery times, but take the new taxonomy. */
   var TAXONOMY_VERSION = 13;
 
+  /* Bump when the bundled category photos change. Saved photos stay while
+     this matches; raising it hands every browser the new bundled sets once,
+     without touching names, subcategories or the shop details below. */
+  var CATEGORY_IMAGES_VERSION = 2;
+
   function subKey(i) { return "sg" + (i + 1); }
   function subIndexOf(key) { return parseInt(String(key || "").replace("sg", ""), 10) - 1; }
   function defaultSubcategories() {
