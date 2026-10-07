@@ -67,7 +67,18 @@ function buildBlock(products, cats) {
         : catLabel;
 
     if (!groups.has(group)) groups.set(group, []);
-    groups.get(group).push({ slug, name });
+    /* The shelf the heading belongs to, so the title itself becomes a link
+       to /purses or /wedding-gifts/bouquets instead of a dead line of text.
+       A product the taxonomy cannot place keeps a plain heading rather than
+       pointing a reader at somebody else's shelf. */
+    groups.get(group).push({
+      slug,
+      name,
+      shelf:
+        GC.shelfUrl(p.category, p.subcategory) ||
+        GC.shelfUrl(p.category) ||
+        "",
+    });
   }
 
   if (!groups.size) return null;
@@ -82,9 +93,13 @@ function buildBlock(products, cats) {
             `            <li><a href="/product/${esc(it.slug)}">${esc(it.name)}</a></li>`
         )
         .join("\n");
+      const shelf = items[0] && items[0].shelf ? items[0].shelf : "";
+      const title = shelf
+        ? `<a href="${esc(shelf)}">${esc(label)}</a>`
+        : esc(label);
       return (
         `        <div class="link-index__group">\n` +
-        `          <h3 class="link-index__title">${esc(label)}</h3>\n` +
+        `          <h3 class="link-index__title">${title}</h3>\n` +
         `          <ul class="link-index__list">\n${links}\n          </ul>\n` +
         `        </div>`
       );

@@ -285,7 +285,7 @@
                      the index here is the original one, not the filtered one. */
                   var idx = (GC.subcategoriesOf(g.key) || []).indexOf(name) + 1;
                   return (
-                    '<a href="/products?cat=' + encodeURIComponent(g.key) + "&sub=sg" + idx + '">' +
+                    '<a href="' + shelfHref(g.key, "sg" + idx) + '">' +
                     escapeHtml(name) +
                     "</a>"
                   );
@@ -295,7 +295,7 @@
             : "";
           return (
             '<div class="nav-mega__group">' +
-            '<a class="nav-mega__label" href="/products?cat=' + encodeURIComponent(g.key) + '">' +
+            '<a class="nav-mega__label" href="' + shelfHref(g.key) + '">' +
             "<span>" + escapeHtml(g.label) + "</span>" +
             "<small>" + g.count + "</small>" +
             "</a>" +
@@ -307,6 +307,19 @@
       '<a class="nav-mega__all" href="/products">Browse all products <span>' +
       escapeHTML((window.GC && GC.deliveryShort) ? GC.deliveryShort() : "Delivery charge applies") +
       " &rarr;</span></a>";
+  }
+
+  /* A category's own page (/purses, /wedding-gifts, ...) when the catalogue
+     knows one, and the filter URL only as a fallback for a key the shelf
+     table does not carry. Menu links have to be the same addresses the
+     sitemap and the breadcrumbs use, or the link weight lands on pages that
+     canonicalise away. */
+  function shelfHref(catKey, subKey) {
+    var shelf = window.GC && GC.shelfUrl ? GC.shelfUrl(catKey, subKey) : "";
+    if (shelf) return shelf;
+    var href = "/products?cat=" + encodeURIComponent(catKey);
+    if (subKey) href += "&sub=" + encodeURIComponent(subKey);
+    return href;
   }
 
   function refreshMenus() {
@@ -328,7 +341,7 @@
         var key = "gr" + (i + 1);
         if (!products.some(function (p) { return p.category === key; })) return "";
         return (
-          '<a href="/products?cat=' + encodeURIComponent(key) + '">' +
+          '<a href="' + shelfHref(key) + '">' +
           escapeHtml(label || "Category " + (i + 1)) +
           "</a>"
         );

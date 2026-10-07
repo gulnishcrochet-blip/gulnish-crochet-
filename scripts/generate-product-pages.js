@@ -400,14 +400,18 @@ function jsonLd(p, catLabel, subLabel, canonical, description, canonicalIsSelf) 
     { name: "Home", url: `${ORIGIN}/` },
     { name: "Products", url: `${ORIGIN}/products` },
   ];
+  /* The trail follows the shelf pages (/purses, /wedding-gifts/jewellery),
+     not the filter URLs, so the breadcrumb schema votes for the addresses the
+     sitemap lists. A key with no page of its own still falls back to the
+     filter URL rather than to a dead link. */
   const sameShelf = !!subLabel && subLabel === catLabel;
   if (sameShelf) {
-    crumbs.push({ name: catLabel, url: `${ORIGIN}/products?cat=${p.category}&sub=${p.subcategory}` });
+    crumbs.push({ name: catLabel, url: `${ORIGIN}${GC.shelfUrl(p.category, p.subcategory) || `/products?cat=${p.category}&sub=${p.subcategory}`}` });
   } else if (subLabel) {
-    crumbs.push({ name: catLabel, url: `${ORIGIN}/products?cat=${p.category}` });
-    crumbs.push({ name: subLabel, url: `${ORIGIN}/products?cat=${p.category}&sub=${p.subcategory}` });
+    crumbs.push({ name: catLabel, url: `${ORIGIN}${GC.shelfUrl(p.category) || `/products?cat=${p.category}`}` });
+    crumbs.push({ name: subLabel, url: `${ORIGIN}${GC.shelfUrl(p.category, p.subcategory) || `/products?cat=${p.category}&sub=${p.subcategory}`}` });
   } else if (catLabel) {
-    crumbs.push({ name: catLabel, url: `${ORIGIN}/products?cat=${p.category}` });
+    crumbs.push({ name: catLabel, url: `${ORIGIN}${GC.shelfUrl(p.category) || `/products?cat=${p.category}`}` });
   }
   crumbs.push({ name: p.name, url });
 
@@ -490,8 +494,12 @@ function renderPage(p, catLabel, subLabel, shell) {
     })
     .join("");
 
-  const catUrl = `/products?cat=${p.category}`;
-  const subUrl = p.subcategory ? `${catUrl}&sub=${p.subcategory}` : "";
+  /* Shelf pages first: /purses is a real document a crawler can index,
+     /products?cat=gr1 is a filter view that canonicalises to it. */
+  const catUrl = GC.shelfUrl(p.category) || `/products?cat=${p.category}`;
+  const subUrl = p.subcategory
+    ? GC.shelfUrl(p.category, p.subcategory) || `${catUrl}${catUrl.includes("?") ? "&" : "?"}sub=${p.subcategory}`
+    : "";
   const waText = encodeURIComponent(
     `Hello Gulnish Crochet, I would like to order "${p.name}" (${priceText(p)}). Here is the page: ${url}`
   );
@@ -734,4 +742,17 @@ if (require.main === module) {
   });
 }
 
-module.exports = { main, loadCatalog, priceText, buildTitle, buildDescription };
+module.exports = {
+  main,
+  loadCatalog,
+  priceText,
+  buildTitle,
+  buildDescription,
+  /* Reused by scripts/generate-shelf-pages.js, so a shelf card prints prices
+     and stock exactly the way a product page does. */
+  stockStatus,
+  imageSize,
+  smallTwin,
+  escapeHtml,
+  escapeAttr,
+};

@@ -128,6 +128,27 @@ function generateProductPages() {
   }
 }
 
+/* The shelf landing pages (/purses, /wedding-gifts/bouquets, ...) are built
+   from the same catalogue, so a renamed category or a new product has to
+   rewrite them before the commit - they carry the counts, the names and the
+   price range of the shelf they describe. */
+function generateShelfPages() {
+  try {
+    execSync("node scripts/generate-shelf-pages.js", {
+      cwd: ROOT,
+      encoding: "utf8",
+      stdio: ["pipe", "pipe", "pipe"]
+    })
+      .split("\n")
+      .filter(Boolean)
+      .forEach((line) => console.log("[auto-deploy] " + line.trim()));
+  } catch (err) {
+    /* Same rule as the other generators: a failure leaves valid pages one
+       edit behind rather than stopping the deploy. */
+    console.error("[auto-deploy] shelf pages not regenerated:", (err.stderr || err.message).trim());
+  }
+}
+
 /* The sitemap is committed too, so it has to be rebuilt from the same
    catalogue in the same pass, or a new product would ship without being
    listed. */
@@ -198,6 +219,7 @@ function autopush() {
   try {
     clearStaleLock();
     generateProductPages();
+    generateShelfPages();
     generateLinkIndex();
     generateProductSitemap();
     bumpAssetVersion();
