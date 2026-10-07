@@ -1267,6 +1267,7 @@
   var ppAdd = document.getElementById("ppAdd");
   var ppWa = document.getElementById("ppWa");
   var ppThumbs = document.getElementById("ppThumbs");
+  var ppTimeline = document.getElementById("ppTimeline");
   var currentProduct = null;
   var currentQty = 1;
 
@@ -1298,6 +1299,51 @@
     ppWa.href = waNum
       ? "https://wa.me/" + encodeURIComponent(waNum) + "?text=" + encodeURIComponent(lines.join("\n"))
       : "#";
+  }
+
+  /* Mirrors deliveryTimeline() in scripts/generate-product-pages.js so the
+     in-page view on /products states the same timings as a real /product
+     page. The two are separate markup paths and would otherwise disagree
+     the moment the owner changed a setting. */
+  function renderPpTimeline(p) {
+    if (!ppTimeline) return;
+    var s = GC && GC.settings ? GC.settings : {};
+    var craft = parseInt(s.craftDays, 10) || 5;
+    var days = parseInt(s.deliveryDays, 10) || 3;
+    var status = stockStatus(p);
+
+    var first;
+    if (status === "sold out") {
+      first = { title: "Commission a new one", meta: "Message us and we start again" };
+    } else if (status === "made to order") {
+      first = { title: "Stitched after you order", meta: "About " + craft + " days of making" };
+    } else {
+      first = { title: "Finished and ready to post", meta: "Dispatched from Wazirabad" };
+    }
+
+    var steps = [first, { title: "Delivery across Pakistan", meta: "About " + days + " days in transit" }];
+    var list = steps.map(function (st) {
+      return '<li class="timeline__step">' +
+        '<span class="timeline__dot" aria-hidden="true"></span>' +
+        '<div class="timeline__body">' +
+        '<div class="timeline__title">' + escapeHtml(st.title) + "</div>" +
+        '<div class="timeline__meta">' + escapeHtml(st.meta) + "</div>" +
+        "</div></li>";
+    }).join("");
+
+    /* Only a piece still being made has a combined lead time; a finished item
+       is not waiting on the crafting days. */
+    var total = status === "made to order"
+      ? "Ready in about " + (craft + days) + " days"
+      : status === "sold out"
+        ? ""
+        : "Ready in about " + days + " days";
+
+    ppTimeline.hidden = false;
+    ppTimeline.innerHTML =
+      '<p class="timeline__head">How long will it take?</p>' +
+      '<ol class="timeline__list">' + list + "</ol>" +
+      (total ? '<p class="timeline__total">' + escapeHtml(total) + "</p>" : "");
   }
 
   function categoryLabelOf(val, settings) {
@@ -1351,10 +1397,11 @@
     }
     if (ppStatus) {
       var s = stockStatus(p);
+      var craftDays = parseInt((GC.settings || {}).craftDays, 10) || 5;
       if (s === "made to order") {
         ppStatus.hidden = false;
         ppStatus.className = "product-page__status status-made";
-        ppStatus.textContent = "Made to order \u2014 takes about 5 days";
+        ppStatus.textContent = "Made to order — takes about " + craftDays + " days";
       } else if (s === "sold out") {
         ppStatus.hidden = false;
         ppStatus.className = "product-page__status status-out";
@@ -1382,6 +1429,7 @@
     }
     buildColorSwatches();
     updatePpWa();
+    renderPpTimeline(p);
 
     if (categoryView) categoryView.hidden = true;
     if (productsView) productsView.hidden = true;

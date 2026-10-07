@@ -146,6 +146,62 @@ function loadCatalog() {
 /* Every sentence below is built from data the shop already holds: the name,
    the collection it sits in, the price, the availability, and the two facts
    stated on the contact page. No material, size or care detail is guessed. */
+/* The two numbers a handmade shopper asks for before anything else: how long
+   the making takes, and how long the courier takes. Both come from the shop
+   settings (Admin -> craftDays / deliveryDays), so this stays honest if the
+   owner changes them.
+
+   The first step depends on the product's own status, because the catalogue
+   holds both made-to-order pieces and pieces already finished. Printing
+   "stitched after you order" over a finished item, or "ready to post" over
+   one that still has to be made, would answer the question wrongly. */
+function deliveryTimeline(p) {
+  const s = GC.settings || {};
+  const craft = parseInt(s.craftDays, 10) || 5;
+  const days = parseInt(s.deliveryDays, 10) || 3;
+  const status = stockStatus(p);
+
+  let first;
+  if (status === "sold out") {
+    first = { title: "Commission a new one", meta: "Message us and we start again" };
+  } else if (status === "made to order") {
+    first = { title: "Stitched after you order", meta: `About ${craft} days of making` };
+  } else {
+    first = { title: "Finished and ready to post", meta: "Dispatched from Wazirabad" };
+  }
+
+  const steps = [first, { title: "Delivery across Pakistan", meta: `About ${days} days in transit` }];
+
+  const stepHtml = steps
+    .map(
+      (st) =>
+        `<li class="timeline__step">` +
+        `<span class="timeline__dot" aria-hidden="true"></span>` +
+        `<div class="timeline__body">` +
+        `<div class="timeline__title">${escapeHtml(st.title)}</div>` +
+        `<div class="timeline__meta">${escapeHtml(st.meta)}</div>` +
+        `</div></li>`
+    )
+    .join("");
+
+  /* The total only means something when a piece still has to be made; an
+     in-stock item is not waiting on the crafting days. */
+  const total =
+    status === "made to order"
+      ? `Ready in about ${craft + days} days`
+      : status === "sold out"
+        ? ""
+        : `Ready in about ${days} days`;
+
+  return (
+    `<div class="product-page__timeline">` +
+    `<p class="timeline__head">How long will it take?</p>` +
+    `<ol class="timeline__list">${stepHtml}</ol>` +
+    (total ? `<p class="timeline__total">${escapeHtml(total)}</p>` : "") +
+    `</div>`
+  );
+}
+
 function describe(p, catLabel, subLabel) {
   const bits = [];
   const where = subLabel || catLabel;
@@ -154,10 +210,12 @@ function describe(p, catLabel, subLabel) {
   );
   bits.push(`Priced at ${priceText(p)}.`);
   const status = stockStatus(p);
+  const s = GC.settings || {};
+  const craft = parseInt(s.craftDays, 10) || 5;
   if (status === "sold out") {
     bits.push("This piece is sold out, but the same design is usually available to commission again \u2014 message us and we will confirm.");
   } else if (status === "made to order") {
-    bits.push("Made to order, so allow about five days before it is ready to post.");
+    bits.push(`Made to order, so allow about ${craft} days before it is ready to post.`);
   } else {
     bits.push("In stock and ready to post.");
   }
@@ -177,11 +235,60 @@ function buildTitle(p, catLabel) {
     " | Pakistan",
     "",
   ];
+  const candidates = titleNameCandidates(name);
+
+  /* First pass keeps the name whole: only when no suffix fits it does the
+     name start giving way, otherwise "Camellia Jewelry Set" would lose its
+     "Set" to make room for the brand it never needed. */
   for (const s of suffixes) {
-    const t = name + s;
-    if (t.length <= 60) return t;
+    if (name.length + s.length <= 60) return name + s;
   }
-  return name.slice(0, 60);
+
+  /* Suffixes are tried outermost so the best one available survives trimming:
+     with the name inside, "(Per Single Piece)" would fit on its own and win
+     before the brand suffix ever got a turn. */
+  for (const s of suffixes) {
+    for (const c of candidates) {
+      if (c.length + s.length <= 60) return c + s;
+    }
+  }
+  /* Every candidate is still too long even with no suffix, so the name has to
+     be cut back. A fixed-offset cut shipped titles like "...Set (Per Single
+     Pouch" - half a word and an unclosed bracket in the search result - so
+     this stops on a whole word and drops anything the cut left open. */
+  for (const s of suffixes) {
+    const trimmed = trimNameForTitle(name, s);
+    if (trimmed) return trimmed + s;
+  }
+  return name;
+}
+
+/* Shortening steps for a name that will not fit, least damaging first: the
+   qualifier in brackets says how it is sold rather than what it is, and a
+   trailing "Set" restates a noun the title already carries. Stopping here
+   keeps the head noun ("...Pencil Case") intact, which is the part a shopper
+   is scanning for. */
+function titleNameCandidates(name) {
+  const out = [name];
+  const unbracketed = name.replace(/\s*\([^()]*\)\s*$/, "").trim();
+  if (unbracketed !== name) out.push(unbracketed);
+  const unSet = unbracketed.replace(/\s+Set\s*$/i, "").trim();
+  if (unSet !== unbracketed) out.push(unSet);
+  return out;
+}
+
+/* Largest prefix of `name` that leaves room for `suffix` inside the 60
+   character limit, ending on a whole word and with no bracket left open. */
+function trimNameForTitle(name, suffix) {
+  const budget = 60 - suffix.length;
+  if (budget < 8) return "";
+  let cut = name.slice(0, budget);
+  const space = cut.lastIndexOf(" ");
+  if (space > 0) cut = cut.slice(0, space);
+  const opens = (cut.match(/\(/g) || []).length;
+  const closes = (cut.match(/\)/g) || []).length;
+  if (opens > closes) cut = cut.slice(0, cut.lastIndexOf("("));
+  return cut.replace(/[\s,;:|/\-–—]+$/, "").trim();
 }
 
 /* Clauses are added in order and the first one that would overflow the limit
@@ -189,6 +296,7 @@ function buildTitle(p, catLabel) {
    run long however long the product name is. */
 function buildDescription(p, catLabel, subLabel) {
   const status = stockStatus(p);
+  const craft = parseInt((GC.settings || {}).craftDays, 10) || 5;
   /* Half these names already say "handmade", so repeating the word straight
      after them reads as stuffing. */
   const opener = /\bhandmade\b/i.test(p.name)
@@ -201,7 +309,7 @@ function buildDescription(p, catLabel, subLabel) {
     status === "sold out"
       ? "Sold out, but the same design can usually be commissioned again."
       : status === "made to order"
-        ? "Made to order, allow about five days."
+        ? `Made to order, allow about ${craft} days.`
         : "In stock and ready to post.",
     "Delivery across Pakistan.",
     "Colours can be changed on request.",
@@ -344,7 +452,10 @@ function renderPage(p, catLabel, subLabel, shell) {
   const canonicalIsSelf = canonicalSlug === slug;
   const url = canonicalIsSelf ? canonical : `${ORIGIN}/product/${slug}`;
   const description = buildDescription(p, catLabel, subLabel);
-  const title = canonicalIsSelf ? buildTitle(p, catLabel) : `${p.name} | Gulnish Crochet`;
+  /* Both branches go through buildTitle: the alias pages used to be the one
+     place the 60 character cap was skipped, so a long duplicate name could
+     ship an uncapped title while its canonical was trimmed. */
+  const title = buildTitle(p, catLabel);
   const status = stockStatus(p);
   const statusClass = status === "sold out" ? "status-out" : status === "made to order" ? "status-made" : "status-in";
   const statusText = status === "sold out" ? "Sold out" : status === "made to order" ? "Made to order" : "In stock";
@@ -442,6 +553,7 @@ function renderPage(p, catLabel, subLabel, shell) {
           <div><dt>Made in</dt><dd>Wazirabad, Pakistan</dd></div>
         </dl>
         ${buyRow}
+        ${deliveryTimeline(p)}
         <p class="product-page__desc">${escapeHtml(describe(p, catLabel, subLabel))}</p>
         ${notCanonical}
       </div>

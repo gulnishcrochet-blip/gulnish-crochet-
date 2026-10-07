@@ -17,7 +17,7 @@
 
   /* Bump LOCAL_PRODUCTS version whenever the seed catalog changes so
      returning visitors' browsers re-sync products (offline/localStorage mode). */
-  var LOCAL_PRODUCTS = "gulnish-products-v67";
+  var LOCAL_PRODUCTS = "gulnish-products-v68";
   var LOCAL_SETTINGS = "gulnish-settings-v2";
   var LOCAL_ORDERS = "gulnish-orders";
   var LOCAL_ADMIN_SESSION = "gulnish-admin-session";
@@ -328,6 +328,16 @@ var SEED_PLACEMENT = {
     "seed_pencil_11": { name: "Handmade Crochet Rose Pencil Topper Set (Per Single Piece)", price: 450, priceMax: 900 },
     "seed_pencil_12": { name: "Handmade Full-Wrapped Crochet Tulip Pen (Per Single Piece)", price: 550, priceMax: 1100 },
     "seed_pencil_13": { name: "Handmade Full-Wrapped Crochet Daisy Pen", price: 550, priceMax: 1100 },
+
+    /* Headbands used to ship without a REAL_PRODUCTS row, so they fell back to
+       the generated "Headband 1/2/3" label. Those names are what
+       GENERATED_NAME in scripts/sitemap-products.js screens for, which is why
+       all three were missing from sitemap.xml, and two words of near-identical
+       copy is thin content besides. Real names here put them back in the
+       sitemap and give each one a title worth ranking. */
+    "seed_headbands_1": { name: "Handmade Crochet Lace Headband", price: 1299 },
+    "seed_headbands_2": { name: "Handmade Crochet Bow Headband", price: 1299 },
+    "seed_headbands_3": { name: "Handmade Crochet Flower Headband", price: 1299 },
   };
   var PRODUCT_PRICES = {
     "seed_purses_6": 5500,

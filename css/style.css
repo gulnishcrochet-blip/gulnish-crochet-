@@ -1253,6 +1253,94 @@ body.has-topbar { scroll-padding-top: 132px; }
 .product-page__add.is-disabled {
   opacity: 0.55;
   pointer-events: none;
+}
+
+/* ---- delivery timeline -------------------------------
+   Sits directly under the buy buttons, which is where the "but how long
+   will it actually take?" objection surfaces for a handmade piece. It is an
+   <ol> so the order is meaningful without CSS, and the dots are decorative:
+   the text beside them carries the whole meaning. */
+.product-page__timeline {
+  width: 100%;
+  margin-top: 1.1rem;
+  padding: 1rem 1.1rem;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.timeline__head {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--primary-deep);
+}
+
+.timeline__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.timeline__step {
+  position: relative;
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+/* The connector between dots. It hangs off the dot rather than the row so
+   the line stays centred on the circle at any text height. */
+.timeline__step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 15px;
+  bottom: -0.85rem;
+  width: 1px;
+  background: var(--line-strong);
+}
+
+.timeline__dot {
+  flex: none;
+  width: 11px;
+  height: 11px;
+  margin-top: 4px;
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 0 3px rgba(168, 122, 92, 0.16);
+}
+
+.timeline__body {
+  min-width: 0;
+}
+
+.timeline__title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.4;
+}
+
+.timeline__meta {
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.timeline__total {
+  margin: 0.85rem 0 0;
+  padding-top: 0.7rem;
+  border-top: 1px dashed var(--line-strong);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--primary-deep);
 }/* ============ PROMO ============ */
 .promo {
   padding: 4.5rem 0 2rem;
@@ -1501,6 +1589,173 @@ body.has-topbar { scroll-padding-top: 132px; }
   color: var(--primary-deep);
   font-weight: 700;
   padding: 0 0.8rem 0.85rem;
+}
+
+/* ============ FAQ ============
+   Written into index.html by scripts/faq-section.js so the answers and the
+   FAQPage schema always come from the same list of questions. Uses native
+   <details> so it works with JavaScript off, and stays keyboard accessible. */
+.faq__inner {
+  max-width: 76rem;
+}
+
+.faq__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1rem;
+  margin-top: 2.4rem;
+}
+
+.faq__item {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.faq__q {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.05rem 1.25rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--ink);
+  cursor: pointer;
+  list-style: none;
+  transition: background 0.2s ease;
+}
+
+.faq__q::-webkit-details-marker {
+  display: none;
+}
+
+.faq__q::after {
+  content: "+";
+  flex: 0 0 auto;
+  font-size: 1.3rem;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--primary-deep);
+  transition: transform 0.25s ease;
+}
+
+.faq__item[open] .faq__q::after {
+  transform: rotate(45deg);
+}
+
+.faq__q:hover,
+.faq__q:focus-visible {
+  background: var(--bg-soft);
+}
+
+.faq__q:focus-visible {
+  outline: 2px solid var(--primary-deep);
+  outline-offset: -2px;
+}
+
+.faq__a {
+  padding: 0 1.25rem 1.15rem;
+}
+
+.faq__a p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.faq__foot {
+  margin: 2.2rem 0 0;
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.faq__foot a {
+  color: var(--primary-deep);
+  font-weight: 700;
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+}
+
+.faq__foot a:hover,
+.faq__foot a:focus-visible {
+  color: var(--primary);
+}
+
+@media (max-width: 720px) {
+  .faq__list {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+
+  .faq__q {
+    font-size: 0.96rem;
+    padding: 0.95rem 1.1rem;
+  }
+
+  .faq__a {
+    padding: 0 1.1rem 1rem;
+  }
+}
+
+/* ============ STATIC PRODUCT LINK INDEX ============
+   Written into products.html and index.html by scripts/static-product-links.js
+   so crawlers get the shop as plain links instead of an empty JS grid. It is
+   a site index, so it stays deliberately quiet: the grid above is what a
+   shopper looks at, this is what a crawler follows. */
+.link-index {
+  border-top: 1px solid var(--line);
+  background: var(--bg-soft);
+}
+
+.link-index .section-head {
+  max-width: 46rem;
+}
+
+.link-index__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1.8rem 2.2rem;
+  margin-top: 2.2rem;
+}
+
+.link-index__title {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--primary-deep);
+  margin: 0 0 0.8rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.link-index__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.link-index__list a {
+  font-size: 0.93rem;
+  line-height: 1.45;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.link-index__list a:hover,
+.link-index__list a:focus-visible {
+  color: var(--primary-deep);
 }
 
 /* ============ FOOTER ============ */

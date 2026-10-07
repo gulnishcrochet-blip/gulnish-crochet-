@@ -146,6 +146,25 @@ function generateProductSitemap() {
   }
 }
 
+/* The static product links in products.html and index.html are generated from
+   the same catalogue, so a renamed or added product has to rewrite them too -
+   otherwise the shop grid shows the new piece while the crawler-visible list
+   still points at the old names. */
+function generateLinkIndex() {
+  try {
+    execSync("node scripts/static-product-links.js", {
+      cwd: ROOT,
+      encoding: "utf8",
+      stdio: ["pipe", "pipe", "pipe"]
+    })
+      .split("\n")
+      .filter(Boolean)
+      .forEach((line) => console.log("[auto-deploy] " + line.trim()));
+  } catch (err) {
+    console.error("[auto-deploy] link index not updated:", (err.stderr || err.message).trim());
+  }
+}
+
 /* A push can be rejected as non-fast-forward (e.g. a manual push raced this
    watcher). Rebase onto the remote and try once more so the change is not
    stranded on the local branch. */
@@ -179,6 +198,7 @@ function autopush() {
   try {
     clearStaleLock();
     generateProductPages();
+    generateLinkIndex();
     generateProductSitemap();
     bumpAssetVersion();
     const status = run("git status --porcelain");
