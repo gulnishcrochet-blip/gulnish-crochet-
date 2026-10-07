@@ -409,7 +409,12 @@ function jsonLd(page, label, title, description, items, faqs) {
    relative asset path anchored to the root so a page one directory down
    still finds its stylesheet. */
 function loadShell() {
-  const src = fs.readFileSync(path.join(ROOT, "products.html"), "utf8");
+  const src = fs
+    .readFileSync(path.join(ROOT, "products.html"), "utf8")
+    /* The shop's ItemList belongs on /products alone; the shell is copied
+       wholesale, so it has to be stripped here or every generated page would
+       claim to be the whole collection. */
+    .replace(/ *<script type="application\/ld\+json" id="shopLd">[\s\S]*?<\/script>\n?/, "");
   const mainStart = src.indexOf("<main>");
   const mainEnd = src.indexOf("</main>") + "</main>".length;
   const rootRelative = (chunk) =>
