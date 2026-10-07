@@ -126,9 +126,14 @@ function buildBlock(products, cats) {
     `          <h2 class="section-title" id="linkIndexTitle">Every <em>piece in the shop</em></h2>`,
     `          <p class="section-lead">All ${total} handmade crochet pieces, listed by shelf &mdash; purses, bags, jewellery, keychains, bouquets, headbands and school items.</p>`,
     `        </div>`,
-    `        <div class="link-index__grid">`,
+    /* The grid ships closed: a shopper sees one short line, and the whole
+       index stays in the markup for a crawler to read and follow. */
+    `        <details class="link-index__fold">`,
+    `          <summary class="link-index__fold-btn">Show all ${total} pieces by name</summary>`,
+    `          <div class="link-index__grid">`,
     sections,
-    `        </div>`,
+    `          </div>`,
+    `        </details>`,
     `      </div>`,
     `    </section>`,
     `  ${END}`,
