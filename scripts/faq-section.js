@@ -1,5 +1,10 @@
-/* Writes the "Before you order" FAQ into index.html, plus the FAQPage
-   structured data that lets Google show the answers directly in the results.
+/* Builds the "Before you order" FAQ once, on its own URL, /faq.
+
+   The answers used to sit on the home page, which put a nine-question block
+   between the shopper and the shop. Nothing links to /faq - no menu, no
+   footer, no card - so a customer never meets it by browsing, while
+   sitemap.xml hands the address to Google together with the FAQPage data
+   that lets the answers show up in the results.
 
    Every answer is built from shop settings (craftDays, deliveryDays,
    deliveryLabel) rather than typed out, so the FAQ cannot drift away from
@@ -18,7 +23,12 @@ const START = "<!-- FAQ SECTION START -->";
 const END = "<!-- FAQ SECTION END -->";
 const LD_ID = "seoFaqLd";
 
-const PAGES = ["index.html"];
+/* The page that now holds it, built from the products.html shell. */
+const FAQ_PAGE = "faq.html";
+const FAQ_TITLE = "Frequently Asked Questions | Gulnish Crochet";
+const FAQ_DESC =
+  "Answers about crochet timing, delivery across Pakistan, payment by bank, JazzCash or EasyPaisa, custom colours and sizes, bulk orders, tracking and refunds.";
+const ORIGIN = "https://gulnishcrochet.vercel.app";
 
 const GC = loadCatalog();
 
@@ -90,7 +100,9 @@ function plainText(a) {
   return a.replace(/\[\[([^\]|]+)\|[^\]]+\]\]/g, "$1");
 }
 
-function buildBlock(faqs) {
+/* The section itself, with an h1: /faq is a page of its own now, and the
+   questions it leads with are the reason the page exists. */
+function sectionHtml(faqs) {
   const items = faqs
     .map(
       (f) =>
@@ -102,23 +114,21 @@ function buildBlock(faqs) {
     .join("\n");
 
   return [
-    `  ${START}`,
     `    <section class="section section--soft faq" aria-labelledby="faqTitle">`,
     `      <div class="container faq__inner">`,
     `        <div class="section-head">`,
     `          <span class="section-eyebrow">Before you order</span>`,
-    `          <h2 class="section-title" id="faqTitle">Questions, <em>answered</em></h2>`,
-    `          <p class="section-lead">The things people ask us most, in plain words. If yours is not here, message us on WhatsApp — we answer every one.</p>`,
+    `          <h1 class="section-title" id="faqTitle">Questions, <em>answered</em></h1>`,
+    `          <p class="section-lead">The things people ask us most, in plain words. If yours is not here, message us on WhatsApp \u2014 we answer every one.</p>`,
     `        </div>`,
     `        <div class="faq__list">`,
     items,
     `        </div>`,
     `        <p class="faq__foot">Still unsure? <a href="https://wa.me/${esc(
       (GC.shopWhatsApp && GC.shopWhatsApp()) || "923075729901"
-    )}" target="_blank" rel="noopener">Ask us on WhatsApp</a> — we reply personally.</p>`,
+    )}" target="_blank" rel="noopener">Ask us on WhatsApp</a> \u2014 we reply personally.</p>`,
     `      </div>`,
     `    </section>`,
-    `  ${END}`,
   ].join("\n");
 }
 
@@ -137,64 +147,118 @@ function buildLd(faqs) {
   return `<script type="application/ld+json" id="${LD_ID}">${JSON.stringify(data, null, 2)}</script>`;
 }
 
-function apply(file, block, ld) {
-  const p = path.join(ROOT, file);
-  if (!fs.existsSync(p)) {
-    console.error(`[faq] ${file} not found - skipped`);
-    return false;
-  }
-  const before = fs.readFileSync(p, "utf8");
-  let src = before;
-
-  /* Visible section: replaced in place, or inserted before the product link
-     index on a first run. It sits ahead of that long list so a shopper meets
-     the answers first. Matching tolerates any indent so re-runs are stable. */
+/* Drops the FAQ section and its structured data from a page that used to
+   print them, leaving nothing behind - no empty heading, no orphan schema. */
+function stripFaq(src) {
   const escRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const blockRe = new RegExp(`[ \\t]*${escRe(START)}[\\s\\S]*?[ \\t]*${escRe(END)}\\n?`);
-  if (blockRe.test(src)) {
-    src = src.replace(blockRe, block + "\n");
-  } else if (src.includes(START) || src.includes(END)) {
-    console.error(`[faq] ${file} has an unmatched FAQ marker - skipped`);
-    return false;
-  } else {
-    const at = src.indexOf("<!-- PRODUCT LINK INDEX START -->");
-    const insertAt = at >= 0 ? at : src.lastIndexOf("</main>");
-    if (insertAt < 0) {
-      console.error(`[faq] ${file} has no insertion point - skipped`);
-      return false;
-    }
-    /* Normalise whatever blank lines precede the insertion point so the
-       result does not depend on them; block brings its own indent. */
-    const head = src.slice(0, insertAt).replace(/(\r?\n)[ \t]*(\r?\n[ \t]*)*$/, "$1");
-    src = head + "\n" + block + "\n\n  " + src.slice(insertAt);
-  }
+  src = src.replace(
+    new RegExp(`[ \\t]*${escRe(START)}[\\s\\S]*?${escRe(END)}[ \\t]*\\n?`),
+    ""
+  );
+  src = src.replace(
+    new RegExp(
+      `[ \\t]*<script type="application/ld\\+json" id="${LD_ID}">[\\s\\S]*?</script>\\n?`
+    ),
+    ""
+  );
+  return src;
+}
 
-  /* Structured data lives in <head> next to the other blocks. */
-  const ldRe = new RegExp(`<script type="application/ld\\+json" id="${LD_ID}">[\\s\\S]*?<\\/script>`);
-  if (ldRe.test(src)) {
-    src = src.replace(ldRe, ld);
-  } else {
-    const headEnd = src.indexOf("</head>");
-    if (headEnd < 0) {
-      console.error(`[faq] ${file} has no </head> - skipped`);
-      return false;
-    }
-    src = src.slice(0, headEnd) + "  " + ld + "\n" + src.slice(headEnd);
-  }
+function breadcrumbLd() {
+  const graph = [
+    {
+      "@type": "Organization",
+      "@id": `${ORIGIN}/#org`,
+      name: "Gulnish Crochet",
+      url: `${ORIGIN}/`,
+      logo: `${ORIGIN}/images/logo/logo-badge.png`,
+      email: "gulnishcrochet@gmail.com",
+      sameAs: [
+        "https://wa.me/923075729901",
+        "https://www.instagram.com/gulnishcrochet/",
+        "https://www.facebook.com/profile.php?id=61594481514536",
+      ],
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: `${ORIGIN}/` },
+        { "@type": "ListItem", position: 2, name: "FAQ", item: `${ORIGIN}/faq` },
+      ],
+      "@id": `${ORIGIN}/faq#breadcrumb`,
+    },
+  ];
+  const json = JSON.stringify({ "@context": "https://schema.org", "@graph": graph }, null, 2);
+  return `<script type="application/ld+json" id="seoBreadcrumbLd">${json}</script>`;
+}
 
-  if (src === before) return false;
-  fs.writeFileSync(p, src);
-  return true;
+/* A whole document built from the products.html shell: same header, footer,
+   styles and scripts, a rewritten head and a main that holds the answers. */
+function buildFaqPage(faqs) {
+  const src = fs.readFileSync(path.join(ROOT, "products.html"), "utf8");
+  const mainStart = src.indexOf("<main>");
+  const mainEnd = src.indexOf("</main>") + "</main>".length;
+  const rootRelative = (chunk) =>
+    chunk.replace(
+      /\b(src|href)="(?!https?:|\/\/|\/|#|data:|mailto:|tel:)([^"]+)"/g,
+      (m, attr, value) => `${attr}="/${value}"`
+    );
+
+  let head = rootRelative(src.slice(0, mainStart));
+  head = head.replace(
+    / *<script type="application\/ld\+json" id="shopLd">[\s\S]*?<\/script>\n?/,
+    ""
+  );
+  const set = (re, value) => {
+    head = head.replace(re, () => value);
+  };
+  set(/<title>[\s\S]*?<\/title>/, `<title>${esc(FAQ_TITLE)}</title>`);
+  set(
+    /<meta name="description" content="[^"]*">/,
+    `<meta name="description" content="${esc(FAQ_DESC)}">`
+  );
+  set(/<link rel="canonical" href="[^"]*">/, `<link rel="canonical" href="${ORIGIN}/faq">`);
+  set(
+    /<meta property="og:title" content="[^"]*">/,
+    `<meta property="og:title" content="${esc(FAQ_TITLE)}">`
+  );
+  set(
+    /<meta property="og:description" content="[^"]*">/,
+    `<meta property="og:description" content="${esc(FAQ_DESC)}">`
+  );
+  set(/<meta property="og:url" content="[^"]*">/, `<meta property="og:url" content="${ORIGIN}/faq">`);
+  set(
+    /<meta name="twitter:title" content="[^"]*">/,
+    `<meta name="twitter:title" content="${esc(FAQ_TITLE)}">`
+  );
+  set(
+    /<meta name="twitter:description" content="[^"]*">/,
+    `<meta name="twitter:description" content="${esc(FAQ_DESC)}">`
+  );
+  head = head.replace(
+    /<script type="application\/ld\+json" id="seoBreadcrumbLd">[\s\S]*?<\/script>/,
+    () => breadcrumbLd()
+  );
+  head = head.replace("</head>", `  ${buildLd(faqs)}\n</head>`);
+
+  const tail = rootRelative(src.slice(mainEnd));
+  return head + `<main>\n${sectionHtml(faqs)}\n</main>` + tail;
 }
 
 function main() {
   return GC.init().then(() => {
     const faqs = buildFaqs();
-    const block = buildBlock(faqs);
-    const ld = buildLd(faqs);
-    let changed = 0;
-    for (const f of PAGES) if (apply(f, block, ld)) changed++;
-    console.log(`[faq] ${faqs.length} question(s) written to ${changed} page(s)`);
+
+    const idx = path.join(ROOT, "index.html");
+    const before = fs.readFileSync(idx, "utf8");
+    const after = stripFaq(before);
+    if (after !== before) fs.writeFileSync(idx, after);
+
+    fs.writeFileSync(path.join(ROOT, FAQ_PAGE), buildFaqPage(faqs));
+
+    console.log(
+      `[faq] ${faqs.length} question(s) written to /faq and removed from the home page`
+    );
   });
 }
 
