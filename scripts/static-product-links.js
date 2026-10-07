@@ -20,6 +20,7 @@ const path = require("path");
 const ROOT = path.resolve(__dirname, "..");
 const { loadCatalog } = require(path.join(ROOT, "scripts", "generate-product-pages.js"));
 
+const ORIGIN = "https://gulnishcrochet.vercel.app";
 const START = "<!-- PRODUCT LINK INDEX START -->";
 const END = "<!-- PRODUCT LINK INDEX END -->";
 const PAGES = ["products.html", "index.html"];
@@ -83,11 +84,16 @@ function buildBlock(products, cats) {
 
   if (!groups.size) return null;
 
-  const sections = [...groups.entries()]
+  const ordered = [...groups.entries()]
     .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([label, items]) => [
+      label,
+      items.sort((a, b) => a.name.localeCompare(b.name)),
+    ]);
+
+  const sections = ordered
     .map(([label, items]) => {
       const links = items
-        .sort((a, b) => a.name.localeCompare(b.name))
         .map(
           (it) =>
             `            <li><a href="/product/${esc(it.slug)}">${esc(it.name)}</a></li>`
@@ -108,7 +114,7 @@ function buildBlock(products, cats) {
 
   const total = [...groups.values()].reduce((n, l) => n + l.length, 0);
 
-  return [
+  const block = [
     START,
     `    <section class="section link-index" aria-labelledby="linkIndexTitle">`,
     `      <div class="container">`,
@@ -127,9 +133,46 @@ function buildBlock(products, cats) {
     `    </section>`,
     `  ${END}`,
   ].join("\n");
+
+  /* The same pieces, in the same order the page lists them, so the ItemList
+     in the head describes the markup directly below it. */
+  const items = ordered.flatMap(([, list]) => list);
+  return { block, items };
 }
 
-function apply(file, block) {
+/* CollectionPage + ItemList for the shop page. products.html is the page
+   every internal link points at, and until now it told a crawler nothing
+   about what it collects: Organization and a breadcrumb, no list. The title
+   and description are read back out of the file rather than repeated here,
+   so the schema can never drift from the head a search engine shows. */
+function buildShopLd(src, items) {
+  const title = ((src.match(/<title>([^<]*)<\/title>/) || [])[1] || "").trim();
+  const description = (
+    (src.match(/<meta name="description" content="([^"]*)"/) || [])[1] || ""
+  ).trim();
+  const page = {
+    "@type": "CollectionPage",
+    "@id": `${ORIGIN}/products#page`,
+    url: `${ORIGIN}/products`,
+    name: title,
+    description,
+    inLanguage: "en",
+    isPartOf: { "@id": `${ORIGIN}/#website` },
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: items.length,
+      itemListElement: items.map((it, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: `${ORIGIN}/product/${it.slug}`,
+        name: it.name,
+      })),
+    },
+  };
+  return JSON.stringify({ "@context": "https://schema.org", "@graph": [page] }, null, 2);
+}
+
+function apply(file, block, ld) {
   const p = path.join(ROOT, file);
   if (!fs.existsSync(p)) {
     console.error(`[link-index] ${file} not found - skipped`);
@@ -154,25 +197,47 @@ function apply(file, block) {
     src = src.slice(0, at) + block + "\n  " + src.slice(at);
   }
 
+  if (ld) src = applyLd(src, ld);
+
   if (src === fs.readFileSync(p, "utf8")) return false;
   fs.writeFileSync(p, src);
   return true;
+}
+
+/* Keeps exactly one shop schema in the head: written on the first run,
+   rewritten on every run after it, never appended twice. */
+function applyLd(src, ld) {
+  const script = `<script type="application/ld+json" id="shopLd">${ld}</script>`;
+  if (src.includes('id="shopLd"')) {
+    return src.replace(
+      /<script type="application\/ld\+json" id="shopLd">[\s\S]*?<\/script>/,
+      () => script
+    );
+  }
+  const at = src.indexOf("</head>");
+  if (at < 0) return src;
+  return src.slice(0, at) + `  ${script}\n` + src.slice(at);
 }
 
 function main() {
   return GC.init().then(() => {
     const products = GC.products || [];
     const cats = (GC.settings || {}).categories || [];
-    const block = buildBlock(products, cats);
-    if (!block) {
+    const built = buildBlock(products, cats);
+    if (!built) {
       console.error("[link-index] catalogue is empty - nothing written");
       process.exitCode = 1;
       return;
     }
+    const { block, items } = built;
     let changed = 0;
-    for (const f of PAGES) if (apply(f, block)) changed++;
-    const total = (block.match(/href="\/product\//g) || []).length;
-    console.log(`[link-index] ${total} product link(s) written to ${changed} page(s)`);
+    for (const f of PAGES) {
+      /* Only the shop page wears the ItemList: on the home page that block is
+         a supplementary index, not the page's own collection. */
+      const ld = f === "products.html" ? buildShopLd(fs.readFileSync(path.join(ROOT, f), "utf8"), items) : null;
+      if (apply(f, block, ld)) changed++;
+    }
+    console.log(`[link-index] ${items.length} product link(s) written to ${changed} page(s)`);
   });
 }
 
