@@ -41,6 +41,10 @@ function buildFaqs() {
 
   return [
     {
+      q: "What is crochet, exactly?",
+      a: "Crochet is fabric built loop by loop with a single hooked needle — each stitch is closed before the next one starts, so only one loop is ever live, and no machine can reproduce that motion. Our [[complete guide to crochet in Pakistan|/crochet]] covers how the stitch works, how it differs from knitting, and why it is called Qureshia here.",
+    },
+    {
       q: "How long will my order take?",
       a: `Each piece is stitched by hand after you order, which takes about ${craft} days. Delivery across Pakistan then takes about ${days} days, so most orders arrive in around ${total} days in total. We send you a confirmed date on WhatsApp before stitching begins.`,
     },
@@ -75,13 +79,24 @@ function buildFaqs() {
   ];
 }
 
+/* [[text|href]] inside an answer becomes a real anchor in the markup, and the
+   same words with the markup stripped go into the schema - Google only shows
+   FAQ rich results when the structured answer matches what the page says. */
+function withLinks(a) {
+  return a.replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, '<a href="$2">$1</a>');
+}
+
+function plainText(a) {
+  return a.replace(/\[\[([^\]|]+)\|[^\]]+\]\]/g, "$1");
+}
+
 function buildBlock(faqs) {
   const items = faqs
     .map(
       (f) =>
         `          <details class="faq__item">\n` +
         `            <summary class="faq__q"><span>${esc(f.q)}</span></summary>\n` +
-        `            <div class="faq__a"><p>${esc(f.a)}</p></div>\n` +
+        `            <div class="faq__a"><p>${withLinks(esc(f.a))}</p></div>\n` +
         `          </details>`
     )
     .join("\n");
@@ -116,7 +131,7 @@ function buildLd(faqs) {
     mainEntity: faqs.map((f) => ({
       "@type": "Question",
       name: f.q,
-      acceptedAnswer: { "@type": "Answer", text: f.a },
+      acceptedAnswer: { "@type": "Answer", text: plainText(f.a) },
     })),
   };
   return `<script type="application/ld+json" id="${LD_ID}">${JSON.stringify(data, null, 2)}</script>`;

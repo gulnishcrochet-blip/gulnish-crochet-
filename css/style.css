@@ -1668,6 +1668,20 @@ body.has-topbar { scroll-padding-top: 132px; }
   color: var(--muted);
 }
 
+/* An answer may point at another page of the site (the crochet guide, the
+   refund policy); without this the global `color: inherit` would render it
+   as plain text and the reader would never know it is a link. */
+.faq__a p a {
+  color: var(--primary-deep);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.faq__a p a:hover,
+.faq__a p a:focus-visible {
+  color: var(--primary);
+}
+
 .faq__foot {
   margin: 2.2rem 0 0;
   text-align: center;
