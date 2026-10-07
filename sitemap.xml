@@ -108,6 +108,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://gulnishcrochet.vercel.app/shop-index</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://gulnishcrochet.vercel.app/privacy</loc>
     <lastmod>2026-10-06</lastmod>
     <changefreq>yearly</changefreq>

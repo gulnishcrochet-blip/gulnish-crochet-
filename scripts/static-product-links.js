@@ -1,16 +1,21 @@
-/* Writes a real, static list of product links into products.html and
-   index.html.
+/* Builds the shop index - every product link, grouped by shelf - and writes
+   it to its own URL, /shop-index.
 
    The shop grid is built by js/script.js at runtime, so the markup a crawler
-   downloads contains no /product/ link at all - the empty-state copy is
-   present but carries [hidden], so it is invisible rather than misleading.
-   Google does render JavaScript, but for a site with no backlinks the
-   second-wave render is slow and not guaranteed, which left 94 generated
-   pages reachable only through sitemap.xml - one hop, no internal weight.
+   downloads on / contains no /product/ link at all. Google does render
+   JavaScript, but for a site with no backlinks the second-wave render is slow
+   and not guaranteed, which left 94 generated pages reachable only through
+   sitemap.xml - one hop, no internal weight.
 
-   This writes the links into the markup itself. The block sits between the
-   same marker comments on every run, so re-running is idempotent and a manual
-   edit inside the block is replaced rather than duplicated.
+   The list therefore lives on a page of its own that no menu, footer or card
+   links to: a shopper never runs into it, sitemap.xml hands the address to
+   Google, and / and /products stay as short as they were before the index
+   existed. products.html still carries the CollectionPage + ItemList in its
+   head, so the shop page describes its collection without printing it.
+
+   The block sits between the same marker comments on every run, so re-running
+   is idempotent and a manual edit inside the block is replaced rather than
+   duplicated.
 
    Run: node scripts/static-product-links.js
 */
@@ -23,7 +28,10 @@ const { loadCatalog } = require(path.join(ROOT, "scripts", "generate-product-pag
 const ORIGIN = "https://gulnishcrochet.vercel.app";
 const START = "<!-- PRODUCT LINK INDEX START -->";
 const END = "<!-- PRODUCT LINK INDEX END -->";
-const PAGES = ["products.html", "index.html"];
+const INDEX_PAGE = "shop-index.html";
+const INDEX_TITLE = "Every Piece in the Shop | Gulnish Crochet";
+const INDEX_DESC =
+  "Every handmade crochet piece from Gulnish Crochet, listed by shelf: purses, bags, backpacks, pens, pencil cases, headbands, keychains and bouquets.";
 
 const GC = loadCatalog();
 
@@ -123,7 +131,7 @@ function buildBlock(products, cats) {
        be readable without JavaScript must never carry it. */
     `        <div class="section-head">`,
     `          <span class="section-eyebrow">Browse</span>`,
-    `          <h2 class="section-title" id="linkIndexTitle">Every <em>piece in the shop</em></h2>`,
+    `          <h1 class="section-title" id="linkIndexTitle">Every <em>piece in the shop</em></h1>`,
     `          <p class="section-lead">All ${total} handmade crochet pieces, listed by shelf &mdash; purses, bags, jewellery, keychains, bouquets, headbands and school items.</p>`,
     `        </div>`,
     /* The grid ships closed: a shopper sees one short line, and the whole
@@ -177,36 +185,102 @@ function buildShopLd(src, items) {
   return JSON.stringify({ "@context": "https://schema.org", "@graph": [page] }, null, 2);
 }
 
-function apply(file, block, ld) {
-  const p = path.join(ROOT, file);
-  if (!fs.existsSync(p)) {
-    console.error(`[link-index] ${file} not found - skipped`);
-    return false;
-  }
-  let src = fs.readFileSync(p, "utf8");
+function escRe(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 
-  if (src.includes(START) && src.includes(END)) {
-    const re = new RegExp(
-      START.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "[\\s\\S]*?" + END.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+/* Drops the index block wherever it used to be written, leaving the page
+   exactly as it was before the list existed. */
+function stripBlock(src) {
+  if (!src.includes(START)) return src;
+  return src.replace(
+    new RegExp("[ \\t]*" + escRe(START) + "[\\s\\S]*?" + escRe(END) + "[ \\t]*\\n?"),
+    ""
+  );
+}
+
+function shopIndexLd() {
+  const graph = [
+    {
+      "@type": "Organization",
+      "@id": `${ORIGIN}/#org`,
+      name: "Gulnish Crochet",
+      url: `${ORIGIN}/`,
+      logo: `${ORIGIN}/images/logo/logo-badge.png`,
+      email: "gulnishcrochet@gmail.com",
+      sameAs: [
+        "https://wa.me/923075729901",
+        "https://www.instagram.com/gulnishcrochet/",
+        "https://www.facebook.com/profile.php?id=61594481514536",
+      ],
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: `${ORIGIN}/` },
+        { "@type": "ListItem", position: 2, name: "Shop Index", item: `${ORIGIN}/shop-index` },
+      ],
+      "@id": `${ORIGIN}/shop-index#breadcrumb`,
+    },
+  ];
+  const json = JSON.stringify({ "@context": "https://schema.org", "@graph": graph }, null, 2);
+  return `<script type="application/ld+json" id="seoBreadcrumbLd">${json}</script>`;
+}
+
+/* A whole document built from the products.html shell: same header, footer,
+   styles and scripts, a rewritten head and a main that holds the index. */
+function buildShopIndex(block) {
+  const src = fs.readFileSync(path.join(ROOT, "products.html"), "utf8");
+  const mainStart = src.indexOf("<main>");
+  const mainEnd = src.indexOf("</main>") + "</main>".length;
+  const rootRelative = (chunk) =>
+    chunk.replace(
+      /\b(src|href)="(?!https?:|\/\/|\/|#|data:|mailto:|tel:)([^"]+)"/g,
+      (m, attr, value) => `${attr}="/${value}"`
     );
-    src = src.replace(re, block);
-  } else {
-    /* Placed just before </main>: inside the main landmark, after the
-       JS-built grids, so it never sits in the footer where a crawler weights
-       it least. */
-    const at = src.lastIndexOf("</main>");
-    if (at < 0) {
-      console.error(`[link-index] ${file} has no </main> - skipped`);
-      return false;
-    }
-    src = src.slice(0, at) + block + "\n  " + src.slice(at);
-  }
 
-  if (ld) src = applyLd(src, ld);
+  let head = rootRelative(src.slice(0, mainStart));
+  /* The ItemList stays on /products; this page carries its own breadcrumb. */
+  head = head.replace(
+    / *<script type="application\/ld\+json" id="shopLd">[\s\S]*?<\/script>\n?/,
+    ""
+  );
+  const set = (re, value) => {
+    head = head.replace(re, () => value);
+  };
+  set(/<title>[\s\S]*?<\/title>/, `<title>${esc(INDEX_TITLE)}</title>`);
+  set(
+    /<meta name="description" content="[^"]*">/,
+    `<meta name="description" content="${esc(INDEX_DESC)}">`
+  );
+  set(
+    /<link rel="canonical" href="[^"]*">/,
+    `<link rel="canonical" href="${ORIGIN}/shop-index">`
+  );
+  set(
+    /<meta property="og:title" content="[^"]*">/,
+    `<meta property="og:title" content="${esc(INDEX_TITLE)}">`
+  );
+  set(
+    /<meta property="og:description" content="[^"]*">/,
+    `<meta property="og:description" content="${esc(INDEX_DESC)}">`
+  );
+  set(/<meta property="og:url" content="[^"]*">/, `<meta property="og:url" content="${ORIGIN}/shop-index">`);
+  set(
+    /<meta name="twitter:title" content="[^"]*">/,
+    `<meta name="twitter:title" content="${esc(INDEX_TITLE)}">`
+  );
+  set(
+    /<meta name="twitter:description" content="[^"]*">/,
+    `<meta name="twitter:description" content="${esc(INDEX_DESC)}">`
+  );
+  head = head.replace(
+    /<script type="application\/ld\+json" id="seoBreadcrumbLd">[\s\S]*?<\/script>/,
+    () => shopIndexLd()
+  );
 
-  if (src === fs.readFileSync(p, "utf8")) return false;
-  fs.writeFileSync(p, src);
-  return true;
+  const tail = rootRelative(src.slice(mainEnd));
+  return head + `<main>\n${block}\n</main>` + tail;
 }
 
 /* Keeps exactly one shop schema in the head: written on the first run,
@@ -235,14 +309,28 @@ function main() {
       return;
     }
     const { block, items } = built;
-    let changed = 0;
-    for (const f of PAGES) {
-      /* Only the shop page wears the ItemList: on the home page that block is
-         a supplementary index, not the page's own collection. */
-      const ld = f === "products.html" ? buildShopLd(fs.readFileSync(path.join(ROOT, f), "utf8"), items) : null;
-      if (apply(f, block, ld)) changed++;
+
+    /* /products keeps the schema and loses the list. */
+    const productsFile = path.join(ROOT, "products.html");
+    const productsSrc = stripBlock(fs.readFileSync(productsFile, "utf8"));
+    fs.writeFileSync(
+      productsFile,
+      applyLd(productsSrc, buildShopLd(productsSrc, items))
+    );
+
+    /* The home page loses it too - the FAQ is the only long block there. */
+    for (const f of ["index.html"]) {
+      const p = path.join(ROOT, f);
+      const src = fs.readFileSync(p, "utf8");
+      const stripped = stripBlock(src);
+      if (stripped !== src) fs.writeFileSync(p, stripped);
     }
-    console.log(`[link-index] ${items.length} product link(s) written to ${changed} page(s)`);
+
+    fs.writeFileSync(path.join(ROOT, INDEX_PAGE), buildShopIndex(block));
+
+    console.log(
+      `[link-index] ${items.length} product link(s) written to /shop-index and removed from the shop pages`
+    );
   });
 }
 
