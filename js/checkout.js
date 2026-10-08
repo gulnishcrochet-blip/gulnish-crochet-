@@ -182,7 +182,7 @@
             '<div class="co-item">' +
             '<div class="co-item__img">' +
             (item.image
-              ? '<img src="' + item.image + '" alt="" loading="lazy" decoding="async">'
+              ? '<img src="' + escapeHtml(item.image) + '" alt="" loading="lazy" decoding="async">'
               : "<span class='cart-item__ph'>&#128722;</span>") +
             "</div>" +
             '<div class="co-item__info">' +

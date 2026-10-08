@@ -50,15 +50,27 @@
 
   function renderTimeline(history) {
     if (!history || !history.length) return "";
+    /* One entry per distinct status, newest last: an admin saving the same
+       status twice with a note appends a duplicate, and the loop index no
+       longer matches history.length, so the highlight has to be taken from the
+       deduplicated list rather than from the raw one. */
     var seen = {};
-    var steps = [];
+    var distinct = [];
     history.forEach(function (entry) {
       var s = entry.status || "Pending";
       if (seen[s]) return;
       seen[s] = true;
-      steps.push(
-        '<li class="track-timeline__item' + (steps.length === history.length - 1 ? " is-current" : "") + '">' +
-        '<span class="track-timeline__icon">' + (STATUS_ICONS[s] || '&#128336;') + "</span>" +
+      distinct.push(entry);
+    });
+    if (!distinct.length) return "";
+    /* The last raw entry is the state the order is actually in, even when it
+       repeats a status that is already on the list. */
+    var current = history[history.length - 1].status || "Pending";
+    var steps = distinct.map(function (entry) {
+      var s = entry.status || "Pending";
+      return (
+        '<li class="track-timeline__item' + (s === current ? " is-current" : "") + '">' +
+        '<span class="track-timeline__icon">' + (STATUS_ICONS[s] || "&#128336;") + "</span>" +
         '<span class="track-timeline__label">' + escapeHtml(s) + "</span>" +
         '<time class="track-timeline__time">' + formatDate(entry.at) + "</time>" +
         (entry.note ? '<span class="track-timeline__note">' + escapeHtml(entry.note) + "</span>" : "") +

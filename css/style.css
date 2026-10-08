@@ -844,31 +844,6 @@ body.has-topbar { scroll-padding-top: 132px; }
     transform 0.22s var(--ease), opacity 0.22s var(--ease);
 }
 
-/* Sits directly under "Add to Cart" on the card. Full width like its
-   neighbour, a little quieter because it is the alternative to the cart rather
-   than the main path, and clearly separated from it by a hairline. */
-.work-card__wa {
-  margin-top: 0.4rem;
-  width: 100%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.45rem;
-  padding: 0.5rem 1rem;
-  font-family: var(--font-body);
-  font-size: 0.8rem;
-  font-weight: 700;
-  box-shadow: none;
-}
-
-.work-card__wa:hover {
-  box-shadow: 0 6px 14px rgba(63, 150, 79, 0.28);
-}
-
-.work-card__wa svg {
-  flex: none;
-}
-
 .add-btn:hover {
   background: var(--primary);
   color: #fff;
@@ -1607,7 +1582,7 @@ body.has-topbar { scroll-padding-top: 132px; }
 }
 
 .faq__item {
-  background: var(--card);
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   overflow: hidden;
@@ -5011,14 +4986,12 @@ p.about-text {
   color: #54713f;
 }
 
-.admin-stock.stock-made-to-order,
-.admin-stock.stock-made-to-order- {
+.admin-stock.stock-made-to-order {
   background: var(--gold-light);
   color: var(--gold-deep);
 }
 
-.admin-stock.stock-sold-out,
-.admin-stock.stock-sold-out- {
+.admin-stock.stock-sold-out {
   background: var(--danger-light);
   color: var(--danger);
 }
@@ -6502,7 +6475,9 @@ body.has-topbar .site-header { top: 0; }
 }
 
 @media (max-width: 520px) {
-  .footer-inner { grid-template-columns: 1fr; gap: 1.8rem; }
+  /* No .footer-inner rule here on purpose: the 760px block further down also
+     matches below 520px and is what actually paints, and it keeps two link
+     columns — the layout the 380px block below is tuned for. */
   .footer-news__form { flex-direction: column; }
   .footer-news__btn { width: 100%; }
 }

@@ -883,32 +883,46 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
             });
         }).catch(function (e) {
           console.warn("Could not load shared data:", e);
+          /* The database is unreachable. Falling back to the local copy keeps
+             the catalogue, the settings and the basket on screen; skipping it
+             would leave GC.settings null, which every delivery/WhatsApp helper
+             reads directly and would throw on. */
+          loadLocal();
         });
       }
 
-      products.length = 0;
-      var fallbackProducts = lsGet(LOCAL_PRODUCTS, defaultProducts());
-      (fallbackProducts || []).forEach(function (p) { products.push(normalizeProduct(p)); });
-      if (!localStorage.getItem(LOCAL_PRODUCTS)) {
-        /* First visit on this seed version. Keep anything the owner added by
-           hand in the admin panel, moved onto the current categories, so
-           bumping the key re-seeds the catalogue without eating their work.
-           Only non-seed rows are carried over: the seed list is rebuilt from
-           RAW_IMAGES below, and a stale copy would fight it. */
-        migrateCustomProducts().forEach(function (p) { products.push(p); });
-        lsSet(LOCAL_PRODUCTS, products);
-      }
-      settings = normalizeSettings(lsGet(LOCAL_SETTINGS, null));
-      orders.length = 0;
-      (lsGet(LOCAL_ORDERS, []) || []).forEach(function (o) { orders.push(o); });
-      try {
-        GC.isAdmin = localStorage.getItem(LOCAL_ADMIN_SESSION) === "1";
-      } catch (e) { GC.isAdmin = false; }
+      loadLocal();
       return Promise.resolve();
     } catch (e) {
       console.warn("Could not load shared data:", e);
+      /* Never let a failure strand settings as null: helpers dereference it
+         without a guard in several places. */
+      if (!settings) settings = normalizeSettings(null);
       return Promise.resolve();
     }
+  }
+
+  /* Offline/first-party copy of the catalogue, the settings and this
+     visitor's orders. Also the safety net when Supabase cannot be reached. */
+  function loadLocal() {
+    products.length = 0;
+    var fallbackProducts = lsGet(LOCAL_PRODUCTS, defaultProducts());
+    (fallbackProducts || []).forEach(function (p) { products.push(normalizeProduct(p)); });
+    if (!localStorage.getItem(LOCAL_PRODUCTS)) {
+      /* First visit on this seed version. Keep anything the owner added by
+         hand in the admin panel, moved onto the current categories, so
+         bumping the key re-seeds the catalogue without eating their work.
+         Only non-seed rows are carried over: the seed list is rebuilt from
+         RAW_IMAGES below, and a stale copy would fight it. */
+      migrateCustomProducts().forEach(function (p) { products.push(p); });
+      lsSet(LOCAL_PRODUCTS, products);
+    }
+    settings = normalizeSettings(lsGet(LOCAL_SETTINGS, null));
+    orders.length = 0;
+    (lsGet(LOCAL_ORDERS, []) || []).forEach(function (o) { orders.push(o); });
+    try {
+      GC.isAdmin = localStorage.getItem(LOCAL_ADMIN_SESSION) === "1";
+    } catch (e) { GC.isAdmin = false; }
   }
 
   /* ---------- Realtime subscriptions ---------- */
@@ -1556,8 +1570,12 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
     },
 
     shopWhatsApp: function () {
-      var raw = String(GC.settings.whatsapp || "03075729901").replace(/[^\d]/g, "");
-      var cc = String(GC.settings.whatsappCountry || "92").replace(/[^\d]/g, "") || "92";
+      /* GC.settings is null until boot() resolves, and the drawer repaints
+         before that on a cold visit — read through a default so an early call
+         falls back to the published number instead of throwing. */
+      var s = GC.settings || {};
+      var raw = String(s.whatsapp || "03075729901").replace(/[^\d]/g, "");
+      var cc = String(s.whatsappCountry || "92").replace(/[^\d]/g, "") || "92";
       if (!raw) return "";
       /* already stored in international form */
       if (raw.length > cc.length && raw.slice(0, cc.length) === cc) return raw;
@@ -1586,14 +1604,16 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
     },
 
     deliveryFee: function () {
-      var raw = GC.settings.shippingFee;
+      var s = GC.settings || {};
+      var raw = s.shippingFee;
       if (raw == null || raw === "") return null;
       var n = parseFloat(raw);
       return isFinite(n) && n > 0 ? n : null;
     },
 
     deliveryLabel: function () {
-      var custom = String(GC.settings.deliveryNote || "").trim();
+      var s = GC.settings || {};
+      var custom = String(s.deliveryNote || "").trim();
       if (custom) return custom;
       var fee = GC.deliveryFee();
       return fee
@@ -1615,7 +1635,7 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
     formatPhone: function (raw) {
       var d = String(raw || "").replace(/[^\d]/g, "");
       if (!d) return "";
-      var cc = String(GC.settings.whatsappCountry || "92").replace(/[^\d]/g, "") || "92";
+      var cc = String((GC.settings || {}).whatsappCountry || "92").replace(/[^\d]/g, "") || "92";
       var bare = d.replace(/^0+/, "");
       if (!bare) return "";
       if (bare.length > cc.length && bare.slice(0, cc.length) === cc) return "+" + bare;
@@ -1856,6 +1876,15 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
 
   function orderFromRow(r) {
     var method = r.payment_method || r.payment || GC.paymentDefault;
+    var total = r.total || 0;
+    /* orderToRow writes these two columns; they have to come back out again or
+       every admin view that reloads an order from the database silently drops
+       the delivery charge and shows the subtotal as the amount due. */
+    var delivery = r.delivery_charge != null ? parseFloat(r.delivery_charge) || 0 : 0;
+    var grand =
+      r.grand_total != null
+        ? parseFloat(r.grand_total) || 0
+        : (delivery ? total + delivery : null);
     var history = Array.isArray(r.status_history) && r.status_history.length
       ? r.status_history
       : [{ status: r.status || "Pending", at: r.placed_at || r.created_at || new Date().toISOString(), note: "" }];
@@ -1874,7 +1903,9 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
         notes: r.notes || ""
       },
       items: r.items || [],
-      total: r.total || 0,
+      total: total,
+      deliveryCharge: delivery,
+      grandTotal: grand,
       payment: {
         method: method,
         status: r.payment_status || "Pending"

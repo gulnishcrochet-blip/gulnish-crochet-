@@ -70,7 +70,11 @@ function originAllowed(req) {
 
   const hosts = [String(req.headers["host"] || "")];
   ALLOWED_ORIGINS.forEach(function (o) {
-    try { hosts.push(new URL(o).host); } catch (e) { /* ignore */ }
+    /* An entry is documented as a hostname, and "gulnishcrochet.vercel.app"
+       is not a valid URL — new URL() throws on it and the whole allow-list
+       would silently end up empty. Try it as-is, then with a scheme. */
+    try { hosts.push(new URL(o).host); return; } catch (e) { /* fall through */ }
+    try { hosts.push(new URL("https://" + o).host); } catch (e) { hosts.push(o); }
   });
 
   return seen.some(function (c) {
@@ -279,14 +283,23 @@ async function sendViaResend(from, to, cc, subject, text, html) {
     html: html
   };
   if (cc) payload.cc = [cc];
-  const res = await fetch(RESEND, {
-    method: "POST",
-    headers: {
-      "Authorization": "Bearer " + process.env.RESEND_API_KEY,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(payload)
-  });
+  let res;
+  try {
+    res = await fetch(RESEND, {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + process.env.RESEND_API_KEY,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+  } catch (e) {
+    /* DNS failure, TLS error, socket reset: fetch rejects instead of returning
+       a response, and an unhandled rejection here would surface as a 500 with
+       no body for the storefront to read. Report it as a transient upstream
+       outage so the client can retry rather than dropping the order. */
+    return { ok: false, status: 503, error: "Email service unreachable" };
+  }
   const body = await res.json().catch(function () { return {}; });
   if (!res.ok) {
     return { ok: false, status: res.status, error: body && body.message ? body.message : "Resend error" };
@@ -342,7 +355,10 @@ module.exports = async function handler(req, res) {
   const result = await sendViaResend(from, to, cc, body.subject, body.text, body.html);
 
   if (!result.ok) {
-    return res.status(result.status === 200 ? 500 : result.status).json(result);
+    /* Express only accepts 100-599; an unexpected code would throw while
+       writing the response and turn a readable error into a bare 500. */
+    const code = Number(result.status);
+    return res.status(code >= 400 && code <= 599 ? code : 502).json(result);
   }
   return res.status(200).json({ ok: true, id: result.id });
 };

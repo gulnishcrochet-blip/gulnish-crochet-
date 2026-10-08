@@ -185,6 +185,11 @@
     itemsEl.addEventListener("click", function (e) {
       var btn = e.target.closest(".cp-qty__btn, .cp-item__remove");
       if (!btn) return;
+      /* Mark the event so script.js's document listener skips it: it runs after
+         this one (the click bubbles from #cpItems to document) and by then the
+         list has been rebuilt, so its own #cpItems test sees a detached node
+         and the same change would be applied twice. */
+      e.gulnishHandled = true;
       var cart = loadCart();
       var key = btn.getAttribute("data-key");
       if (btn.classList.contains("cp-item__remove")) {
@@ -213,5 +218,22 @@
     });
   }
 
-  render();
+  /* First paint waits for the catalogue snapshot. Rendering immediately would
+     paint the fallback WhatsApp number and delivery copy, and nothing repaints
+     the cart once boot() resolves — the basket would stay on the defaults for
+     the whole visit. */
+  if (GC && typeof GC.init === "function") {
+    var started = false;
+    var paint = function () {
+      if (started) return;
+      started = true;
+      render();
+    };
+    GC.init().then(paint, paint);
+    /* If the snapshot never settles (blocked network), paint the local copy
+       rather than leaving an empty cart page. */
+    setTimeout(paint, 1500);
+  } else {
+    render();
+  }
 })();

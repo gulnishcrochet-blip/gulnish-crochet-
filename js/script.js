@@ -65,19 +65,6 @@
      small files, so a phone on wifi still downloads every 800px original.
      Local images/ paths only - Supabase URLs have no sm/ twin.
      deferred=true emits data-srcset/data-sizes for the parked images above. */
-  /* The catalogue stores photos relative to the site root, so a link pasted
-     into a chat needs the full address or it arrives broken. */
-  function absoluteProductImage(src) {
-    var v = String(src || "");
-    if (!v) return "";
-    if (/^https?:\/\//i.test(v)) return v;
-    return location.origin + "/" + v.replace(/^\/+/, "");
-  }
-
-  var WA_SVG =
-    '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">' +
-    '<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-.386.549-.439.697-.081.223-.154.48-.221.754-.87 2.878 1.235 5.637 3.842 8.095a9.33 9.33 0 0 0 3.354 2.254c.635.283 1.263.42 1.694.52.693.164 1.323.094 1.821-.116.555-.234.945-.612 1.074-.951.14-.366.196-.748.22-1.047.026-.3.026-.553 0-.676-.023-.124-.089-.232-.198-.316zM12.001 0C5.384 0 0 5.384 0 12.001c0 2.117.554 4.19 1.606 6.009L0 24l6.146-1.612c1.79.977 4.306 1.492 6.855 1.492 6.627 0 12.001-5.384 12.001-12.001C24 5.384 18.616 0 12.001 0z"/></svg>';
-
   function imgSrcset(src, sizes, deferred) {
     if (!src || src.lastIndexOf("data:", 0) === 0) return "";
     if (src.indexOf("images/") !== 0) return "";
@@ -639,7 +626,6 @@
       stockBadgeHTML(p) +
       colors +
       buildCardAddBtn(p) +
-      buildCardWaBtn(p) +
       "</div></article>"
     );
   }
@@ -663,31 +649,6 @@
       '<path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>' +
       "</svg>" +
       "Add to Cart</button>";
-  }
-
-  /* Order straight from the card over WhatsApp, with this one piece already
-     written out. Most orders here come through WhatsApp, and a shopper who has
-     just found the piece they want should not have to open it, add it, open the
-     cart and choose checkout first. It is a link, not a button, so it opens in
-     a new tab like the other outbound links. */
-  function buildCardWaBtn(p) {
-    var num = GC && GC.shopWhatsApp ? GC.shopWhatsApp() : "";
-    if (!num || stockStatus(p) === "sold out") return "";
-    var quote = hasRange(p)
-      ? " \u2022 " + money(p.price) + " - " + money(p.priceMax)
-      : " \u2022 " + money(p.price);
-    var msg =
-      "Hi Gulnish Crochet, I'd like to order:\n\n*" +
-      (p.name || "this item") + "*" + quote +
-      "\n\nPhoto: " + absoluteProductImage(p.image) +
-      "\n\nIs it available?";
-    return (
-      '<a class="btn btn--wa btn--wa-sm work-card__wa js-card-wa" data-id="' + escapeHtml(p.id) + '"' +
-      ' href="https://wa.me/' + encodeURIComponent(num) + "?text=" + encodeURIComponent(msg) + '"' +
-      ' target="_blank" rel="noopener" aria-label="Order ' + escapeHtml(p.name) + ' on WhatsApp">' +
-      WA_SVG +
-      "Buy on WhatsApp</a>"
-    );
   }
 
   function buildFilters(settings) {
@@ -783,17 +744,27 @@
     showMoreBtn.textContent = "Show more (" + remaining + ")";
   }
 
+  /* The 8-card page only exists where there is a "Show more" control to
+     reveal the rest. Shelf pages and the featured strip carry cards of their
+     own with no such control, so capping them here would hide everything past
+     the eighth card with no way back. */
+  function isPaged() {
+    return !!showMoreBtn;
+  }
+
   function applyFilters() {
     var term =
       (searchInput ? searchInput.value.trim().toLowerCase() : "") || "";
     var target = activeCategoryKey();
     var subTarget = activeSubcategoryKey();
     var filtering = isFiltering();
+    var paged = isPaged();
 
     var visible = 0;
+    var matches = 0;
     var shown = [];
     cards.forEach(function (card, index) {
-      var inRange = filtering || index < visibleCount;
+      var inRange = filtering || !paged || index < visibleCount;
       var categoryMatch = target === "all" || card.dataset.category === target;
       var subMatch =
         target === "all" ||
@@ -817,7 +788,9 @@
       }
 
       var termMatch = !term || name.indexOf(term) !== -1;
-      var show = inRange && categoryMatch && subMatch && termMatch;
+      var match = categoryMatch && subMatch && termMatch;
+      if (match) matches += 1;
+      var show = inRange && match;
       card.classList.toggle("is-hidden", !show);
       /* Release the parked photo only once the card is actually shown, which
          covers the first page, "Show more", and every filter change. */
@@ -829,6 +802,12 @@
     });
 
     if (noResults) noResults.hidden = visible > 0;
+    /* The label counts every card the filter matched, not the first page of
+       them, so it stays truthful after a search, a filter or a sort. */
+    if (productCountLabel) {
+      productCountLabel.textContent =
+        "Showing " + matches + " handmade piece" + (matches === 1 ? "" : "s");
+    }
     updateShowMoreBtn();
     applyProductSeo(shown);
   }
@@ -1066,7 +1045,7 @@
     if (productsView) productsView.hidden = true;
   }
 
-  function showProducts(catKey, subKey) {
+  function showProducts(catKey, subKey, scroll) {
     if (categoryView) categoryView.hidden = true;
     if (productsView) productsView.hidden = false;
     if (searchInput) searchInput.value = "";
@@ -1082,7 +1061,10 @@
        head, so it has to be the branch URL and not the generic /products one. */
     applyBranchSeo(catKey, subKey);
     applyFilters();
-    if (productsView) {
+    /* A filter click jumps to the grid; the first paint must not, or a fresh
+       visit to /products scrolls straight past its own title. Scroll is on by
+       default and only the boot-time call opts out. */
+    if (scroll !== false && productsView) {
       productsView.scrollIntoView({ block: "start", behavior: "smooth" });
     }
   }
@@ -1109,7 +1091,10 @@
   }
 
   /* Reuses the id on products.html's own breadcrumb block when it is there, so
-     a filtered view updates it instead of adding a second BreadcrumbList. */
+     a filtered view updates it instead of adding a second BreadcrumbList.
+     That block is an @graph holding the Organization node as well, so the
+     replacement has to go in as a node and not overwrite the whole script —
+     otherwise the first filter click deletes the site's Organization schema. */
   function seoJsonLd(id, payload) {
     var el = document.getElementById(id);
     if (!el) {
@@ -1117,6 +1102,23 @@
       el.type = "application/ld+json";
       el.id = id;
       document.head.appendChild(el);
+    }
+    var existing = null;
+    try {
+      existing = el.textContent ? JSON.parse(el.textContent) : null;
+    } catch (e) {
+      existing = null;
+    }
+    if (existing && Array.isArray(existing["@graph"])) {
+      var type = payload && payload["@type"];
+      var graph = existing["@graph"];
+      var i = type
+        ? graph.findIndex(function (node) { return node && node["@type"] === type; })
+        : -1;
+      if (i > -1) graph[i] = payload;
+      else graph.push(payload);
+      el.textContent = JSON.stringify(existing);
+      return;
     }
     el.textContent = JSON.stringify(payload);
   }
@@ -1792,7 +1794,7 @@
           '<div class="cart-item">' +
           '<div class="cart-item__img">' +
           (item.image
-            ? '<img src="' + item.image + '"' + imgSrcset(item.image, "72px") + ' alt="' + (item.name || "").replace(/"/g, "&quot;") + '">'
+            ? '<img src="' + escapeHtml(item.image) + '"' + imgSrcset(item.image, "72px") + ' alt="' + escapeHtml(item.name || "") + '">'
             : '<span class="cart-item__ph">&#128722;</span>') +
           "</div>" +
           '<div class="cart-item__info">' +
@@ -1800,11 +1802,11 @@
           '<span class="cart-item__price">' + money(cartUnitPrice(item)) + "</span>" +
           (item.color ? '<span class="cart-item__color">' + escapeHtml(item.color) + "</span>" : "") +
           '<div class="qty">' +
-          '<button class="qty__btn" data-action="minus" data-key="' + item.key + '" aria-label="Decrease">&#8722;</button>' +
+          '<button class="qty__btn" data-action="minus" data-key="' + escapeHtml(item.key) + '" aria-label="Decrease">&#8722;</button>' +
           '<span class="qty__val">' + item.qty + "</span>" +
-          '<button class="qty__btn" data-action="plus" data-key="' + item.key + '" aria-label="Increase">+</button>' +
+          '<button class="qty__btn" data-action="plus" data-key="' + escapeHtml(item.key) + '" aria-label="Increase">+</button>' +
           "</div></div>" +
-          '<button class="cart-item__remove" data-action="remove" data-key="' + item.key + '" aria-label="Remove">&times;</button>' +
+          '<button class="cart-item__remove" data-action="remove" data-key="' + escapeHtml(item.key) + '" aria-label="Remove">&times;</button>' +
           "</div>"
         );
       })
@@ -1878,6 +1880,11 @@
   }
 
   document.addEventListener("click", function (e) {
+    /* cart.js flags the basket click it has already applied. It rebuilds the
+       list inside that handler, so by the time this document-level listener
+       runs the clicked node is detached and closest("#cpItems") can no longer
+       tell where the click came from — the flag is the reliable signal. */
+    if (e.gulnishHandled) return;
     var swatch = e.target.closest(".color-swatch");
     if (swatch) {
       var scope =
@@ -1932,14 +1939,23 @@
       return;
     }
 
+    /* On /cart these buttons belong to cart.js, which saves the change and
+       rebuilds the list itself. This listener sits on document, so it sees the
+       same click after cart.js has already handled it: applying it here too
+       would move the quantity twice and leave the drawer one step behind the
+       stored basket. */
+    var onCartPage = !!(e.target.closest && e.target.closest("#cpItems"));
+
     var removeBtn = e.target.closest('[data-action="remove"]');
     if (removeBtn) {
+      if (onCartPage) return;
       removeFromCart(removeBtn.dataset.key);
       return;
     }
 
     var qtyBtn = e.target.closest(".qty__btn");
     if (qtyBtn) {
+      if (onCartPage) return;
       var item = cart.find(function (i) { return i.key === qtyBtn.dataset.key; });
       if (item) {
         setQty(
@@ -2229,23 +2245,30 @@
     var urlCat = new URLSearchParams(location.search).get("cat");
     var urlSub = new URLSearchParams(location.search).get("sub");
     var urlQ = (new URLSearchParams(location.search).get("q") || "").trim();
-    if (searchInput && urlQ) searchInput.value = urlQ;
     if (productsView) {
-      showProducts(urlCat ? urlCat : "all", urlSub || "all");
+      /* showProducts() clears the box to start a branch from scratch, so the
+         ?q= term has to be restored afterwards — before applyFilters() would
+         otherwise run against an empty term and hand back the whole grid. */
+      showProducts(urlCat ? urlCat : "all", urlSub || "all", false);
       /* The header search overlay and the wishlist both deep-link with
          ?q=<product id>. Treat an exact id hit as "open this product" —
          otherwise the id gets fed to the text filter and the shopper lands
          on an empty grid. Anything else stays a normal text query. */
-      if (urlQ) {
-        var exact = getProducts().find(function (p) { return p.id === urlQ; });
-        if (exact) {
-          if (searchInput) searchInput.value = "";
-          showProduct(exact.id);
-        }
+      var exact = urlQ ? getProducts().find(function (p) { return p.id === urlQ; }) : null;
+      if (exact) {
+        if (searchInput) searchInput.value = "";
+        showProduct(exact.id);
+      } else if (urlQ && searchInput) {
+        searchInput.value = urlQ;
+        applyFilters();
       }
     } else {
       showCategories();
     }
+    /* The drawer is painted before the catalogue arrives so the badge shows at
+       once; repaint it now that the settings (WhatsApp number, delivery note)
+       behind its totals and link are the real ones. */
+    renderCart();
     if (searchInput) searchInput.addEventListener("input", applyFilters);
   }
 

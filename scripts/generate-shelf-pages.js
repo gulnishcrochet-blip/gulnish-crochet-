@@ -215,31 +215,13 @@ function cardHtml(p) {
         `<path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>` +
         `</svg>Add to Cart</button>`;
 
-  const num = GC.shopWhatsApp ? GC.shopWhatsApp() : "";
-  const waBtn =
-    !num || status === "sold out"
-      ? ""
-      : (() => {
-          const msg =
-            `Hi Gulnish Crochet, I'd like to order:\n\n*${p.name}* \u2022 ${priceText(p)}` +
-            `\n\nPhoto: ${ORIGIN}/${String(p.image).replace(/^\/+/, "")}` +
-            `\n\nIs it available?`;
-          return (
-            `<a class="btn btn--wa btn--wa-sm work-card__wa js-card-wa" data-id="${escapeAttr(p.id)}" ` +
-            `href="https://wa.me/${encodeURIComponent(num)}?text=${encodeURIComponent(msg)}" ` +
-            `target="_blank" rel="noopener" aria-label="Order ${escapeAttr(p.name)} on WhatsApp">` +
-            `<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.5 14.1c-.2.7-1.3 1.3-1.9 1.4-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5.1-4.5-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.2-.3.5-.4.7-.4h.5c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .5l-.4.5-.3.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.4.1.6-.1l.9-1c.2-.2.4-.2.6-.1l2 1c.3.1.4.2.5.3 0 .1 0 .6-.2 1.2z"/></svg>` +
-            `Buy on WhatsApp</a>`
-          );
-        })();
-
   return (
     `<article class="work-card" data-category="${escapeAttr(p.category)}"` +
     (p.subcategory ? ` data-subcategory="${escapeAttr(p.subcategory)}"` : "") +
     `>${media}<div class="work-card__body">` +
     `<h3 class="work-card__name"><a href="/product/${escapeAttr(slug)}">${escapeHtml(p.name)}</a></h3>` +
     `<div class="work-card__price">${escapeHtml(priceText(p))}</div>` +
-    `${badge}${addBtn}${waBtn}</div></article>`
+    `${badge}${addBtn}</div></article>`
   );
 }
 

@@ -186,6 +186,7 @@
             <select id="pStatus">
               <option value="in stock">In stock</option>
               <option value="made to order">Made to order (takes about 5 days)</option>
+              <option value="sold out">Sold out (hidden behind a badge, cannot be bought)</option>
             </select>
           </label>
           <label>
@@ -349,10 +350,9 @@
   <script src="js/supabase.js?v=554" defer></script>
   <script src="js/admin.js?v=554" defer></script>
 
-<!-- Storefront modules. Order matters: script.js publishes the cart
-     write (window.addToCart) and the product markup these read. -->
-<script src="js/search.js?v=554" defer></script>
-<script src="js/quickview.js?v=554" defer></script>
+<!-- Storefront modules. Order matters: theme.js builds the shared header and
+     footer the admin page reuses. The shop-only modules (search overlay,
+     quick view) have no markup to hook into here, so they are not loaded. -->
 <script src="js/theme.js?v=554" defer></script>
 <script src="js/sw-register.js?v=554" defer></script>
 </body>

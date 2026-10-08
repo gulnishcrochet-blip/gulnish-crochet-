@@ -140,8 +140,9 @@
     return (GC && GC.products) || [];
   }
   function stockLabel(p) {
-    var s = stockStatusOf(p);
+    var s = stockBadgeStatus(p);
     if (s === "made to order") return "Made to order";
+    if (s === "sold out") return "Sold out";
     return "In stock";
   }
   function getSettings() {
@@ -164,7 +165,19 @@
   function stockStatusOf(p) {
     var s = String((p && p.status) || "").trim().toLowerCase();
     if (s === "made to order" || s === "made-to-order") return "made to order";
+    /* Preserved as-is: the shop treats it as a real state, and normalising it
+       back to "in stock" here would make every sold-out edit unsavable. */
+    if (s === "sold out" || s === "sold-out") return "sold out";
     return "in stock";
+  }
+
+  /* What the list badge shows: the status, plus a tracked count of zero, which
+     the storefront reads as sold out whatever the status text says. Kept out of
+     stockStatusOf() so editing the stock count can never rewrite the status
+     dropdown behind the owner's back. */
+  function stockBadgeStatus(p) {
+    if (p && p.stock != null && parseInt(p.stock, 10) === 0) return "sold out";
+    return stockStatusOf(p);
   }
   function fillCategorySelect(settings, selected) {
     pCategory.innerHTML = "";
@@ -451,7 +464,7 @@
           (displayPrice(p) || "No price") + " &middot; " + escapeHtml(catLabel(p.category)) +
           (sub ? " &middot; " + escapeHtml(sub) : "") +
           " &middot; " + (p.colors || []).length + " color(s)" +
-          '</div><div class="admin-stock stock-' + stockStatusOf(p).replace(" ", "-") + '">' + stockLabel(p) + "</div></div>" +
+          '</div><div class="admin-stock stock-' + stockBadgeStatus(p).replace(" ", "-") + '">' + stockLabel(p) + "</div></div>" +
           '<div class="admin-item__actions">' +
           '<button type="button" data-edit="' + p.id + '">Edit</button>' +
           '<button type="button" class="delete" data-del="' + p.id + '">Delete</button>' +
@@ -1191,6 +1204,15 @@
       return "<li><strong>" + escapeHtml(h.status) + "</strong> &mdash; " + escapeHtml(orderDateTime(h.at)) + (h.note ? " <em>(" + escapeHtml(h.note) + ")</em>" : "") + "</li>";
     }).join("");
 
+    /* The invoice has to carry the same figures as the order screen: subtotal,
+       the keychain delivery charge when there is one, and the grand total the
+       customer was asked to pay. */
+    var invDelivery = parseFloat(o.deliveryCharge) || 0;
+    var invGrand =
+      o.grandTotal != null
+        ? parseFloat(o.grandTotal) || 0
+        : (parseFloat(o.total) || 0) + invDelivery;
+
     var html =
       "<!DOCTYPE html><html><head><meta charset='utf-8'><title>Invoice " + escapeHtml(o.id) + "</title>" +
       "<style>" +
@@ -1231,8 +1253,8 @@
       "<tbody>" + itemsHTML + "</tbody></table>" +
       "<div class='totals'>" +
       "<div><span>Subtotal</span><span>" + money(o.total) + "</span></div>" +
-      "<div><span>Delivery</span><span>Arranged</span></div>" +
-      "<div class='grand'><span>Total</span><span>" + money(o.total) + "</span></div>" +
+      "<div><span>Delivery</span><span>" + (invDelivery ? money(invDelivery) : "Arranged") + "</span></div>" +
+      "<div class='grand'><span>Total</span><span>" + money(invGrand) + "</span></div>" +
       "</div>" +
       "<h2>Payment</h2>" +
       "<div class='meta'>" +
