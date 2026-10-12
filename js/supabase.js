@@ -1180,6 +1180,9 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
     /* A live getter, not a snapshot: `configured` is only decided once the
        SDK has loaded, which is after this object is built. */
     get configured() { return configured; },
+    /* The signed-in user's id (or null). Readable so the admin UI can mark
+       "you" in the admin list. */
+    get userId() { return currentUserId; },
     isAdmin: false,
     /* "admin" | "pending" | "rejected" | "none" | "anonymous" — how the
        current visitor stands with the staff allow-list. */
