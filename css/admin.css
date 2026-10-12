@@ -178,7 +178,7 @@ h1, h2, h3 {
 /* ---------- Jump-to-section tabs ---------- */
 .admin-tabs {
   position: sticky;
-  top: 60px;
+  top: var(--admin-sticky-top, 64px);
   z-index: 40;
   display: flex;
   gap: 0.4rem;
