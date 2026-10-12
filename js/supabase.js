@@ -964,7 +964,7 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
         ]).then(function (results) {
           var prodRes = results[0];
           var setRes = results[1];
-          var isAdminUser = results[2];
+          var userId = results[2];
           if (prodRes.error) throw prodRes.error;
           if (setRes.error) throw setRes.error;
 
@@ -975,27 +975,40 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
             ? normalizeSettings(setRes.data.data)
             : defaultSettings();
 
-          GC.isAdmin = isAdminUser;
+          currentUserId = userId;
 
-          // Only signed-in admins load order data. Anonymous visitors never
-          // receive the order list (RLS + this gate), so no customer data
-          // leaves the database through the pages.
-          if (!isAdminUser) {
+          /* Being signed in is not enough: only the user ids listed in
+             shop_admins may act as admins. A stranger who created an account
+             through the auth API (the site has no sign-up form) is rejected
+             here, and every table policy blocks their writes anyway. */
+          GC.isAdmin = false;
+          if (!userId) {
             orders.length = 0;
             return Promise.resolve();
           }
-          return sb.from("orders").select("*").order("created_at", { ascending: false })
-            .then(function (ordRes) {
-              if (ordRes.error) throw ordRes.error;
-              orders.length = 0;
-              (ordRes.data || []).forEach(function (o) {
-                orders.push(orderFromRow(o));
-              });
-              _setupRealtimeSubscriptions();
-            })
-            .catch(function (e) {
-              console.warn("Could not load orders:", e);
-              orders.length = 0;
+          return sb.from("shop_admins").select("user_id").eq("user_id", userId).maybeSingle()
+            .then(function (memberRes) {
+              if (memberRes.error || !memberRes.data) {
+                orders.length = 0;
+                return Promise.resolve();
+              }
+              GC.isAdmin = true;
+              /* Only signed-in admins load order data. Anonymous visitors never
+                 receive the order list (RLS + this gate), so no customer data
+                 leaves the database through the pages. */
+              return sb.from("orders").select("*").order("created_at", { ascending: false })
+                .then(function (ordRes) {
+                  if (ordRes.error) throw ordRes.error;
+                  orders.length = 0;
+                  (ordRes.data || []).forEach(function (o) {
+                    orders.push(orderFromRow(o));
+                  });
+                  _setupRealtimeSubscriptions();
+                })
+                .catch(function (e) {
+                  console.warn("Could not load orders:", e);
+                  orders.length = 0;
+                });
             });
         }).catch(function (e) {
           console.warn("Could not load shared data:", e);
