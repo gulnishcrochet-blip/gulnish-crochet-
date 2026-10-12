@@ -1343,11 +1343,111 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
       var session = res.data && res.data.session;
       currentUserId = (session && session.user && session.user.id) || null;
       GC.isAdmin = false;
+      GC.accessState = currentUserId ? "none" : "anonymous";
       if (!currentUserId) return false;
       var member = await sb.from("shop_admins").select("user_id")
         .eq("user_id", currentUserId).maybeSingle();
-      GC.isAdmin = !!(member && member.data);
-      return GC.isAdmin;
+      if (member && member.data) {
+        GC.isAdmin = true;
+        GC.accessState = "admin";
+        return true;
+      }
+      /* Signed in, but not on the allow-list yet. Surface whether a request is
+         waiting so the page can say "pending approval" instead of asking them
+         to sign in again. */
+      var req = await sb.from("access_requests").select("status")
+        .eq("user_id", currentUserId).maybeSingle();
+      GC.accessState = req && req.data && req.data.status
+        ? req.data.status
+        : "none";
+      return false;
+    },
+
+    /* ---- staff access (self-registration + approval) ---- */
+    /* Signs the person up with their own email + password, then files a
+       pending access request. Nothing else happens until an admin approves. */
+    signUpStaff: async function (email, password, name) {
+      if (!configured) return { ok: false, error: "not-configured" };
+      var res = await sb.auth.signUp({ email: email, password: password });
+      if (res.error) return { ok: false, error: res.error };
+      var user = res.data && res.data.user;
+      var session = res.data && res.data.session;
+      /* When Supabase has "Confirm email" switched on there is no session
+         yet, so the request row cannot be written (it must be owned by the
+         signed-in user). Tell the caller to ask them to confirm, then sign in
+         and click "Request access" again. */
+      if (!session || !user) return { ok: true, needsConfirm: true };
+      currentUserId = user.id;
+      var row = {
+        user_id: user.id,
+        email: user.email || email,
+        name: name || "",
+        status: "pending"
+      };
+      var ins = await sb.from("access_requests").insert(row);
+      return { ok: !ins.error, error: ins.error, needsConfirm: false };
+    },
+
+    /* Files (or re-opens) the current user's own request. */
+    requestAccess: async function (name) {
+      if (!configured) return { ok: false, error: "not-configured" };
+      var u = await sb.auth.getUser();
+      var user = u && u.data && u.data.user;
+      if (!user) return { ok: false, error: "no-session" };
+      currentUserId = user.id;
+      var row = { name: name || "", email: user.email || "", status: "pending" };
+      var upd = await sb.from("access_requests").update(row).eq("user_id", user.id);
+      if (upd.error) return { ok: false, error: upd.error };
+      if (upd.data && upd.data.length) return { ok: true };
+      var ins = await sb.from("access_requests").insert({
+        user_id: user.id, name: row.name, email: row.email, status: "pending"
+      });
+      return { ok: !ins.error, error: ins.error };
+    },
+
+    listAccessRequests: async function () {
+      if (!configured) return [];
+      var res = await sb.from("access_requests").select("*")
+        .order("created_at", { ascending: false });
+      return res.error ? [] : (res.data || []);
+    },
+
+    approveAccess: async function (userId) {
+      if (!configured) return { ok: false, error: "not-configured" };
+      var ins = await sb.from("shop_admins").insert({ user_id: userId });
+      if (ins.error) return { ok: false, error: ins.error };
+      var upd = await sb.from("access_requests").update({
+        status: "approved",
+        decided_at: new Date().toISOString(),
+        decided_by: currentUserId
+      }).eq("user_id", userId);
+      logAudit("approve", "access_request", userId);
+      return { ok: !upd.error, error: upd.error };
+    },
+
+    rejectAccess: async function (userId) {
+      if (!configured) return { ok: false, error: "not-configured" };
+      var upd = await sb.from("access_requests").update({
+        status: "rejected",
+        decided_at: new Date().toISOString(),
+        decided_by: currentUserId
+      }).eq("user_id", userId);
+      logAudit("reject", "access_request", userId);
+      return { ok: !upd.error, error: upd.error };
+    },
+
+    listAdmins: async function () {
+      if (!configured) return [];
+      var res = await sb.from("shop_admins").select("user_id, created_at")
+        .order("created_at", { ascending: true });
+      return res.error ? [] : (res.data || []);
+    },
+
+    removeAdmin: async function (userId) {
+      if (!configured) return { ok: false, error: "not-configured" };
+      var res = await sb.from("shop_admins").delete().eq("user_id", userId);
+      logAudit("remove_admin", "admin", userId);
+      return { ok: !res.error, error: res.error };
     },
 
     /* ---- realtime callback ---- */
