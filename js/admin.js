@@ -1627,6 +1627,7 @@
     renderList();
     renderOrders();
     renderStaffAccess();
+    showCatalogueBanner();
   }
 
   if (loginBtn) {
