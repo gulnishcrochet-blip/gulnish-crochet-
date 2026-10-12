@@ -1404,6 +1404,7 @@
   async function renderStaffAccess() {
     if (!staffAccessCard || !GC || !GC.configured) return;
     staffAccessCard.hidden = false;
+    if (navStaff) navStaff.hidden = false;
     var reqs = await GC.listAccessRequests();
     var admins = await GC.listAdmins();
     var pending = reqs.filter(function (r) { return r.status === "pending"; });
