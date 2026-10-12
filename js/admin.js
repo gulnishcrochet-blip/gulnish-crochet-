@@ -88,8 +88,20 @@
     });
   }
 
+  /* Pin the section tabs right below the header. Its height changes between
+     desktop/phone and shrinks once the page is scrolled, so measure it rather
+     than hard-code an offset. */
+  function setStickyTop() {
+    if (!header) return;
+    var h = Math.round(header.getBoundingClientRect().height) || 64;
+    document.documentElement.style.setProperty("--admin-sticky-top", h + "px");
+  }
+  setStickyTop();
+  window.addEventListener("resize", setStickyTop, { passive: true });
+
   var onScroll = function () {
     if (header) header.classList.toggle("scrolled", window.scrollY > 30);
+    setStickyTop();
     if (progressBar) {
       var h = document.documentElement.scrollHeight - window.innerHeight;
       progressBar.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + "%";
