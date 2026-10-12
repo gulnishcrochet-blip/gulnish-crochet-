@@ -169,6 +169,84 @@ h1, h2, h3 {
   margin-top: 0.2rem;
 }
 
+.admin-head__text p {
+  color: var(--muted);
+  font-size: 0.92rem;
+  margin-top: 0.25rem;
+}
+
+/* ---------- Jump-to-section tabs ---------- */
+.admin-tabs {
+  position: sticky;
+  top: 60px;
+  z-index: 40;
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+  padding: 0.5rem;
+  margin: 0 -0.5rem 1.6rem;
+  background: rgba(251, 247, 241, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  scrollbar-width: none;
+}
+
+.admin-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.admin-tabs a {
+  flex: 0 0 auto;
+  padding: 0.45rem 0.95rem;
+  border-radius: 999px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.admin-tabs a:hover {
+  color: var(--primary-deep);
+  background: rgba(188, 106, 69, 0.08);
+}
+
+/* Keep anchored sections clear of the two sticky bars (site header + tabs). */
+.admin-card[id] {
+  scroll-margin-top: 128px;
+}
+
+/* ---------- Grouped form sections ---------- */
+.admin-group {
+  border: 0;
+  padding: 0;
+  margin: 0 0 1.4rem;
+}
+
+.admin-group legend {
+  font-family: var(--font-head);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ink);
+  padding: 0;
+  margin-bottom: 0.8rem;
+}
+
+.admin-actions--sticky {
+  position: sticky;
+  bottom: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0), var(--surface) 30%);
+  padding: 0.9rem 0 0.4rem;
+  margin-top: 0.4rem;
+  z-index: 5;
+}
+
+.admin-card .admin-hint + .admin-actions {
+  margin-top: 1rem;
+}
+
 .admin-row {
   display: flex;
   flex-wrap: wrap;
