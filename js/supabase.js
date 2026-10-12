@@ -1181,6 +1181,10 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
        or price_max column, so the admin panel can show the migration notice. */
     get subcategoryColumnMissing() { return subcategoryColumnMissing; },
     get priceMaxColumnMissing() { return priceMaxColumnMissing; },
+    /* "service-role" when config.js holds an unsafe key; otherwise null. */
+    get configError() { return configError; },
+    /* True when connected but the products table has not been seeded yet. */
+    get catalogueEmpty() { return catalogueEmpty; },
 
     /* ---- categories & subcategories ---- */
     categoryKey: function (index) { return "gr" + (index + 1); },
