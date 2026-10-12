@@ -942,12 +942,12 @@
       ? '<img src="' + slides[0] + '"' + imgSrcset((images || []).filter(Boolean)[0], "(max-width: 760px) 44vw, 260px") + ' alt="' + escapeHtml(label) + '" loading="lazy" decoding="async" data-slides="' +
         slides.join("|").replace(/"/g, "&quot;") + '">'
       : "";
-    /* A real link, not a button: the card points at the category's own page, so
-       it works without JavaScript, supports open-in-new-tab, and gives crawlers
-       a followable link off the home page. The subcategory names are left off
-       on purpose - a category with twenty-one branches turned the card into an
-       unreadable wall of text. */
-    var href = (GC && GC.shelfUrl ? GC.shelfUrl(catKey) : "") || "/products?cat=" + encodeURIComponent(catKey);
+    /* A real link, not a button: the card points at the shop page filtered to
+       this category, so it works without JavaScript, supports open-in-new-tab,
+       and gives crawlers a followable link off the home page. The subcategory
+       names are left off on purpose - a category with twenty-one branches
+       turned the card into an unreadable wall of text. */
+    var href = "/products?cat=" + encodeURIComponent(catKey);
     return (
       '<a class="category-card" href="' + escapeHtml(href) + '" data-cat="' + catKey + '">' +
       '<span class="category-card__img"><span class="image-slot">' + (img || photoPendingHTML()) + "</span></span>" +
