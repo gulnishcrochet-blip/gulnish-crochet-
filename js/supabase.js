@@ -1830,6 +1830,13 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
          the base would otherwise be written to memory, localStorage and the
          database and only quietly dropped on the next load. */
       product = normalizeProduct(product);
+      /* If the project is connected but was never seeded, importing now (once,
+         before this save) means the rest of the catalogue lands in the
+         database too — otherwise the shop would suddenly show only this one
+         product on every other device. */
+      if (configured && catalogueEmpty) {
+        await GC.importCatalogue();
+      }
       var existed = products.some(function (p) { return p.id === product.id; });
       var idx = products.findIndex(function (p) { return p.id === product.id; });
       if (idx !== -1) products[idx] = product;
