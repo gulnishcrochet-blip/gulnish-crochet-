@@ -1674,7 +1674,7 @@
       await GC.signOutAdmin();
       adminWrap.hidden = true;
       if (loginOverlay) loginOverlay.hidden = false;
-      if (loginErr) loginErr.hidden = true;
+      showLoginPanel("login");
     });
   }
 
