@@ -38,6 +38,9 @@
   var sb = null;
   var configured = false;
   var sdkPromise = null;
+  /* The signed-in user's id, when Supabase is configured. Used to ask the
+     allow-list "is this person an admin?" and to stamp the audit log. */
+  var currentUserId = null;
 
   function loadSdk() {
     if (!wantsClient || typeof window.supabase !== "undefined") {
