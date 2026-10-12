@@ -31,7 +31,7 @@ const END = "<!-- PRODUCT LINK INDEX END -->";
 const INDEX_PAGE = "shop-index.html";
 const INDEX_TITLE = "Every Piece in the Shop | Gulnish Crochet";
 const INDEX_DESC =
-  "Every handmade crochet piece from Gulnish Crochet, listed by shelf: purses, bags, backpacks, pens, pencil cases, headbands, keychains and bouquets.";
+  "Every handmade crochet piece from Gulnish Crochet, listed by shelf: purses, bags, backpacks, pens, pencil cases, headbands, keychains, bouquets, wearables, home comfort and baby keepsakes.";
 
 const GC = loadCatalog();
 
