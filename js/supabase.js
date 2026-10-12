@@ -1806,13 +1806,14 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
     KEYCHAIN_DELIVERY: 250,
 
     /* True for a cart line that is one of the keychains. Seeded keychains are
-       the Small Gifts -> Keychains branch; the live catalog is consulted
-       rather than the cart copy so an owner-added keychain is recognised too. */
+       the Small Gifts -> Keychains branch and the Gifts & Small Goods ->
+       Keychain branch; the live catalog is consulted rather than the cart copy
+       so an owner-added keychain is recognised too. */
     isKeychainItem: function (item) {
       if (!item) return false;
       var found = (GC.products || []).find(function (x) { return x.id === item.id; });
       var p = found || item;
-      if (found) return p.category === "gr3" && p.subcategory === "sg1";
+      if (found) return (p.category === "gr3" && p.subcategory === "sg1") || (p.category === "gr7" && p.subcategory === "sg1");
       /* No catalog row: fall back to the id, which is how every seeded
          keychain is named. */
       return /^seed_keychains_/.test(String(item.id || ""));
