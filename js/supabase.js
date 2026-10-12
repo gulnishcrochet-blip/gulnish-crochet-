@@ -1052,9 +1052,18 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
     settings = normalizeSettings(lsGet(LOCAL_SETTINGS, null));
     orders.length = 0;
     (lsGet(LOCAL_ORDERS, []) || []).forEach(function (o) { orders.push(o); });
-    try {
-      GC.isAdmin = localStorage.getItem(LOCAL_ADMIN_SESSION) === "1";
-    } catch (e) { GC.isAdmin = false; }
+    /* The local admin flag is a stand-in that only means anything when
+       Supabase is not connected. Once it is, admin rights come from the
+       shop_admins allow-list alone, so a leftover flag can never hand out
+       admin access in configured mode (e.g. when this runs as the offline
+       fallback). */
+    if (!configured) {
+      try {
+        GC.isAdmin = localStorage.getItem(LOCAL_ADMIN_SESSION) === "1";
+      } catch (e) { GC.isAdmin = false; }
+    } else {
+      GC.isAdmin = false;
+    }
   }
 
   /* ---------- Realtime subscriptions ---------- */
