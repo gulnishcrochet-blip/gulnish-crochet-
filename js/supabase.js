@@ -1535,6 +1535,7 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
          the base would otherwise be written to memory, localStorage and the
          database and only quietly dropped on the next load. */
       product = normalizeProduct(product);
+      var existed = products.some(function (p) { return p.id === product.id; });
       var idx = products.findIndex(function (p) { return p.id === product.id; });
       if (idx !== -1) products[idx] = product;
       else products.unshift(product);
