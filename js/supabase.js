@@ -272,8 +272,20 @@ var SEED_PLACEMENT = {
     babyblanket: { category: "gr8", subcategory: "sg4" }
   };
 
-  var ITEM_NAME  = { purses: "Purse", bags: "Bag", gajrays: "Gajray", jewellery: "Jewellery", headbands: "Headband", bouquets: "Bouquet", keychains: "Keychain", geometry: "Pencil Case", pencil: "Pencil" };
-  var BASE_PRICE = { purses: 850, bags: 1500, gajrays: 400, jewellery: 550, headbands: 450, bouquets: 1999, keychains: 350 };
+  var ITEM_NAME  = { purses: "Purse", bags: "Bag", gajrays: "Gajray", jewellery: "Jewellery", headbands: "Headband", bouquets: "Bouquet", keychains: "Keychain", geometry: "Pencil Case", pencil: "Pencil",
+    beanie: "Beanie", cowl: "Cowl", earwarmer: "Earwarmer", headband: "Headband", mittens: "Mittens", cuff: "Cuff", scarflet: "Scarflet", snood: "Snood",
+    scarf: "Scarf", shawl: "Shawl", sweater: "Sweater", cardigan: "Cardigan", poncho: "Poncho", hood: "Hood", neckwarmer: "Neck Warmer", fingerlessgloves: "Fingerless Gloves",
+    wintersocks: "Winter Socks", legwarmers: "Leg Warmers", winterfrock: "Winter Frock", pocketshawl: "Pocket Shawl", catbeanie: "Cat Beanie",
+    cozy: "Cozy", coaster: "Coaster", sleeve: "Sleeve", koozie: "Koozie", trivet: "Trivet", dishcloth: "Dishcloth",
+    keychain: "Keychain", bookmark: "Bookmark", ornament: "Ornament", stocking: "Stocking", scrunchie: "Scrunchie", charm: "Charm",
+    babysweaterset: "Baby Sweater Set", babycap: "Baby Cap", babybooties: "Baby Booties", babyblanket: "Baby Blanket" };
+  var BASE_PRICE = { purses: 850, bags: 1500, gajrays: 400, jewellery: 550, headbands: 450, bouquets: 1999, keychains: 350,
+    beanie: 850, cowl: 900, earwarmer: 600, headband: 450, mittens: 800, cuff: 500, scarflet: 600, snood: 900,
+    scarf: 1200, shawl: 2000, sweater: 2800, cardigan: 3000, poncho: 2200, hood: 1500, neckwarmer: 700, fingerlessgloves: 700,
+    wintersocks: 800, legwarmers: 800, winterfrock: 2500, pocketshawl: 2200, catbeanie: 1000,
+    cozy: 350, coaster: 300, sleeve: 250, koozie: 250, trivet: 400, dishcloth: 350,
+    keychain: 350, bookmark: 300, ornament: 400, stocking: 1500, scrunchie: 250, charm: 300,
+    babysweaterset: 1800, babycap: 700, babybooties: 600, babyblanket: 2000 };
 
   /* Every entry carries the two ends of what the item costs. "price" is the
      published figure and the number the cart adds up to; "priceMax" is the
