@@ -132,7 +132,7 @@ function buildBlock(products, cats) {
     `        <div class="section-head">`,
     `          <span class="section-eyebrow">Browse</span>`,
     `          <h1 class="section-title" id="linkIndexTitle">Every <em>piece in the shop</em></h1>`,
-    `          <p class="section-lead">All ${total} handmade crochet pieces, listed by shelf &mdash; purses, bags, jewellery, keychains, bouquets, headbands and school items.</p>`,
+    `          <p class="section-lead">All ${total} handmade crochet pieces, listed by shelf &mdash; purses, bags, jewellery, keychains, bouquets, headbands, school items, wearables, home comfort and baby keepsakes.</p>`,
     `        </div>`,
     /* The grid ships closed: a shopper sees one short line, and the whole
        index stays in the markup for a crawler to read and follow. */
