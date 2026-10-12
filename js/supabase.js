@@ -1559,6 +1559,12 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
         stock: product.stock != null ? product.stock : null,
         gallery: product.gallery || []
       };
+      /* Who edited it and when, stamped on the row for the admin's reference.
+         Dropped and retried below if an older database has not migrated yet. */
+      if (currentUserId) {
+        row.updated_at = new Date().toISOString();
+        row.updated_by = currentUserId;
+      }
       if (!subcategoryColumnMissing) row.subcategory = product.subcategory || "";
       if (!priceMaxColumnMissing) row.price_max = product.priceMax || 0;
       var res = await sb.from("products").upsert(row, { onConflict: "id" });
@@ -1576,6 +1582,12 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
         delete row.price_max;
         res = await sb.from("products").upsert(row, { onConflict: "id" });
       }
+      if (res.error && isMissingUpdatedColumns(res.error)) {
+        delete row.updated_at;
+        delete row.updated_by;
+        res = await sb.from("products").upsert(row, { onConflict: "id" });
+      }
+      if (!res.error) logAudit(existed ? "update" : "create", "product", product.id);
       return { ok: !res.error, error: res.error };
     },
 
@@ -1587,6 +1599,7 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
         return { ok: true };
       }
       var res = await sb.from("products").delete().eq("id", id);
+      if (!res.error) logAudit("delete", "product", id);
       return { ok: !res.error, error: res.error };
     },
 
