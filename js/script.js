@@ -936,25 +936,26 @@
   var categoryView = document.getElementById("categoryView");
   var productsView = document.getElementById("productsView");
 
-  function categoryCardHTML(label, count, images, catKey, subs) {
+  function categoryCardHTML(label, count, images, catKey) {
     var slides = (images || []).filter(Boolean).map(function (s) { return displayImage(s); });
     var img = slides.length
       ? '<img src="' + slides[0] + '"' + imgSrcset((images || []).filter(Boolean)[0], "(max-width: 760px) 44vw, 260px") + ' alt="' + escapeHtml(label) + '" loading="lazy" decoding="async" data-slides="' +
         slides.join("|").replace(/"/g, "&quot;") + '">'
       : "";
+    /* A real link, not a button: the card points at the category's own page, so
+       it works without JavaScript, supports open-in-new-tab, and gives crawlers
+       a followable link off the home page. The subcategory names are left off
+       on purpose - a category with twenty-one branches turned the card into an
+       unreadable wall of text. */
+    var href = (GC && GC.shelfUrl ? GC.shelfUrl(catKey) : "") || "/products?cat=" + encodeURIComponent(catKey);
     return (
-      '<button class="category-card" type="button" data-cat="' + catKey + '">' +
+      '<a class="category-card" href="' + escapeHtml(href) + '" data-cat="' + catKey + '">' +
       '<span class="category-card__img"><span class="image-slot">' + (img || photoPendingHTML()) + "</span></span>" +
       '<span class="category-card__body">' +
       '<span class="category-card__name">' + escapeHtml(label) + "</span>" +
       '<span class="category-card__count">' + count + " item" + (count === 1 ? "" : "s") + "</span>" +
       "</span>" +
-      ((subs && subs.length)
-        ? '<span class="category-card__subs">' +
-          subs.map(escapeHtml).join('<span class="category-card__subsep" aria-hidden="true">&middot;</span>') +
-          "</span>"
-        : "") +
-      "</button>"
+      "</a>"
     );
   }
 
@@ -1028,8 +1029,7 @@
           label || "Category " + (i + 1),
           items.length,
           imagesRaw,
-          key,
-          subcategoriesOf(key)
+          key
         )
       );
     });
