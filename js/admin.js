@@ -191,6 +191,7 @@
   var catalogueEmptyBanner = document.getElementById("catalogueEmptyBanner");
   var importCatalogueBtn = document.getElementById("importCatalogueBtn");
   var importCatalogueStatus = document.getElementById("importCatalogueStatus");
+  var navStaff = document.getElementById("navStaff");
 
   /* ---------- category select ---------- */
   var pCategory = document.getElementById("pCategory");
