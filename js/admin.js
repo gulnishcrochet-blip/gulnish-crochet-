@@ -159,6 +159,24 @@
   var adminSignOut = document.getElementById("adminSignOut");
   var adminDemoNote = document.getElementById("adminDemoNote");
 
+  /* ---------- staff access refs ---------- */
+  var showSignupWrap = document.getElementById("showSignupWrap");
+  var showSignupBtn = document.getElementById("showSignupBtn");
+  var signupForm = document.getElementById("adminSignupForm");
+  var signupName = document.getElementById("signupName");
+  var signupEmail = document.getElementById("signupEmail");
+  var signupPassword = document.getElementById("signupPassword");
+  var signupBtn = document.getElementById("signupBtn");
+  var signupErr = document.getElementById("signupErr");
+  var signupOk = document.getElementById("signupOk");
+  var cancelSignupBtn = document.getElementById("cancelSignupBtn");
+  var pendingNote = document.getElementById("adminPendingNote");
+  var pendingSignOutBtn = document.getElementById("pendingSignOutBtn");
+  var staffAccessCard = document.getElementById("staffAccessCard");
+  var staffRequestCount = document.getElementById("staffRequestCount");
+  var adminRequests = document.getElementById("adminRequests");
+  var adminAdmins = document.getElementById("adminAdmins");
+
   /* ---------- category select ---------- */
   var pCategory = document.getElementById("pCategory");
   var pSubCategory = document.getElementById("pSubCategory");
