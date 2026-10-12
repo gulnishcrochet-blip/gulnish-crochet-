@@ -1495,13 +1495,12 @@
   document.addEventListener("click", function (e) {
     var catBtn = e.target.closest(".category-card");
     if (catBtn) {
+      /* On the shop page the card filters the grid in place. Everywhere else it
+         is a real link to the category's own page, so let the browser follow it
+         (which keeps middle-click and open-in-new-tab working too). */
       if (productsView) {
+        e.preventDefault();
         showProducts(catBtn.dataset.cat);
-      } else {
-        /* Off the shop page there is no grid to filter, so the card goes
-           straight to that category's own shelf page. */
-        var shelf = GC && GC.shelfUrl ? GC.shelfUrl(catBtn.dataset.cat) : "";
-        location.href = shelf || "/products?cat=" + encodeURIComponent(catBtn.dataset.cat);
       }
       return;
     }
