@@ -326,7 +326,6 @@ h1, h2, h3 {
 }
 
 .admin-login-err {
-  display: none;
   background: var(--danger-light);
   border: 1px solid #f0c4bc;
   color: var(--danger);
@@ -337,6 +336,140 @@ h1, h2, h3 {
 
 .admin-login-err.show {
   display: block;
+}
+
+.admin-login-ok {
+  background: var(--sage-light);
+  border: 1px solid var(--sage);
+  color: #3f5636;
+  font-size: 0.86rem;
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.9rem;
+  text-align: left;
+}
+
+.admin-login-alt {
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+
+.admin-linkbtn {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  font-weight: 700;
+  color: var(--primary-deep);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.admin-linkbtn:hover {
+  color: var(--primary);
+}
+
+.admin-pending {
+  background: var(--gold-light);
+  border: 1px solid var(--gold);
+  border-left-width: 4px;
+  border-radius: var(--radius-sm);
+  padding: 0.9rem 1.1rem;
+  text-align: left;
+  font-size: 0.88rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.admin-subhead {
+  font-size: 1rem;
+  margin: 1.2rem 0 0.6rem;
+}
+
+.admin-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  padding: 0 0.45rem;
+  margin-left: 0.4rem;
+  border-radius: 999px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+.admin-count:empty {
+  display: none;
+}
+
+/* ---------- Staff access ---------- */
+.staff-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.staff-row:last-child {
+  border-bottom: 0;
+}
+
+.staff-who {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+.staff-who strong {
+  font-size: 0.92rem;
+  word-break: break-word;
+}
+
+.staff-who span,
+.staff-who code {
+  font-size: 0.8rem;
+  color: var(--muted);
+  word-break: break-all;
+}
+
+.staff-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  background: var(--bg-soft);
+  color: var(--muted);
+}
+
+.staff-badge--pending {
+  background: var(--gold-light);
+  color: var(--gold-deep);
+}
+
+.staff-badge--approved {
+  background: var(--sage-light);
+  color: #3f5636;
+}
+
+.staff-badge--rejected {
+  background: var(--danger-light);
+  color: var(--danger);
+}
+
+.staff-actions {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
 }
 
 .admin-login-demo {
