@@ -12,15 +12,24 @@
 --     add/edit products, settings or photos. Everyone else is blocked by the
 --     database itself, even if they somehow create an account.
 --   * An audit_log table: every admin action is recorded with who + when.
+--   * A one-time "claim owner" step so you do not have to copy UUIDs by hand.
 --
 -- ORDER OF WORK
+--   0. BEFORE running: change 'CHANGE-THIS-CODE-2026' below to your own secret
+--      code (search for owner_bootstrap_code).
 --   1. Run this file.
---   2. Create a login for yourself (and each employee):
---        Dashboard -> Authentication -> Users -> "Add user" (email + password).
---      Copy each user's UUID.
---   3. Allow them (one line per person):
---        insert into public.shop_admins (user_id) values ('THEIR-UUID');
---   4. Storage bucket "shop-images" is created by this file (public read).
+--   2. Dashboard -> Authentication -> Providers -> Email:
+--        turn "Confirm email" OFF. (Otherwise staff must click a confirmation
+--        email before they can request access — extra steps, more confusion.)
+--   3. Open /admin, sign in as yourself, and when asked enter your bootstrap
+--      code to become the owner. (Or add yourself with the SQL at the bottom.)
+--   4. In /admin, click "Import catalogue" once — that copies the built-in
+--      products into this project. Do this BEFORE sharing the site: a
+--      connected-but-empty project would otherwise show no products.
+--   5. js/config.js needs the Project URL and the **anon (public)** key only.
+--      NEVER put the service_role / secret key there — it would expose the
+--      whole database. The site refuses to start if it detects one.
+--   6. Storage bucket "shop-images" is created by this file (public read).
 -- =============================================================
 
 -- ---------- ADMINS (the allow-list) ----------
