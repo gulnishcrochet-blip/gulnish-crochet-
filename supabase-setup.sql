@@ -5,13 +5,60 @@
 --   Dashboard -> SQL Editor -> New query -> Run
 -- It is safe to run more than once (every statement is guarded).
 --
--- Order of work:
+-- WHAT THIS GIVES YOU
+--   * Products, settings, orders, newsletter, photo storage.
+--   * Real login (Supabase Auth): each person has their own email + password.
+--   * An allow-list table, shop_admins: ONLY the user ids you put in it can
+--     add/edit products, settings or photos. Everyone else is blocked by the
+--     database itself, even if they somehow create an account.
+--   * An audit_log table: every admin action is recorded with who + when.
+--
+-- ORDER OF WORK
 --   1. Run this file.
---   2. Create your admin login: Dashboard -> Authentication -> Users
---      -> "Add user" (email + password). Copy the new user's UUID.
---   3. Fill in the INSERT at the bottom ("admins") with that UUID and run it.
---   4. Storage bucket "shop-images" is created by this file (public).
+--   2. Create a login for yourself (and each employee):
+--        Dashboard -> Authentication -> Users -> "Add user" (email + password).
+--      Copy each user's UUID.
+--   3. Allow them (one line per person):
+--        insert into public.shop_admins (user_id) values ('THEIR-UUID');
+--   4. Storage bucket "shop-images" is created by this file (public read).
 -- =============================================================
+
+-- ---------- ADMINS (the allow-list) ----------
+-- Only user ids listed here may edit products/settings/orders or upload
+-- photos. Put these tables first so the helper below can use it.
+create table if not exists public.shop_admins (
+  user_id    uuid primary key,
+  created_at timestamptz default now()
+);
+
+alter table public.shop_admins enable row level security;
+
+-- A signed-in user may read only their own admin row. This is what lets the
+-- website ask "am I an admin?" without exposing the whole list. The policy
+-- deliberately does NOT look at shop_admins from inside its own rule, which
+-- would make Postgres recurse and fail.
+drop policy if exists "shop_admins: members read" on public.shop_admins;
+drop policy if exists "shop_admins: self read" on public.shop_admins;
+create policy "shop_admins: self read"
+  on public.shop_admins for select
+  to authenticated
+  using (user_id = auth.uid());
+
+grant select on public.shop_admins to authenticated;
+
+-- Helper used by every other policy. SECURITY DEFINER so it can check the
+-- allow-list without tripping over that table's own row-level security.
+create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (select 1 from public.shop_admins where user_id = auth.uid());
+$$;
+
+grant execute on function public.is_admin() to anon, authenticated;
 
 -- ---------- PRODUCTS ----------
 create table if not exists public.products (
@@ -27,7 +74,9 @@ create table if not exists public.products (
   status      text default 'in stock',
   stock       int,
   gallery     jsonb default '[]'::jsonb,
-  created_at  timestamptz default now()
+  created_at  timestamptz default now(),
+  updated_at  timestamptz default now(),
+  updated_by  uuid
 );
 
 -- Backfill columns for an older table.
@@ -37,6 +86,8 @@ alter table public.products add column if not exists keywords    jsonb default '
 alter table public.products add column if not exists status      text default 'in stock';
 alter table public.products add column if not exists stock       int;
 alter table public.products add column if not exists gallery     jsonb default '[]'::jsonb;
+alter table public.products add column if not exists updated_at  timestamptz default now();
+alter table public.products add column if not exists updated_by  uuid;
 
 -- A published top price must sit above the base; anything else is stored as 0.
 alter table public.products drop constraint if exists products_price_max_above_price;
@@ -58,15 +109,19 @@ drop policy if exists "products: admins write" on public.products;
 create policy "products: admins write"
   on public.products for all
   to authenticated
-  using (exists (select 1 from public.shop_admins a where a.user_id = auth.uid()))
-  with check (exists (select 1 from public.shop_admins a where a.user_id = auth.uid()));
+  using (public.is_admin())
+  with check (public.is_admin());
 
 -- ---------- SETTINGS (single row, id = 'app') ----------
 create table if not exists public.settings (
   id         text primary key,
   data       jsonb not null default '{}'::jsonb,
-  updated_at timestamptz default now()
+  updated_at timestamptz default now(),
+  updated_by uuid
 );
+
+alter table public.settings add column if not exists updated_at timestamptz default now();
+alter table public.settings add column if not exists updated_by uuid;
 
 alter table public.settings enable row level security;
 
@@ -80,8 +135,8 @@ drop policy if exists "settings: admins write" on public.settings;
 create policy "settings: admins write"
   on public.settings for all
   to authenticated
-  using (exists (select 1 from public.shop_admins a where a.user_id = auth.uid()))
-  with check (exists (select 1 from public.shop_admins a where a.user_id = auth.uid()));
+  using (public.is_admin())
+  with check (public.is_admin());
 
 -- Bootstrap the row with sane defaults. The app fills in the current eight
 -- categories/subcategories on first load and the admin panel saves them back.
@@ -155,8 +210,8 @@ drop policy if exists "orders: admins all" on public.orders;
 create policy "orders: admins all"
   on public.orders for all
   to authenticated
-  using (exists (select 1 from public.shop_admins a where a.user_id = auth.uid()))
-  with check (exists (select 1 from public.shop_admins a where a.user_id = auth.uid()));
+  using (public.is_admin())
+  with check (public.is_admin());
 
 create or replace function public.get_customer_orders(search text, max_results int default 50)
 returns setof public.orders
@@ -174,21 +229,36 @@ $$;
 
 grant execute on function public.get_customer_orders(text, int) to anon, authenticated;
 
--- ---------- ADMINS ----------
--- Only user ids listed here may edit products/settings/orders or upload photos.
-create table if not exists public.shop_admins (
-  user_id    uuid primary key,
-  created_at timestamptz default now()
+-- ---------- AUDIT LOG ----------
+-- Every admin action the app performs is written here: who (user_id), what
+-- (action + entity + entity_id) and when. Read it in Dashboard -> Table
+-- Editor -> audit_log to see exactly who changed what.
+create table if not exists public.audit_log (
+  id         bigint generated always as identity primary key,
+  user_id    uuid,
+  email      text,
+  action     text not null,
+  entity     text,
+  entity_id  text,
+  created_at timestamptz not null default now()
 );
 
-alter table public.shop_admins enable row level security;
+create index if not exists audit_log_created_at_idx
+  on public.audit_log (created_at desc);
 
-drop policy if exists "shop_admins: members read" on public.shop_admins;
-create policy "shop_admins: members read"
-  on public.shop_admins for select
-  using (exists (select 1 from public.shop_admins a where a.user_id = auth.uid()));
+alter table public.audit_log enable row level security;
 
-grant select on public.shop_admins to anon, authenticated;
+drop policy if exists "audit_log: admins read" on public.audit_log;
+create policy "audit_log: admins read"
+  on public.audit_log for select
+  to authenticated
+  using (public.is_admin());
+
+drop policy if exists "audit_log: admins insert" on public.audit_log;
+create policy "audit_log: admins insert"
+  on public.audit_log for insert
+  to authenticated
+  with check (public.is_admin() and user_id = auth.uid());
 
 -- ---------- NEWSLETTER ----------
 create table if not exists public.newsletter_subscribers (
@@ -238,26 +308,24 @@ drop policy if exists "shop-images: admins insert" on storage.objects;
 create policy "shop-images: admins insert"
   on storage.objects for insert
   to authenticated
-  with check (bucket_id = 'shop-images'
-    and exists (select 1 from public.shop_admins a where a.user_id = auth.uid()));
+  with check (bucket_id = 'shop-images' and public.is_admin());
 
 drop policy if exists "shop-images: admin update" on storage.objects;
 drop policy if exists "shop-images: admins update" on storage.objects;
 create policy "shop-images: admins update"
   on storage.objects for update
   to authenticated
-  using (bucket_id = 'shop-images'
-    and exists (select 1 from public.shop_admins a where a.user_id = auth.uid()));
+  using (bucket_id = 'shop-images' and public.is_admin());
 
 drop policy if exists "shop-images: admin delete" on storage.objects;
 drop policy if exists "shop-images: admins delete" on storage.objects;
 create policy "shop-images: admins delete"
   on storage.objects for delete
   to authenticated
-  using (bucket_id = 'shop-images'
-    and exists (select 1 from public.shop_admins a where a.user_id = auth.uid()));
+  using (bucket_id = 'shop-images' and public.is_admin());
 
 -- =============================================================
--- STEP 3 (after creating your admin user) — replace the UUID and run:
+-- STEP 3 — after creating each user, allow them (replace the UUID):
 -- =============================================================
--- insert into public.shop_admins (user_id) values ('REPLACE-WITH-YOUR-USER-UUID');
+-- insert into public.shop_admins (user_id) values ('REPLACE-WITH-USER-UUID');
+-- (Run it once per person. To remove someone, delete their row here.)
