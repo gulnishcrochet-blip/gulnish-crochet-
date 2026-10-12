@@ -28,8 +28,14 @@
 -- photos. Put these tables first so the helper below can use it.
 create table if not exists public.shop_admins (
   user_id    uuid primary key,
+  email      text,
+  name       text,
   created_at timestamptz default now()
 );
+
+-- Backfill for a table created before email/name existed.
+alter table public.shop_admins add column if not exists email text;
+alter table public.shop_admins add column if not exists name  text;
 
 alter table public.shop_admins enable row level security;
 
