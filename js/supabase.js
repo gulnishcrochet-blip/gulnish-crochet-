@@ -38,6 +38,9 @@
   var sb = null;
   var configured = false;
   var sdkPromise = null;
+  /* Set when js/config.js carries a key that is unsafe to ship to browsers
+     (a service_role / secret key). The client then refuses to start. */
+  var configError = null;
   /* The signed-in user's id, when Supabase is configured. Used to ask the
      allow-list "is this person an admin?" and to stamp the audit log. */
   var currentUserId = null;
