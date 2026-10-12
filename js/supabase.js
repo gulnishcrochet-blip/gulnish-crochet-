@@ -1380,6 +1380,7 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
       if (configured) await sb.auth.signOut();
       currentUserId = null;
       GC.isAdmin = false;
+      GC.accessState = "anonymous";
       try { localStorage.removeItem(LOCAL_ADMIN_SESSION); } catch (e) { /* ignore */ }
       return true;
     },
