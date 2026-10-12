@@ -1272,7 +1272,19 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
     signInAdmin: async function (email, password) {
       if (configured) {
         var res = await sb.auth.signInWithPassword({ email: email, password: password });
-        if (res.error) return false;
+        if (res.error || !res.data || !res.data.user) return false;
+        currentUserId = res.data.user.id;
+        /* A correct password is not enough: the account must be on the
+           allow-list. A valid but unlisted login is signed straight back out,
+           so someone you removed loses access the moment you delete their row. */
+        var member = await sb.from("shop_admins").select("user_id")
+          .eq("user_id", currentUserId).maybeSingle();
+        if (member.error || !member.data) {
+          try { await sb.auth.signOut(); } catch (e) { /* ignore */ }
+          currentUserId = null;
+          GC.isAdmin = false;
+          return false;
+        }
         GC.isAdmin = true;
         return true;
       }
@@ -1283,6 +1295,7 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
 
     signOutAdmin: async function () {
       if (configured) await sb.auth.signOut();
+      currentUserId = null;
       GC.isAdmin = false;
       try { localStorage.removeItem(LOCAL_ADMIN_SESSION); } catch (e) { /* ignore */ }
       return true;
@@ -1296,7 +1309,13 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
         return GC.isAdmin;
       }
       var res = await sb.auth.getSession();
-      GC.isAdmin = !!(res.data && res.data.session);
+      var session = res.data && res.data.session;
+      currentUserId = (session && session.user && session.user.id) || null;
+      GC.isAdmin = false;
+      if (!currentUserId) return false;
+      var member = await sb.from("shop_admins").select("user_id")
+        .eq("user_id", currentUserId).maybeSingle();
+      GC.isAdmin = !!(member && member.data);
       return GC.isAdmin;
     },
 
