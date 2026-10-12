@@ -176,6 +176,21 @@
   var staffRequestCount = document.getElementById("staffRequestCount");
   var adminRequests = document.getElementById("adminRequests");
   var adminAdmins = document.getElementById("adminAdmins");
+  var adminConfigErr = document.getElementById("adminConfigErr");
+  var forgotWrap = document.getElementById("forgotWrap");
+  var forgotBtn = document.getElementById("forgotBtn");
+  var resetNote = document.getElementById("adminResetNote");
+  var resetBackBtn = document.getElementById("resetBackBtn");
+  var claimForm = document.getElementById("adminClaimForm");
+  var claimCode = document.getElementById("claimCode");
+  var claimBtn = document.getElementById("claimBtn");
+  var claimErr = document.getElementById("claimErr");
+  var cancelClaimBtn = document.getElementById("cancelClaimBtn");
+  var rejectedNote = document.getElementById("adminRejectedNote");
+  var rejectedSignOutBtn = document.getElementById("rejectedSignOutBtn");
+  var catalogueEmptyBanner = document.getElementById("catalogueEmptyBanner");
+  var importCatalogueBtn = document.getElementById("importCatalogueBtn");
+  var importCatalogueStatus = document.getElementById("importCatalogueStatus");
 
   /* ---------- category select ---------- */
   var pCategory = document.getElementById("pCategory");
