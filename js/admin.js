@@ -1488,23 +1488,44 @@
     });
   }
 
-  /* ---------- staff self-registration ---------- */
-  function showSignup(on) {
-    if (signupForm) signupForm.hidden = !on;
-    var loginForm = document.getElementById("adminLoginForm");
-    if (loginForm) loginForm.hidden = on;
-    if (showSignupWrap) showSignupWrap.hidden = on;
-    if (on) {
+  /* ---------- login overlay panels ---------- */
+  var loginFormEl = document.getElementById("adminLoginForm");
+  /* Shows exactly one panel of the login overlay (login form, signup, claim,
+     etc.) and hides the rest, so the card never shows two flows at once. */
+  function showLoginPanel(name) {
+    var panels = {
+      login: loginFormEl,
+      signup: signupForm,
+      claim: claimForm,
+      reset: resetNote,
+      pending: pendingNote,
+      rejected: rejectedNote
+    };
+    Object.keys(panels).forEach(function (k) {
+      if (panels[k]) panels[k].hidden = k !== name;
+    });
+    var basics = name === "login";
+    if (forgotWrap) forgotWrap.hidden = !basics;
+    if (showSignupWrap) showSignupWrap.hidden = !basics;
+    if (name === "login" && loginErr) loginErr.hidden = true;
+    if (name === "signup") {
       if (signupErr) signupErr.hidden = true;
       if (signupOk) signupOk.hidden = true;
     }
+    if (name === "claim" && claimErr) claimErr.hidden = true;
   }
 
   if (showSignupBtn) {
-    showSignupBtn.addEventListener("click", function () { showSignup(true); });
+    showSignupBtn.addEventListener("click", function () { showLoginPanel("signup"); });
   }
   if (cancelSignupBtn) {
-    cancelSignupBtn.addEventListener("click", function () { showSignup(false); });
+    cancelSignupBtn.addEventListener("click", function () { showLoginPanel("login"); });
+  }
+  if (cancelClaimBtn) {
+    cancelClaimBtn.addEventListener("click", function () { showLoginPanel("login"); });
+  }
+  if (resetBackBtn) {
+    resetBackBtn.addEventListener("click", function () { showLoginPanel("login"); });
   }
   if (signupForm) {
     signupForm.addEventListener("submit", async function (e) {
@@ -1540,11 +1561,54 @@
       if (signupOk) { signupOk.textContent = "Request sent. You can manage the shop once the owner approves it."; signupOk.hidden = false; }
     });
   }
+  if (claimForm) {
+    claimForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      if (claimErr) claimErr.hidden = true;
+      var code = claimCode ? claimCode.value.trim() : "";
+      if (!code) {
+        if (claimErr) { claimErr.textContent = "Enter the setup code."; claimErr.hidden = false; }
+        return;
+      }
+      claimBtn.disabled = true;
+      var res = await GC.claimAdmin(code);
+      claimBtn.disabled = false;
+      if (res.ok) {
+        if (claimCode) claimCode.value = "";
+        enterAdmin();
+      } else if (claimErr) {
+        claimErr.textContent = (res.error && res.error.message) || "Could not claim owner access.";
+        claimErr.hidden = false;
+      }
+    });
+  }
+  if (forgotBtn) {
+    forgotBtn.addEventListener("click", async function () {
+      var email = loginEmail && loginEmail.value.trim();
+      if (!email) {
+        if (loginErr) { loginErr.textContent = "Enter your email above first, then tap \u201cForgot password\u201d."; loginErr.hidden = false; }
+        return;
+      }
+      forgotBtn.disabled = true;
+      var res = await GC.resetPassword(email);
+      forgotBtn.disabled = false;
+      if (!res.ok && res.error === "not-configured") {
+        if (loginErr) { loginErr.textContent = "Password reset works once Supabase is connected."; loginErr.hidden = false; }
+        return;
+      }
+      showLoginPanel("reset");
+    });
+  }
   if (pendingSignOutBtn) {
     pendingSignOutBtn.addEventListener("click", async function () {
       await GC.signOutAdmin();
-      if (pendingNote) pendingNote.hidden = true;
-      showSignup(false);
+      showLoginPanel("login");
+    });
+  }
+  if (rejectedSignOutBtn) {
+    rejectedSignOutBtn.addEventListener("click", async function () {
+      await GC.signOutAdmin();
+      showLoginPanel("login");
     });
   }
 
