@@ -1496,8 +1496,8 @@
     var catBtn = e.target.closest(".category-card");
     if (catBtn) {
       /* On the shop page the card filters the grid in place. Everywhere else it
-         is a real link to the category's own page, so let the browser follow it
-         (which keeps middle-click and open-in-new-tab working too). */
+         is a real link to the shop page filtered to this category, so let the
+         browser follow it (which keeps middle-click and open-in-new-tab too). */
       if (productsView) {
         e.preventDefault();
         showProducts(catBtn.dataset.cat);
