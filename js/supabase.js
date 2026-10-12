@@ -951,9 +951,10 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
     try {
       if (configured) {
         var sessionPromise = sb.auth.getSession().then(function (s) {
-          return !!(s.data && s.data.session);
+          var session = s && s.data && s.data.session;
+          return (session && session.user && session.user.id) || null;
         }).catch(function () {
-          return false;
+          return null;
         });
 
         return Promise.all([
