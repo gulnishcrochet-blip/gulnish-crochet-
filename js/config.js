@@ -16,8 +16,8 @@
    ========================================================= */
 
 window.GC_CONFIG = {
-  supabaseUrl: "",
-  supabaseAnonKey: "",
+  supabaseUrl: "https://nmdojjoxqfbaxogehsxc.supabase.co",
+  supabaseAnonKey: "PASTE_ANON_KEY_HERE",
 
   // Bucket name used to store uploaded product/category photos.
   // This must match the bucket you create in Supabase Storage.
