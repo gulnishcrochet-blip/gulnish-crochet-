@@ -1010,6 +1010,16 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
           products.length = 0;
           (prodRes.data || []).forEach(function (p) { products.push(normalizeProduct(p)); });
 
+          /* Connected but empty: the catalogue has not been imported into this
+             project yet. Seed it in memory so shoppers still see the shop and
+             the owner has a full working set to import, and flag it so the
+             admin page can offer the one-click import. */
+          catalogueEmpty = false;
+          if (products.length === 0) {
+            catalogueEmpty = true;
+            defaultProducts().forEach(function (p) { products.push(normalizeProduct(p)); });
+          }
+
           settings = setRes.data && setRes.data.data
             ? normalizeSettings(setRes.data.data)
             : defaultSettings();
