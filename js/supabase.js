@@ -1617,9 +1617,21 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
         return { ok: true };
       }
       var res = await sb.from("settings").upsert(
-        { id: SETTINGS_ID, data: settings },
+        {
+          id: SETTINGS_ID,
+          data: settings,
+          updated_at: new Date().toISOString(),
+          updated_by: currentUserId || null
+        },
         { onConflict: "id" }
       );
+      if (res.error && isMissingUpdatedColumns(res.error)) {
+        res = await sb.from("settings").upsert(
+          { id: SETTINGS_ID, data: settings },
+          { onConflict: "id" }
+        );
+      }
+      if (!res.error) logAudit("update", "settings", SETTINGS_ID);
       return { ok: !res.error, error: res.error };
     },
 
