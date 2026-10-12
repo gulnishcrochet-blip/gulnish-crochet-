@@ -1416,10 +1416,16 @@
       adminAdmins.innerHTML = admins.length
         ? admins
             .map(function (a) {
+              var label = a.name ? escapeHtml(a.name) : escapeHtml(a.email || a.user_id);
+              var sub = a.email || a.user_id;
+              var isSelf = a.user_id && GC.userId && a.user_id === GC.userId;
               return (
-                '<div class="staff-row"><div class="staff-who"><code>' +
-                escapeHtml(a.user_id) +
-                '</code></div><div class="staff-actions">' +
+                '<div class="staff-row"><div class="staff-who"><strong>' +
+                label +
+                (isSelf ? " (you)" : "") +
+                "</strong><span>" +
+                escapeHtml(sub) +
+                '</span></div><div class="staff-actions">' +
                 '<button class="btn btn--ghost btn--small" type="button" data-remove="' +
                 escapeHtml(a.user_id) +
                 '">Remove</button></div></div>'
@@ -1436,8 +1442,12 @@
       if (!t) return;
       var id = t.getAttribute("data-approve") || t.getAttribute("data-reject");
       t.disabled = true;
-      if (t.hasAttribute("data-approve")) await GC.approveAccess(id);
-      else await GC.rejectAccess(id);
+      var res = t.hasAttribute("data-approve")
+        ? await GC.approveAccess(id)
+        : await GC.rejectAccess(id);
+      if (res && !res.ok) {
+        window.alert((res.error && res.error.message) || "Something went wrong. Please try again.");
+      }
       renderStaffAccess();
     });
   }
@@ -1447,8 +1457,34 @@
       if (!t) return;
       if (!window.confirm("Remove this admin? They lose access immediately.")) return;
       t.disabled = true;
-      await GC.removeAdmin(t.getAttribute("data-remove"));
+      var res = await GC.removeAdmin(t.getAttribute("data-remove"));
+      if (res && !res.ok) {
+        window.alert((res.error && res.error.message) || "Something went wrong. Please try again.");
+      }
       renderStaffAccess();
+    });
+  }
+
+  /* ---------- catalogue import ---------- */
+  function showCatalogueBanner() {
+    if (!catalogueEmptyBanner) return;
+    catalogueEmptyBanner.hidden = !(GC && GC.configured && GC.catalogueEmpty);
+  }
+
+  if (importCatalogueBtn) {
+    importCatalogueBtn.addEventListener("click", async function () {
+      importCatalogueBtn.disabled = true;
+      if (importCatalogueStatus) importCatalogueStatus.textContent = "Importing\u2026";
+      var res = await GC.importCatalogue();
+      importCatalogueBtn.disabled = false;
+      if (res.ok) {
+        if (importCatalogueStatus) importCatalogueStatus.textContent = "Imported " + res.inserted + " products.";
+        showCatalogueBanner();
+        renderList();
+      } else if (importCatalogueStatus) {
+        importCatalogueStatus.textContent =
+          (res.error && res.error.message) || "Import failed. Please try again.";
+      }
     });
   }
 
