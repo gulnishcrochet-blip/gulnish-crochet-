@@ -1571,6 +1571,14 @@
         adminWrap.hidden = true;
         if (loginOverlay) loginOverlay.hidden = false;
         if (GC && !GC.configured && adminDemoNote) adminDemoNote.hidden = false;
+        /* Signed in but waiting on approval: say so instead of showing the
+           sign-in form again (which would look like their sign-in failed). */
+        if (GC && GC.configured && GC.accessState === "pending") {
+          if (pendingNote) pendingNote.hidden = false;
+          var lf = document.getElementById("adminLoginForm");
+          if (lf) lf.hidden = true;
+          if (showSignupWrap) showSignupWrap.hidden = true;
+        }
       }
     });
   }
