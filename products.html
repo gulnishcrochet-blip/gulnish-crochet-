@@ -716,6 +716,31 @@
           <p class="section-lead">Every piece is handmade to order &mdash; browse, search or filter below.</p>
         </div>
 
+        <!-- ============ ADMIN ONLY: quick-add product images (never shown to customers) ============ -->
+        <section class="admin-add" id="adminAddImages" hidden aria-label="Add product images">
+          <div class="admin-add__head">
+            <span class="section-eyebrow">Admin</span>
+            <h2 class="section-title">Add product <em>images</em></h2>
+            <p class="section-lead">Pick photos, give each one a name and price, then save &mdash; they appear in the shop right away.</p>
+          </div>
+          <p class="admin-add__note" id="adminAddNote" hidden></p>
+          <div class="admin-add__bar">
+            <label class="btn btn--ghost btn--small" for="adminImageFiles">Choose photos</label>
+            <input type="file" id="adminImageFiles" accept="image/*" multiple hidden>
+            <label class="admin-add__field">Category
+              <select class="select" id="adminImageCategory"></select>
+            </label>
+            <label class="admin-add__field">Shelf
+              <select class="select" id="adminImageSub"></select>
+            </label>
+          </div>
+          <div class="admin-add__list" id="adminImageList"></div>
+          <div class="admin-add__actions">
+            <button class="btn btn--small" type="button" id="adminImageSave" hidden>Save all</button>
+            <span class="admin-add__status" id="adminImageStatus" role="status" aria-live="polite"></span>
+          </div>
+        </section>
+
         <!-- Products list -->
         <div id="productsView" class="shop-view">
           <div class="products-topbar">
