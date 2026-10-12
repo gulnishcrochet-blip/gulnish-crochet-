@@ -66,6 +66,71 @@ $$;
 
 grant execute on function public.is_admin() to anon, authenticated;
 
+-- Is the allow-list still empty? Lets a brand-new project offer a one-time
+-- "claim owner" step without exposing the list itself.
+create or replace function public.admin_exists()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (select 1 from public.shop_admins);
+$$;
+
+grant execute on function public.admin_exists() to anon, authenticated;
+
+-- ---------- OWNER BOOTSTRAP ----------
+-- CHANGE THE CODE BELOW BEFORE RUNNING THIS FILE (keep it secret). On a fresh
+-- project, the first signed-in person to enter this code becomes the owner.
+-- It stops working the moment any admin exists, so it can never hijack a live
+-- shop. (The Dashboard insert at the bottom of this file still works too.)
+create table if not exists public.site_config (
+  key   text primary key,
+  value text
+);
+
+alter table public.site_config enable row level security;
+-- No policies on purpose: unreadable from the website; only the
+-- SECURITY DEFINER function below can see it.
+
+insert into public.site_config (key, value)
+values ('owner_bootstrap_code', 'CHANGE-THIS-CODE-2026')
+on conflict (key) do nothing;
+
+create or replace function public.claim_admin(p_code text)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  ok boolean;
+begin
+  if auth.uid() is null then
+    return false;
+  end if;
+  if exists (select 1 from public.shop_admins) then
+    return false;                      -- already owned; never hand it out again
+  end if;
+  select (value = p_code) into ok from public.site_config
+    where key = 'owner_bootstrap_code';
+  if ok is not true then
+    return false;
+  end if;
+  insert into public.shop_admins (user_id, email, name)
+  values (
+    auth.uid(),
+    (select email from auth.users where id = auth.uid()),
+    'Owner'
+  )
+  on conflict (user_id) do nothing;
+  return true;
+end;
+$$;
+
+grant execute on function public.claim_admin(text) to authenticated;
+
 -- Existing admins may read the whole list, add or remove people. (Nobody can
 -- self-promote: the very first admin must be added with the SQL at the bottom
 -- of this file, from the Dashboard.)
