@@ -489,7 +489,10 @@ create policy "shop-images: admins delete"
   using (bucket_id = 'shop-images' and public.is_admin());
 
 -- =============================================================
--- STEP 3 — after creating each user, allow them (replace the UUID):
+-- MANUAL ALTERNATIVE (if you prefer the Dashboard over the claim step)
 -- =============================================================
--- insert into public.shop_admins (user_id) values ('REPLACE-WITH-USER-UUID');
--- (Run it once per person. To remove someone, delete their row here.)
+-- 1. Dashboard -> Authentication -> Users -> "Add user" (email + password).
+-- 2. Copy their UUID and allow them (add email/name for a readable list):
+--      insert into public.shop_admins (user_id, email, name)
+--      values ('THEIR-UUID', 'their@email.com', 'Their name');
+--    (Run it once per person. To remove someone, delete their row here.)
