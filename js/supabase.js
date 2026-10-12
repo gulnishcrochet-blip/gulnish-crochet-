@@ -1135,6 +1135,9 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
        SDK has loaded, which is after this object is built. */
     get configured() { return configured; },
     isAdmin: false,
+    /* "admin" | "pending" | "rejected" | "none" | "anonymous" — how the
+       current visitor stands with the staff allow-list. */
+    accessState: "anonymous",
     get products() { return products; },
     get settings() { return settings; },
     get orders() { return orders; },
