@@ -1417,45 +1417,66 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
     },
 
     /* ---- staff access (self-registration + approval) ---- */
-    /* Signs the person up with their own email + password, then files a
-       pending access request. Nothing else happens until an admin approves. */
+    /* Creates the person's own login, then files a pending request. Nothing
+       else happens until an admin approves it. */
     signUpStaff: async function (email, password, name) {
       if (!configured) return { ok: false, error: "not-configured" };
       var res = await sb.auth.signUp({ email: email, password: password });
       if (res.error) return { ok: false, error: res.error };
       var user = res.data && res.data.user;
       var session = res.data && res.data.session;
-      /* When Supabase has "Confirm email" switched on there is no session
-         yet, so the request row cannot be written (it must be owned by the
-         signed-in user). Tell the caller to ask them to confirm, then sign in
-         and click "Request access" again. */
-      if (!session || !user) return { ok: true, needsConfirm: true };
+      /* Supabase returns a user with an empty identities list (and no error)
+         when the email is already registered — on purpose, so nobody can
+         probe which emails exist. Say so plainly so they sign in instead of
+         waiting for an email that will never arrive. */
+      if (user && Array.isArray(user.identities) && user.identities.length === 0) {
+        return { ok: false, error: { message: "That email already has an account — please sign in instead." } };
+      }
+      /* "Confirm email" on => no session yet, so the pending row (which must
+         be owned by the signed-in user) cannot be written. Ask them to
+         confirm, then sign in and request access. */
+      if (!session || !user) {
+        try { await sb.auth.resend({ type: "signup", email: email }); } catch (e) { /* ignore */ }
+        return { ok: true, needsConfirm: true };
+      }
       currentUserId = user.id;
-      var row = {
+      GC.accessState = "pending";
+      var ins = await sb.from("access_requests").upsert({
         user_id: user.id,
         email: user.email || email,
         name: name || "",
-        status: "pending"
-      };
-      var ins = await sb.from("access_requests").insert(row);
+        status: "pending",
+        decided_at: null,
+        decided_by: null
+      }, { onConflict: "user_id" });
       return { ok: !ins.error, error: ins.error, needsConfirm: false };
     },
 
-    /* Files (or re-opens) the current user's own request. */
+    /* Files (or re-opens) the current user's own request. Safe to call
+       repeatedly: an already-pending request just stays pending. */
     requestAccess: async function (name) {
       if (!configured) return { ok: false, error: "not-configured" };
       var u = await sb.auth.getUser();
       var user = u && u.data && u.data.user;
-      if (!user) return { ok: false, error: "no-session" };
+      if (!user) return { ok: false, error: { message: "Please sign in first." } };
       currentUserId = user.id;
-      var row = { name: name || "", email: user.email || "", status: "pending" };
-      var upd = await sb.from("access_requests").update(row).eq("user_id", user.id);
-      if (upd.error) return { ok: false, error: upd.error };
-      if (upd.data && upd.data.length) return { ok: true };
+      var existing = await sb.from("access_requests").select("status")
+        .eq("user_id", user.id).maybeSingle();
+      if (existing && existing.data) {
+        if (existing.data.status === "approved") { GC.accessState = "approved"; return { ok: true, state: "approved" }; }
+        if (existing.data.status === "pending") { GC.accessState = "pending"; return { ok: true, state: "pending" }; }
+        /* rejected -> let them ask again (the update below needs status rejected) */
+      }
+      var upd = await sb.from("access_requests").update({
+        name: name || "", email: user.email || "", status: "pending",
+        decided_at: null, decided_by: null
+      }).eq("user_id", user.id);
+      if (!upd.error && upd.data && upd.data.length) { GC.accessState = "pending"; return { ok: true, state: "pending" }; }
       var ins = await sb.from("access_requests").insert({
-        user_id: user.id, name: row.name, email: row.email, status: "pending"
+        user_id: user.id, name: name || "", email: user.email || "", status: "pending"
       });
-      return { ok: !ins.error, error: ins.error };
+      if (!ins.error) GC.accessState = "pending";
+      return { ok: !ins.error, error: ins.error, state: "pending" };
     },
 
     listAccessRequests: async function () {
@@ -1465,17 +1486,30 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
       return res.error ? [] : (res.data || []);
     },
 
+    /* Adds the user to the allow-list and marks the request approved. Copies
+       the email/name onto shop_admins so the admin list stays readable. */
     approveAccess: async function (userId) {
       if (!configured) return { ok: false, error: "not-configured" };
-      var ins = await sb.from("shop_admins").insert({ user_id: userId });
-      if (ins.error) return { ok: false, error: ins.error };
-      var upd = await sb.from("access_requests").update({
+      var already = await sb.from("shop_admins").select("user_id")
+        .eq("user_id", userId).maybeSingle();
+      if (!(already && already.data)) {
+        var req = await sb.from("access_requests").select("email, name")
+          .eq("user_id", userId).maybeSingle();
+        var row = { user_id: userId };
+        if (req && req.data) { row.email = req.data.email || null; row.name = req.data.name || null; }
+        var ins = await sb.from("shop_admins").insert(row);
+        if (ins.error && isMissingColumn(ins.error, "email")) {
+          ins = await sb.from("shop_admins").insert({ user_id: userId });
+        }
+        if (ins.error) return { ok: false, error: ins.error };
+      }
+      await sb.from("access_requests").update({
         status: "approved",
         decided_at: new Date().toISOString(),
         decided_by: currentUserId
       }).eq("user_id", userId);
       logAudit("approve", "access_request", userId);
-      return { ok: !upd.error, error: upd.error };
+      return { ok: true };
     },
 
     rejectAccess: async function (userId) {
@@ -1491,16 +1525,109 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
 
     listAdmins: async function () {
       if (!configured) return [];
-      var res = await sb.from("shop_admins").select("user_id, created_at")
+      var res = await sb.from("shop_admins").select("user_id, email, name, created_at")
         .order("created_at", { ascending: true });
+      if (res.error && isMissingColumn(res.error, "email")) {
+        res = await sb.from("shop_admins").select("user_id, created_at")
+          .order("created_at", { ascending: true });
+      }
       return res.error ? [] : (res.data || []);
     },
 
+    /* Removes someone from the allow-list. Refuses to remove yourself or the
+       last remaining admin, so the shop can never be locked out. */
     removeAdmin: async function (userId) {
       if (!configured) return { ok: false, error: "not-configured" };
+      if (userId === currentUserId) {
+        return { ok: false, error: { message: "You cannot remove your own access." } };
+      }
+      var admins = await GC.listAdmins();
+      if (admins.length <= 1) {
+        return { ok: false, error: { message: "At least one admin must remain." } };
+      }
       var res = await sb.from("shop_admins").delete().eq("user_id", userId);
       logAudit("remove_admin", "admin", userId);
       return { ok: !res.error, error: res.error };
+    },
+
+    /* True when the allow-list has nobody in it yet (fresh project). Used to
+       offer the one-time owner bootstrap; safe to call without being admin. */
+    adminExists: async function () {
+      if (!configured) return false;
+      var res = await sb.rpc("admin_exists");
+      return !res.error && !!res.data;
+    },
+
+    /* One-time owner bootstrap: the first person to supply the setup code
+       (changed in supabase-setup.sql) claims ownership. Fails once any admin
+       exists, so it cannot be used to hijack a live shop. */
+    claimAdmin: async function (code) {
+      if (!configured) return { ok: false, error: "not-configured" };
+      var res = await sb.rpc("claim_admin", { p_code: code || "" });
+      if (res.error) return { ok: false, error: res.error };
+      if (!res.data) return { ok: false, error: { message: "Wrong setup code, or an admin already exists." } };
+      var s = await sb.auth.getSession();
+      currentUserId = (s.data && s.data.session && s.data.session.user && s.data.session.user.id) || currentUserId;
+      GC.isAdmin = true;
+      GC.accessState = "admin";
+      logAudit("claim", "admin", currentUserId);
+      return { ok: true };
+    },
+
+    /* Emails a password-reset link (Supabase's built-in mailer). */
+    resetPassword: async function (email) {
+      if (!configured) return { ok: false, error: "not-configured" };
+      var res = await sb.auth.resetPasswordForEmail(email);
+      return { ok: !res.error, error: res.error };
+    },
+
+    /* ---- catalogue import ---- */
+    /* Copies the built-in catalogue into a freshly connected project. Without
+       it a new project shows the catalogue from memory while every write goes
+       to an empty table. Admin-only; safe to run again (upsert by id). */
+    importCatalogue: async function () {
+      if (!configured) return { ok: false, error: "not-configured" };
+      if (!GC.isAdmin) return { ok: false, error: { message: "Only an admin can import the catalogue." } };
+      var rows = defaultProducts().map(function (product) {
+        product = normalizeProduct(product);
+        var row = {
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          price_max: product.priceMax || 0,
+          category: product.category,
+          subcategory: product.subcategory || "",
+          image: product.image || "",
+          keywords: product.keywords || [],
+          colors: product.colors || [],
+          status: product.status || "in stock",
+          stock: product.stock != null ? product.stock : null,
+          gallery: product.gallery || []
+        };
+        if (currentUserId) { row.updated_at = new Date().toISOString(); row.updated_by = currentUserId; }
+        return row;
+      });
+      var done = 0;
+      for (var i = 0; i < rows.length; i += 100) {
+        var chunk = rows.slice(i, i + 100);
+        var res = await sb.from("products").upsert(chunk, { onConflict: "id" });
+        if (res.error) return { ok: false, error: res.error, inserted: done };
+        done += chunk.length;
+      }
+      try {
+        await sb.from("settings").upsert(
+          {
+            id: SETTINGS_ID,
+            data: settings || defaultSettings(),
+            updated_at: new Date().toISOString(),
+            updated_by: currentUserId || null
+          },
+          { onConflict: "id" }
+        );
+      } catch (e) { /* non-fatal: settings already have defaults */ }
+      catalogueEmpty = false;
+      logAudit("import", "catalogue", String(done));
+      return { ok: true, inserted: done };
     },
 
     /* ---- realtime callback ---- */
