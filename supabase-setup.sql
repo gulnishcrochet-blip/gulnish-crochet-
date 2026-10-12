@@ -60,6 +60,90 @@ $$;
 
 grant execute on function public.is_admin() to anon, authenticated;
 
+-- Existing admins may read the whole list, add or remove people. (Nobody can
+-- self-promote: the very first admin must be added with the SQL at the bottom
+-- of this file, from the Dashboard.)
+drop policy if exists "shop_admins: admins read" on public.shop_admins;
+create policy "shop_admins: admins read"
+  on public.shop_admins for select
+  to authenticated
+  using (public.is_admin());
+
+drop policy if exists "shop_admins: admins insert" on public.shop_admins;
+create policy "shop_admins: admins insert"
+  on public.shop_admins for insert
+  to authenticated
+  with check (public.is_admin());
+
+drop policy if exists "shop_admins: admins delete" on public.shop_admins;
+create policy "shop_admins: admins delete"
+  on public.shop_admins for delete
+  to authenticated
+  using (public.is_admin());
+
+-- ---------- ACCESS REQUESTS (staff self-registration) ----------
+-- Optional flow: an employee signs up with their own email + password, which
+-- writes a "pending" row here. Nothing happens until an admin approves it
+-- (which adds the user to shop_admins). Until then the user has no access at
+-- all — the database enforces it.
+create table if not exists public.access_requests (
+  user_id    uuid primary key references auth.users(id) on delete cascade,
+  email      text,
+  name       text,
+  status     text not null default 'pending'
+             check (status in ('pending', 'approved', 'rejected')),
+  created_at timestamptz not null default now(),
+  decided_at timestamptz,
+  decided_by uuid
+);
+
+create index if not exists access_requests_status_idx
+  on public.access_requests (status, created_at desc);
+
+alter table public.access_requests enable row level security;
+
+-- A signed-in user may create exactly one pending request for themselves.
+drop policy if exists "access_requests: self insert" on public.access_requests;
+create policy "access_requests: self insert"
+  on public.access_requests for insert
+  to authenticated
+  with check (user_id = auth.uid() and status = 'pending');
+
+-- ...and read their own, so the page can show "pending approval".
+drop policy if exists "access_requests: self read" on public.access_requests;
+create policy "access_requests: self read"
+  on public.access_requests for select
+  to authenticated
+  using (user_id = auth.uid());
+
+-- A signed-in user may also re-open their own request after a rejection.
+drop policy if exists "access_requests: self reopen" on public.access_requests;
+create policy "access_requests: self reopen"
+  on public.access_requests for update
+  to authenticated
+  using (user_id = auth.uid() and status = 'rejected')
+  with check (user_id = auth.uid() and status = 'pending');
+
+-- Admins can read every request and approve / reject.
+drop policy if exists "access_requests: admins read" on public.access_requests;
+create policy "access_requests: admins read"
+  on public.access_requests for select
+  to authenticated
+  using (public.is_admin());
+
+drop policy if exists "access_requests: admins update" on public.access_requests;
+create policy "access_requests: admins update"
+  on public.access_requests for update
+  to authenticated
+  using (public.is_admin())
+  with check (public.is_admin());
+
+drop policy if exists "access_requests: admins delete" on public.access_requests;
+create policy "access_requests: admins delete"
+  on public.access_requests for delete
+  to authenticated
+  using (public.is_admin());
+
 -- ---------- PRODUCTS ----------
 create table if not exists public.products (
   id          text primary key,
