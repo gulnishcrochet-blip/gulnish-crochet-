@@ -126,6 +126,10 @@
   /* Same story for the two orders columns added with the keychain delivery
      charge: an unmigrated database rejects the whole order upsert. */
   var orderDeliveryColumnMissing = false;
+  /* True when Supabase is connected but the products table is empty — i.e.
+     the catalogue was never imported. Seeded in memory so the shop still
+     looks right, and drives the admin "Import catalogue" prompt. */
+  var catalogueEmpty = false;
   function isMissingColumn(err, column) {
     if (!err) return false;
     var text = [err.code, err.message, err.details, err.hint]
