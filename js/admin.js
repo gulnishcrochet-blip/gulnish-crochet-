@@ -1680,21 +1680,35 @@
 
   /* ---------- init ---------- */
   function init() {
+    /* An unsafe key (service_role) in config.js: the client refuses to start.
+       Say so loudly instead of pretending the login is broken. */
+    if (GC && GC.configError === "service-role" && adminConfigErr) {
+      adminConfigErr.textContent =
+        "js/config.js has a service_role/secret key, which is unsafe. Replace it with the anon (public) key — the secret key would expose the whole database.";
+      adminConfigErr.hidden = false;
+    }
     GC.checkAdminSession().then(function (isAdmin) {
       if (isAdmin) {
         enterAdmin();
+        return;
+      }
+      adminWrap.hidden = true;
+      if (loginOverlay) loginOverlay.hidden = false;
+      if (GC && !GC.configured && adminDemoNote) adminDemoNote.hidden = false;
+
+      var state = GC ? GC.accessState : "anonymous";
+      if (GC && GC.configured && state === "pending") {
+        showLoginPanel("pending");
+      } else if (GC && GC.configured && state === "rejected") {
+        showLoginPanel("rejected");
+      } else if (GC && GC.configured && state !== "anonymous") {
+        /* Signed in but not on the allow-list: offer the one-time owner
+           setup only on a project that has no admin at all yet. */
+        GC.adminExists().then(function (exists) {
+          showLoginPanel(exists ? "login" : "claim");
+        });
       } else {
-        adminWrap.hidden = true;
-        if (loginOverlay) loginOverlay.hidden = false;
-        if (GC && !GC.configured && adminDemoNote) adminDemoNote.hidden = false;
-        /* Signed in but waiting on approval: say so instead of showing the
-           sign-in form again (which would look like their sign-in failed). */
-        if (GC && GC.configured && GC.accessState === "pending") {
-          if (pendingNote) pendingNote.hidden = false;
-          var lf = document.getElementById("adminLoginForm");
-          if (lf) lf.hidden = true;
-          if (showSignupWrap) showSignupWrap.hidden = true;
-        }
+        showLoginPanel("login");
       }
     });
   }
