@@ -215,7 +215,14 @@ h1, h2, h3 {
 
 /* Keep anchored sections clear of the two sticky bars (site header + tabs). */
 .admin-card[id] {
-  scroll-margin-top: 128px;
+  scroll-margin-top: calc(var(--admin-sticky-top, 64px) + 64px);
+}
+
+/* The product list: stacked cards with breathing room. */
+#productList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
 }
 
 /* ---------- Grouped form sections ---------- */
