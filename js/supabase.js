@@ -114,6 +114,9 @@
   function isMissingOrderDeliveryColumns(err) {
     return isMissingColumn(err, "delivery_charge") || isMissingColumn(err, "grand_total");
   }
+  function isMissingUpdatedColumns(err) {
+    return isMissingColumn(err, "updated_at") || isMissingColumn(err, "updated_by");
+  }
 
   /* ---------- default settings (mirrors original) ---------- */
 
