@@ -17,7 +17,7 @@
 
   /* Bump LOCAL_PRODUCTS version whenever the seed catalog changes so
      returning visitors' browsers re-sync products (offline/localStorage mode). */
-  var LOCAL_PRODUCTS = "gulnish-products-v68";
+  var LOCAL_PRODUCTS = "gulnish-products-v69";
   var LOCAL_SETTINGS = "gulnish-settings-v2";
   var LOCAL_ORDERS = "gulnish-orders";
   var LOCAL_ADMIN_SESSION = "gulnish-admin-session";
@@ -120,8 +120,8 @@
      key moves, so TAXONOMY_VERSION below is how a layout change tells saved
      settings (localStorage or the settings table) to adopt the new shape
      instead of keeping names that now sit on the wrong products. */
-  var DEFAULT_COUNT = 4;
-  var DEFAULT_NAMES = ["Purses", "Wedding Gift", "Small Gifts", "School Items"];
+  var DEFAULT_COUNT = 8;
+  var DEFAULT_NAMES = ["Purses", "Wedding Gift", "Small Gifts", "School Items", "Wearables & Accessories", "Home & Dining", "Gifts & Small Goods", "Baby Collection"];
 
   /* Subcategories are positional inside their parent, so the key is "sg" +
      (index + 1) and is only ever read alongside the product's own category.
@@ -130,13 +130,17 @@
     1: ["Purses"],
     2: ["Jewellery", "Bouquet", "Gajrays"],
     3: ["Keychains", "Headband"],
-    4: ["Bags", "Pencil Case", "Pencil"]
+    4: ["Bags", "Pencil Case", "Pencil"],
+    5: ["Beanie", "Cowl", "Earwarmer", "Headband", "Mittens", "Cuff", "Scarflet", "Snood", "Scarf", "Shawl", "Sweater", "Cardigan", "Poncho", "Hood", "Neck Warmer", "Fingerless Gloves", "Winter Socks", "Leg Warmers", "Winter Frock", "Pocket Shawl", "Cat Beanie"],
+    6: ["Cozy", "Coaster", "Sleeve", "Koozie", "Trivet", "Dishcloth"],
+    7: ["Keychain", "Bookmark", "Ornament", "Stocking", "Scrunchie", "Charm"],
+    8: ["Baby Sweater Set", "Baby Cap", "Baby Booties", "Baby Blanket"]
   };
 
   /* Bump whenever the category list, their order, or their subcategories
      change. Saved settings stamped with an older value keep their WhatsApp
      number, bank details and delivery times, but take the new taxonomy. */
-  var TAXONOMY_VERSION = 13;
+  var TAXONOMY_VERSION = 14;
 
   /* Bump when the bundled category photos change. Saved photos stay while
      this matches; raising it hands every browser the new bundled sets once,
@@ -189,12 +193,30 @@
     bouquets: ["images/bouquets/bouquet-1.webp", "images/bouquets/bouquet-2.webp", "images/bouquets/bouquet-3.webp", "images/bouquets/bouquet-4.webp", "images/bouquets/bouquet-5.webp", "images/bouquets/bouquet-6.webp", "images/bouquets/bouquet-7.webp"],
     keychains: ["images/keychains/keychain-1.webp", "images/keychains/keychain-2.webp", "images/keychains/keychain-3.webp", "images/keychains/keychain-4.webp", "images/keychains/keychain-5.webp", "images/keychains/keychain-6.webp", "images/keychains/keychain-7.webp", "images/keychains/keychain-8.webp", "images/keychains/keychain-9.webp", "images/keychains/keychain-10.webp", "images/keychains/keychain-11.webp", "images/keychains/keychain-12.webp", "images/keychains/keychain-13.webp", "images/keychains/keychain-14.webp", "images/keychains/keychain-15.webp", "images/keychains/keychain-16.webp", "images/keychains/keychain-17.webp", "images/keychains/keychain-18.webp", "images/keychains/keychain-19.webp", "images/keychains/keychain-20.webp"],
     geometry: ["images/geometry/geometry-1.webp", "images/geometry/geometry-2.webp", "images/geometry/geometry-3.webp", "images/geometry/geometry-4.webp", "images/geometry/geometry-5.webp", "images/geometry/geometry-6.webp", "images/geometry/geometry-7.webp", "images/geometry/geometry-8.webp"],
-    pencil: ["images/pencil/pencil-1.webp", "images/pencil/pencil-2.webp", "images/pencil/pencil-3.webp", "images/pencil/pencil-4.webp", "images/pencil/pencil-5.webp", "images/pencil/pencil-6.webp", "images/pencil/pencil-7.webp", "images/pencil/pencil-8.webp", "images/pencil/pencil-9.webp", "images/pencil/pencil-10.webp", "images/pencil/pencil-11.webp", "images/pencil/pencil-12.webp", "images/pencil/pencil-13.webp"]
+    pencil: ["images/pencil/pencil-1.webp", "images/pencil/pencil-2.webp", "images/pencil/pencil-3.webp", "images/pencil/pencil-4.webp", "images/pencil/pencil-5.webp", "images/pencil/pencil-6.webp", "images/pencil/pencil-7.webp", "images/pencil/pencil-8.webp", "images/pencil/pencil-9.webp", "images/pencil/pencil-10.webp", "images/pencil/pencil-11.webp", "images/pencil/pencil-12.webp", "images/pencil/pencil-13.webp"],
+    /* New branches have no photos yet; PLACEHOLDER_COUNTS below still seeds one
+       product each so the categories and every shelf stay visible, and adding
+       photos to these image folders later fills the branch for real. */
+    beanie: [], cowl: [], earwarmer: [], headband: [], mittens: [], cuff: [], scarflet: [], snood: [],
+    scarf: [], shawl: [], sweater: [], cardigan: [], poncho: [], hood: [], neckwarmer: [], fingerlessgloves: [],
+    wintersocks: [], legwarmers: [], winterfrock: [], pocketshawl: [], catbeanie: [],
+    cozy: [], coaster: [], sleeve: [], koozie: [], trivet: [], dishcloth: [],
+    keychain: [], bookmark: [], ornament: [], stocking: [], scrunchie: [], charm: [],
+    babysweaterset: [], babycap: [], babybooties: [], babyblanket: []
   };
 
-  /* How many products to generate for a group that has no photos yet. Nothing
-     sits on this now: every group in RAW_IMAGES above is photo-backed. */
-  var PLACEHOLDER_COUNTS = {};
+  /* How many products to generate for a group that has no photos yet. The new
+     branches (Wearables, Home & Dining, Gifts & Small Goods, Baby Collection)
+     ship one placeholder each so every category and shelf page is live; the
+     older groups are all photo-backed. */
+  var PLACEHOLDER_COUNTS = {
+    beanie: 1, cowl: 1, earwarmer: 1, headband: 1, mittens: 1, cuff: 1, scarflet: 1, snood: 1,
+    scarf: 1, shawl: 1, sweater: 1, cardigan: 1, poncho: 1, hood: 1, neckwarmer: 1, fingerlessgloves: 1,
+    wintersocks: 1, legwarmers: 1, winterfrock: 1, pocketshawl: 1, catbeanie: 1,
+    cozy: 1, coaster: 1, sleeve: 1, koozie: 1, trivet: 1, dishcloth: 1,
+    keychain: 1, bookmark: 1, ornament: 1, stocking: 1, scrunchie: 1, charm: 1,
+    babysweaterset: 1, babycap: 1, babybooties: 1, babyblanket: 1
+  };
 
 /* Which category (and subcategory) each photo group is filed under. Gajrays,
    Jewellery and Bouquet are separate top-level categories no longer; they are
@@ -461,7 +483,11 @@ var SEED_PLACEMENT = {
     gr1: ["handbag", "purse", "crochet bag", "tote", "shopper bag", "handmade", "gift", "woolen"],
     gr2: ["wedding gift", "wedding", "shaadi", "doli", "mehndi", "haldi", "bridal", "bride", "party", "gift"],
     gr3: ["small gift", "keychain", "keyring", "headband", "hairband", "hair accessory", "cute", "handmade", "gift", "wholesale"],
-    gr4: ["school", "school supplies", "stationery", "back to school", "student", "school bag", "backpack", "pencil case", "pencil box", "pencil", "geometry box", "maths", "handmade"]
+    gr4: ["school", "school supplies", "stationery", "back to school", "student", "school bag", "backpack", "pencil case", "pencil box", "pencil", "geometry box", "maths", "handmade"],
+    gr5: ["wearables", "winter wear", "warm clothes", "woolen", "beanie", "cowl", "earwarmer", "headband", "mittens", "scarf", "shawl", "sweater", "cardigan", "poncho", "hood", "neck warmer", "gloves", "socks", "leg warmers", "handmade"],
+    gr6: ["home and dining", "home", "kitchen", "coaster", "trivet", "dishcloth", "koozie", "cup sleeve", "cozy", "tea cozy", "table", "handmade", "gift"],
+    gr7: ["small goods", "gift", "keychain", "keyring", "bookmark", "ornament", "stocking", "scrunchie", "charm", "cute", "handmade", "wholesale"],
+    gr8: ["baby", "baby gift", "newborn", "baby shower", "baby sweater", "baby cap", "booties", "blanket", "handmade", "cute"]
   };
   var GROUP_KEYWORDS = {
     purses: ["purse", "handbag", "clutch", "hobo", "shoulder bag"],
