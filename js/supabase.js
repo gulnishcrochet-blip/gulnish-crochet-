@@ -1375,9 +1375,11 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
         GC.isAdmin = true;
         return true;
       }
-      GC.isAdmin = true;
-      try { localStorage.setItem(LOCAL_ADMIN_SESSION, "1"); } catch (e) { /* ignore */ }
-      return true;
+      /* Local mode has no backend to check anything against, so the old
+         "any email + any password = admin" fallback was protecting nothing.
+         Admin access now requires a real Supabase connection; until those
+         keys are set, no one can sign in here. */
+      return false;
     },
 
     signOutAdmin: async function () {
