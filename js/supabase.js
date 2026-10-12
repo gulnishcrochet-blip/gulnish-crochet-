@@ -1392,10 +1392,12 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
 
     checkAdminSession: async function () {
       if (!configured) {
-        try {
-          GC.isAdmin = localStorage.getItem(LOCAL_ADMIN_SESSION) === "1";
-        } catch (e) { GC.isAdmin = false; }
-        return GC.isAdmin;
+        /* No backend: nobody is an admin. Clear any flag left over from the
+           old local-demo login so it cannot keep granting access. */
+        GC.isAdmin = false;
+        GC.accessState = "anonymous";
+        try { localStorage.removeItem(LOCAL_ADMIN_SESSION); } catch (e) { /* ignore */ }
+        return false;
       }
       var res = await sb.auth.getSession();
       var session = res.data && res.data.session;
