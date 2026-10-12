@@ -7076,3 +7076,122 @@ body.has-topbar .site-header { top: 0; }
     font-size: 0.84rem;
   }
 }
+
+/* ===================================================================
+   ADMIN QUICK-ADD  (products page, admin only)
+   A compact uploader that lets a signed-in admin turn photos into
+   products without opening /admin. Hidden by default via [hidden];
+   js/admin-quickadd.js unhides it only when GC.isAdmin is true.
+   =================================================================== */
+.admin-add {
+  max-width: 980px;
+  margin: 0 auto 2.2rem;
+  padding: 1.6rem 1.8rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--primary);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+.admin-add__head {
+  margin-bottom: 1rem;
+}
+.admin-add__note {
+  margin: 0 0 1rem;
+  padding: 0.7rem 0.9rem;
+  font-size: 0.9rem;
+  color: var(--ink);
+  background: var(--danger-light);
+  border: 1px solid var(--danger);
+  border-radius: var(--radius-sm);
+}
+.admin-add__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.9rem;
+  margin-bottom: 1rem;
+}
+.admin-add__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.admin-add__field--grow {
+  flex: 1 1 220px;
+}
+.admin-add__field input,
+.admin-add__field .select {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 500;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+}
+.admin-add__field input:focus,
+.admin-add__field .select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(178, 92, 56, 0.15);
+}
+.admin-add__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+.admin-add__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.9rem;
+  padding: 0.9rem;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+.admin-add__thumb {
+  flex: 0 0 auto;
+  width: 72px;
+  height: 72px;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+.admin-add__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.admin-add__state {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+.admin-add__state.is-saved {
+  color: var(--sage);
+}
+.admin-add__state.is-error {
+  color: var(--danger);
+}
+.admin-add__actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.admin-add__status {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
