@@ -65,15 +65,44 @@
     return sdkPromise;
   }
 
+  /* A publishable/anon key is safe to ship in the browser: the database's
+     row-level security is what protects the data. A service_role (or the
+     newer sb_secret_) key bypasses every one of those rules, so shipping it
+     would hand the whole database — read, delete and all — to anyone who
+     views source. Detect it and refuse to start rather than leak. */
+  function keyLooksUnsafe(key) {
+    var k = String(key || "").trim();
+    if (/^sb_secret_/i.test(k)) return true;
+    var parts = k.split(".");
+    if (parts.length >= 2) {
+      try {
+        var b64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+        var pad = b64.length % 4 ? new Array(5 - (b64.length % 4)).join("=") : "";
+        var payload = JSON.parse(atob(b64 + pad));
+        if (payload && payload.role === "service_role") return true;
+      } catch (e) { /* not a JWT we can read — treat as safe */ }
+    }
+    return false;
+  }
+
   function connect() {
     if (configured || !wantsClient) return;
     if (typeof window.supabase === "undefined") return;
+    if (keyLooksUnsafe(cfg.supabaseAnonKey)) {
+      configError = "service-role";
+      console.error(
+        "Refusing to start: js/config.js has a service_role/secret key. " +
+          "Use the anon (public) key only — a secret key bypasses all security."
+      );
+      return;
+    }
     try {
       sb = window.supabase.createClient(
         cfg.supabaseUrl,
         cfg.supabaseAnonKey
       );
       configured = true;
+      configError = null;
     } catch (e) {
       console.error("Supabase init failed, using localStorage:", e);
       sb = null;
