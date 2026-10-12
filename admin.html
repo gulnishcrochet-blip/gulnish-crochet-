@@ -117,10 +117,24 @@
 
       <div id="adminWrap" hidden>
       <div class="admin-head">
-        <h1>Product Manager</h1>
-        <p>Add, edit and delete products. Changes appear on the shop for every visitor.</p>
+        <div class="admin-head__text">
+          <h1>Product Manager</h1>
+          <p>Everything you need to run the shop. Changes appear for every visitor, on every device.</p>
+        </div>
         <button class="btn btn--ghost btn--small" type="button" id="adminSignOut">Sign out</button>
       </div>
+
+      <!-- Jump links. On a phone this scrolls sideways, so every section is
+           one tap away without hunting through the page. -->
+      <nav class="admin-tabs" aria-label="Jump to section">
+        <a href="#formCard">Add / edit product</a>
+        <a href="#sec-products">Products</a>
+        <a href="#sec-orders">Orders</a>
+        <a href="#sec-settings">Shop settings</a>
+        <a href="#sec-categories">Categories</a>
+        <a href="#sec-images">Category photos</a>
+        <a href="#staffAccessCard" id="navStaff" hidden>Staff access</a>
+      </nav>
 
       <!-- Shown when connected to Supabase but the products table is empty. -->
       <section class="admin-warn admin-import" id="catalogueEmptyBanner" hidden>
@@ -146,163 +160,100 @@
         <code>products.price_max</code> column. Everything else saves normally until you do.
       </p>
 
-      <!-- ============ STAFF ACCESS ============ -->
-      <section class="admin-card" id="staffAccessCard" hidden>
-        <h2>Staff access <span id="staffRequestCount" class="admin-count"></span></h2>
-        <p class="admin-hint">People who asked for access. Approve to let them manage the shop, or reject to deny. You can also remove an existing admin.</p>
-        <div id="adminRequests"></div>
-        <h3 class="admin-subhead">Current admins</h3>
-        <div id="adminAdmins"></div>
-      </section>
-
-      <!-- ============ SHOP SETTINGS ============ -->
-      <section class="admin-card">
-        <h2>Shop settings</h2>
-        <p class="admin-hint">Contact details, delivery estimates and payment details shown to customers at checkout.</p>
-        <div class="admin-grid">
-          <label>
-            <span>WhatsApp number (with country code)</span>
-            <input type="tel" id="shopWhatsApp" placeholder="e.g. 923001234567">
-          </label>
-          <label>
-            <span>Crafting time (days)</span>
-            <input type="number" id="shopCraftDays" min="0" step="1" placeholder="e.g. 5">
-          </label>
-          <label>
-            <span>Delivery time (days)</span>
-            <input type="number" id="shopDeliveryDays" min="0" step="1" placeholder="e.g. 3">
-          </label>
-          <label>
-            <span>Bank account title</span>
-            <input type="text" id="shopBankTitle" placeholder="e.g. Gulnish Crochet">
-          </label>
-          <label>
-            <span>Bank account number</span>
-            <input type="text" id="shopBankAccount" placeholder="Account number">
-          </label>
-          <label>
-            <span>Bank IBAN</span>
-            <input type="text" id="shopBankIBAN" placeholder="PK00XXXX0000000000000000">
-          </label>
-          <label>
-            <span>JazzCash number</span>
-            <input type="tel" id="shopJazzcash" placeholder="e.g. 03xx xxxxxxx">
-          </label>
-          <label>
-            <span>EasyPaisa number</span>
-            <input type="tel" id="shopEasypaisa" placeholder="e.g. 03xx xxxxxxx">
-          </label>
-          <label>
-            <span>Delivery charge (Rs.) <small>— leave blank if you quote it on WhatsApp</small></span>
-            <input type="number" id="shopShippingFee" min="0" step="1" placeholder="e.g. 250">
-          </label>
-          <label>
-            <span>Delivery wording <small>— optional, overrides the sentence shown to customers</small></span>
-            <input type="text" id="shopDeliveryNote" placeholder="e.g. Free delivery inside Lahore only">
-          </label>
-        </div>
-        <p class="admin-hint">
-          Delivery is <strong>not free</strong>. The announcement bar, mega menu and home page all read
-          these two fields, so changing the charge here updates the whole site. Never leave a
-          &ldquo;free delivery&rdquo; claim in the wording field &mdash; it would contradict checkout.
-        </p>
-        <div class="admin-actions">
-          <button class="btn" type="button" id="saveShopSettings">Save settings</button>
-        </div>
-      </section>
-
-      <!-- ============ CATEGORIES ============ -->
-      <section class="admin-card">
-        <h2>Categories</h2>
-        <p class="admin-hint">These become the category cards on the home page. Add as many as you like and name them later. To break a category down further, add subcategories underneath it &mdash; they get their own filter row on the products page.</p>
-        <div id="catRows" class="cat-rows"></div>
-        <div class="admin-actions">
-          <button class="btn btn--ghost" type="button" id="addCategory">+ Add category</button>
-          <button class="btn" type="button" id="saveCategories">Save Categories</button>
-        </div>
-      </section>
-
-      <!-- ============ CATEGORY IMAGES ============ -->
-      <section class="admin-card">
-        <h2>Category images</h2>
-        <p class="admin-hint">Upload one or more photos per category. These rotate on the home page cards &mdash; the first photo is the main one. Changes save automatically.</p>
-        <div id="catImageRows" class="cat-img-rows"></div>
-      </section>
-
-      <!-- ============ PRODUCT FORM ============ -->
+      <!-- ============ ADD / EDIT PRODUCT ============ -->
       <section class="admin-card" id="formCard">
-        <h2 id="formTitle">Add product</h2>
+        <h2 id="formTitle">Add a product</h2>
+        <p class="admin-hint">Fill in the name and price, choose a category, add a photo, then press <strong>Save product</strong>. To change something later, find it in the Products list below and press <strong>Edit</strong>.</p>
 
-        <div class="admin-grid">
-          <label>
-            <span>Product name</span>
-            <input type="text" id="pName" placeholder="Product name">
-          </label>
-          <label>
-            <span>Base price (PKR) <small>&mdash; the amount the cart adds up</small></span>
-            <input type="number" id="pPrice" step="0.01" min="0" placeholder="0.00">
-          </label>
-          <label>
-            <span>Price range top <small>(optional &mdash; blank = fixed price)</small></span>
-            <input type="number" id="pPriceMax" step="0.01" min="0" placeholder="e.g. 6500">
-          </label>
-          <label>
-            <span>Category</span>
-            <select id="pCategory"></select>
-          </label>
-          <label>
-            <span>Subcategory <small>(optional — leave as &ldquo;none&rdquo; to file it under the category directly)</small></span>
-            <select id="pSubCategory"></select>
-          </label>
-          <label>
-            <span>Availability</span>
-            <select id="pStatus">
-              <option value="in stock">In stock</option>
-              <option value="made to order">Made to order (takes about 5 days)</option>
-              <option value="sold out">Sold out (hidden behind a badge, cannot be bought)</option>
-            </select>
-          </label>
-          <label>
-            <span>Stock count <small>(optional — blank = not tracked)</small></span>
-            <input type="number" id="pStock" min="0" step="1" placeholder="e.g. 3">
-          </label>
-          <label>
-            <span>Search keywords <small>(comma separated, helps people find this)</small></span>
-            <input type="text" id="pKeywords" placeholder="e.g. pink bag, wedding gift, custom, blue keychain">
-          </label>
-        </div>
-
-        <div class="admin-field">
-          <span>Photo</span>
-          <input type="file" id="pImage" aria-label="Product image" accept="image/*">
-          <div class="admin-img-pre">
-            <img id="pImagePreview" alt="" hidden>
-            <button class="btn btn--small" type="button" id="pImageClear" hidden>Remove photo</button>
+        <fieldset class="admin-group">
+          <legend>1 &middot; Basics</legend>
+          <div class="admin-grid">
+            <label>
+              <span>Product name</span>
+              <input type="text" id="pName" placeholder="e.g. Pink crochet purse">
+            </label>
+            <label>
+              <span>Price (PKR) <small>&mdash; what the cart adds up</small></span>
+              <input type="number" id="pPrice" step="0.01" min="0" inputmode="decimal" placeholder="e.g. 850">
+            </label>
+            <label>
+              <span>Price range top <small>(optional &mdash; leave blank for a fixed price)</small></span>
+              <input type="number" id="pPriceMax" step="0.01" min="0" inputmode="decimal" placeholder="e.g. 6500">
+            </label>
           </div>
-        </div>
+        </fieldset>
 
-        <div class="admin-field">
-          <span>Colors <small>(as many as you like)</small></span>
-          <div id="colorRows"></div>
-          <button class="btn btn--small btn--ghost" type="button" id="addColor">+ Add color</button>
-        </div>
+        <fieldset class="admin-group">
+          <legend>2 &middot; Where it belongs</legend>
+          <div class="admin-grid">
+            <label>
+              <span>Category</span>
+              <select id="pCategory"></select>
+            </label>
+            <label>
+              <span>Subcategory <small>(optional &mdash; leave as &ldquo;none&rdquo; to keep it in the category only)</small></span>
+              <select id="pSubCategory"></select>
+            </label>
+            <label>
+              <span>Availability</span>
+              <select id="pStatus">
+                <option value="in stock">In stock</option>
+                <option value="made to order">Made to order (takes about 5 days)</option>
+                <option value="sold out">Sold out (shown with a badge, cannot be bought)</option>
+              </select>
+            </label>
+            <label>
+              <span>Stock count <small>(optional &mdash; leave blank if you don&rsquo;t track it)</small></span>
+              <input type="number" id="pStock" min="0" step="1" inputmode="numeric" placeholder="e.g. 3">
+            </label>
+          </div>
+        </fieldset>
 
-        <div class="admin-field">
-          <span>Extra photos <small>(optional — paste a storage or full URL per line; shows thumbnails / lightbox on the product page)</small></span>
-          <textarea id="pGallery" aria-label="Gallery image URLs" rows="2" placeholder="https://.../in-hand.webp&#10;https://.../detail.webp"></textarea>
-        </div>
+        <fieldset class="admin-group">
+          <legend>3 &middot; Photos &amp; extras</legend>
+          <div class="admin-field">
+            <span>Main photo <small>&mdash; tap to pick from your phone</small></span>
+            <input type="file" id="pImage" aria-label="Product image" accept="image/*">
+            <div class="admin-img-pre">
+              <img id="pImagePreview" alt="" hidden>
+              <button class="btn btn--small" type="button" id="pImageClear" hidden>Remove photo</button>
+            </div>
+          </div>
+          <div class="admin-field">
+            <span>Colors <small>(as many as you like)</small></span>
+            <div id="colorRows"></div>
+            <button class="btn btn--small btn--ghost" type="button" id="addColor">+ Add color</button>
+          </div>
+          <div class="admin-grid">
+            <label>
+              <span>Search words <small>(comma separated &mdash; helps customers find it)</small></span>
+              <input type="text" id="pKeywords" placeholder="e.g. pink bag, wedding gift, custom">
+            </label>
+          </div>
+          <div class="admin-field">
+            <span>Extra photos <small>(optional &mdash; paste one image link per line)</small></span>
+            <textarea id="pGallery" aria-label="Gallery image URLs" rows="2" placeholder="https://.../in-hand.webp&#10;https://.../detail.webp"></textarea>
+          </div>
+        </fieldset>
 
-        <div class="admin-actions">
-          <button class="btn" type="button" id="saveProduct">Save Product</button>
+        <div class="admin-actions admin-actions--sticky">
+          <button class="btn" type="button" id="saveProduct">Save product</button>
           <button class="btn btn--ghost" type="button" id="cancelEdit" hidden>Cancel</button>
           <button class="btn btn--danger" type="button" id="deleteProduct" hidden>Delete</button>
         </div>
       </section>
 
+      <!-- ============ PRODUCTS LIST ============ -->
+      <section class="admin-card" id="sec-products">
+        <h2>Products <span id="productCount" class="admin-count"></span></h2>
+        <p class="admin-hint">Everything currently in the shop. Press <strong>Edit</strong> to change one, or delete it if it&rsquo;s gone for good.</p>
+        <div id="productList"></div>
+      </section>
+
       <!-- ============ ORDERS ============ -->
-      <section class="admin-card">
+      <section class="admin-card" id="sec-orders">
         <h2>Orders <span id="orderCount" class="admin-count"></span></h2>
-        <p class="admin-hint">All orders placed by every visitor appear here. Update a status and we will confirm the update with the customer on WhatsApp.</p>
+        <p class="admin-hint">Every order placed by every visitor. Change a status and we let the customer know on WhatsApp.</p>
 
         <!-- Dashboard stats -->
         <div class="admin-order-stats" id="orderStats"></div>
@@ -343,10 +294,87 @@
         <div id="adminOrders"></div>
       </section>
 
-      <!-- ============ PRODUCTS LIST ============ -->
-      <section class="admin-card">
-        <h2>Products <span id="productCount" class="admin-count"></span></h2>
-        <div id="productList"></div>
+      <!-- ============ SHOP SETTINGS ============ -->
+      <section class="admin-card" id="sec-settings">
+        <h2>Shop settings</h2>
+        <p class="admin-hint">Contact details, delivery estimates and payment details shown to customers at checkout. Set these once.</p>
+        <div class="admin-grid">
+          <label>
+            <span>WhatsApp number (with country code)</span>
+            <input type="tel" id="shopWhatsApp" placeholder="e.g. 923001234567">
+          </label>
+          <label>
+            <span>Crafting time (days)</span>
+            <input type="number" id="shopCraftDays" min="0" step="1" placeholder="e.g. 5">
+          </label>
+          <label>
+            <span>Delivery time (days)</span>
+            <input type="number" id="shopDeliveryDays" min="0" step="1" placeholder="e.g. 3">
+          </label>
+          <label>
+            <span>Bank account title</span>
+            <input type="text" id="shopBankTitle" placeholder="e.g. Gulnish Crochet">
+          </label>
+          <label>
+            <span>Bank account number</span>
+            <input type="text" id="shopBankAccount" placeholder="Account number">
+          </label>
+          <label>
+            <span>Bank IBAN</span>
+            <input type="text" id="shopBankIBAN" placeholder="PK00XXXX0000000000000000">
+          </label>
+          <label>
+            <span>JazzCash number</span>
+            <input type="tel" id="shopJazzcash" placeholder="e.g. 03xx xxxxxxx">
+          </label>
+          <label>
+            <span>EasyPaisa number</span>
+            <input type="tel" id="shopEasypaisa" placeholder="e.g. 03xx xxxxxxx">
+          </label>
+          <label>
+            <span>Delivery charge (Rs.) <small>&mdash; leave blank if you quote it on WhatsApp</small></span>
+            <input type="number" id="shopShippingFee" min="0" step="1" placeholder="e.g. 250">
+          </label>
+          <label>
+            <span>Delivery wording <small>&mdash; optional, overrides the sentence shown to customers</small></span>
+            <input type="text" id="shopDeliveryNote" placeholder="e.g. Free delivery inside Lahore only">
+          </label>
+        </div>
+        <p class="admin-hint">
+          Delivery is <strong>not free</strong>. The announcement bar, mega menu and home page all read
+          these two fields, so changing the charge here updates the whole site. Never leave a
+          &ldquo;free delivery&rdquo; claim in the wording field &mdash; it would contradict checkout.
+        </p>
+        <div class="admin-actions">
+          <button class="btn" type="button" id="saveShopSettings">Save settings</button>
+        </div>
+      </section>
+
+      <!-- ============ CATEGORIES ============ -->
+      <section class="admin-card" id="sec-categories">
+        <h2>Categories</h2>
+        <p class="admin-hint">These become the category cards on the home page. Rename them, reorder them, or add new ones. To break a category down further, add subcategories underneath it &mdash; they get their own filter row on the products page.</p>
+        <div id="catRows" class="cat-rows"></div>
+        <div class="admin-actions">
+          <button class="btn btn--ghost" type="button" id="addCategory">+ Add category</button>
+          <button class="btn" type="button" id="saveCategories">Save categories</button>
+        </div>
+      </section>
+
+      <!-- ============ CATEGORY IMAGES ============ -->
+      <section class="admin-card" id="sec-images">
+        <h2>Category photos</h2>
+        <p class="admin-hint">Upload one or more photos per category. These rotate on the home page cards &mdash; the first photo is the main one. Changes save automatically.</p>
+        <div id="catImageRows" class="cat-img-rows"></div>
+      </section>
+
+      <!-- ============ STAFF ACCESS ============ -->
+      <section class="admin-card" id="staffAccessCard" hidden>
+        <h2>Staff access <span id="staffRequestCount" class="admin-count"></span></h2>
+        <p class="admin-hint">People who asked to help manage the shop. <strong>Approve</strong> to let someone in, <strong>Reject</strong> to say no. You can also remove an admin you no longer trust.</p>
+        <div id="adminRequests"></div>
+        <h3 class="admin-subhead">Current admins</h3>
+        <div id="adminAdmins"></div>
       </section>
 
       </div><!-- /adminWrap -->
