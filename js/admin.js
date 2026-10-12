@@ -1648,7 +1648,7 @@
         if (loginPassword) loginPassword.value = "";
         enterAdmin();
       } else if (loginErr) {
-        loginErr.textContent = "Sign in failed. Check your email and password.";
+        loginErr.textContent = "Sign in failed \u2014 wrong details, or this account has not been approved yet. New staff: tap \u201cRequest access\u201d.";
         loginErr.hidden = false;
       }
     }
