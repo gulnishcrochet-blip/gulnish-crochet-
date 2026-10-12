@@ -60,6 +60,9 @@
           </div>
           </form>
 
+          <p class="admin-login-err" id="adminConfigErr" hidden></p>
+
+          <p class="admin-login-alt" id="forgotWrap"><button type="button" class="admin-linkbtn" id="forgotBtn">Forgot password?</button></p>
           <p class="admin-login-alt" id="showSignupWrap">New staff member? <button type="button" class="admin-linkbtn" id="showSignupBtn">Request access</button></p>
 
           <!-- Self-registration: creates the login, then files a pending request
@@ -77,10 +80,35 @@
             </div>
           </form>
 
+          <!-- One-time owner setup on a brand-new project (no admin exists). -->
+          <form id="adminClaimForm" hidden novalidate>
+            <h3>Set up as owner</h3>
+            <p class="admin-hint">No admin exists yet. Enter the setup code you set in <code>supabase-setup.sql</code> to make this account the owner.</p>
+            <input type="text" id="claimCode" placeholder="Setup code" autocomplete="off">
+            <p class="admin-login-err" id="claimErr" hidden></p>
+            <div class="admin-login-actions">
+              <button class="btn" type="submit" id="claimBtn">Claim owner access</button>
+              <button class="btn btn--ghost" type="button" id="cancelClaimBtn">Back</button>
+            </div>
+          </form>
+
+          <!-- Forgot-password confirmation. -->
+          <div class="admin-pending" id="adminResetNote" hidden>
+            <strong>Check your email</strong>
+            <p>If that email has an account, a password-reset link is on its way.</p>
+            <button type="button" class="btn btn--ghost btn--small" id="resetBackBtn">Back to sign in</button>
+          </div>
+
           <div class="admin-pending" id="adminPendingNote" hidden>
             <strong>Request pending</strong>
             <p>Your request has been sent. Once the owner approves it, sign in again to start managing the shop.</p>
             <button type="button" class="btn btn--ghost btn--small" id="pendingSignOutBtn">Sign out</button>
+          </div>
+
+          <div class="admin-pending admin-pending--bad" id="adminRejectedNote" hidden>
+            <strong>Access declined</strong>
+            <p>An admin declined this request. Ask the owner if you think that was a mistake.</p>
+            <button type="button" class="btn btn--ghost btn--small" id="rejectedSignOutBtn">Sign out</button>
           </div>
 
           <p class="admin-login-demo" id="adminDemoNote" hidden>No Supabase configured &mdash; running in local demo mode.</p>
@@ -93,6 +121,18 @@
         <p>Add, edit and delete products. Changes appear on the shop for every visitor.</p>
         <button class="btn btn--ghost btn--small" type="button" id="adminSignOut">Sign out</button>
       </div>
+
+      <!-- Shown when connected to Supabase but the products table is empty. -->
+      <section class="admin-warn admin-import" id="catalogueEmptyBanner" hidden>
+        <div class="admin-import__text">
+          <strong>Your Supabase is connected but empty.</strong>
+          <span>The shop is showing the built-in catalogue from memory. Import it once so edits are saved for every visitor.</span>
+        </div>
+        <div class="admin-import__actions">
+          <button class="btn btn--small" type="button" id="importCatalogueBtn">Import catalogue</button>
+          <span class="admin-hint" id="importCatalogueStatus"></span>
+        </div>
+      </section>
 
       <p class="admin-warn" id="subcategoryWarn" hidden>
         <strong>Subcategories are not being saved to the database yet.</strong>
