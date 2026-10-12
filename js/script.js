@@ -1024,6 +1024,17 @@
           ? settings.categoryImages[key]
           : "";
       var imagesRaw = (Array.isArray(catImg) ? catImg : catImg ? [catImg] : []).filter(Boolean);
+      /* A category with no curated cover (the newer gr5-gr8 shelves) would sit
+         on the home page as a permanent "picture will be uploaded soon" card.
+         Until an admin sets a real cover, borrow the first few photos the
+         category actually has, so uploading a product photo also brings its
+         category card to life. */
+      if (!imagesRaw.length) {
+        imagesRaw = items
+          .map(function (p) { return p.image; })
+          .filter(Boolean)
+          .slice(0, 3);
+      }
       out.push(
         categoryCardHTML(
           label || "Category " + (i + 1),
