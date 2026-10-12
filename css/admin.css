@@ -382,6 +382,46 @@ h1, h2, h3 {
   gap: 0.6rem;
 }
 
+.admin-pending--bad {
+  background: var(--danger-light);
+  border-color: var(--danger);
+}
+
+.admin-login-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  justify-content: center;
+}
+
+.admin-import {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.4rem;
+}
+
+.admin-import__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  flex: 1 1 20rem;
+}
+
+.admin-import__text span {
+  font-size: 0.84rem;
+  color: var(--muted);
+}
+
+.admin-import__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
 .admin-subhead {
   font-size: 1rem;
   margin: 1.2rem 0 0.6rem;
