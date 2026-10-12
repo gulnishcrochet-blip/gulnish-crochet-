@@ -1361,6 +1361,142 @@
     setInterval(function () { GC.refreshLocalData(); }, 20000);
   }
 
+  /* ---------- staff access ---------- */
+  function requestRowHTML(r) {
+    var status = r.status || "pending";
+    var badge = '<span class="staff-badge staff-badge--' + escapeHtml(status) + '">' + escapeHtml(status) + "</span>";
+    var actions = "";
+    if (status === "pending") {
+      actions =
+        '<button class="btn btn--small" type="button" data-approve="' + escapeHtml(r.user_id) + '">Approve</button>' +
+        '<button class="btn btn--ghost btn--small" type="button" data-reject="' + escapeHtml(r.user_id) + '">Reject</button>';
+    } else if (status === "approved") {
+      actions = '<button class="btn btn--ghost btn--small" type="button" data-reject="' + escapeHtml(r.user_id) + '">Revoke</button>';
+    } else {
+      actions = '<button class="btn btn--ghost btn--small" type="button" data-approve="' + escapeHtml(r.user_id) + '">Approve anyway</button>';
+    }
+    return (
+      '<div class="staff-row">' +
+      '<div class="staff-who"><strong>' + escapeHtml(r.name || "(no name given)") + "</strong>" +
+      "<span>" + escapeHtml(r.email || "") + "</span></div>" +
+      badge +
+      '<div class="staff-actions">' + actions + "</div>" +
+      "</div>"
+    );
+  }
+
+  async function renderStaffAccess() {
+    if (!staffAccessCard || !GC || !GC.configured) return;
+    staffAccessCard.hidden = false;
+    var reqs = await GC.listAccessRequests();
+    var admins = await GC.listAdmins();
+    var pending = reqs.filter(function (r) { return r.status === "pending"; });
+    if (staffRequestCount) staffRequestCount.textContent = pending.length ? String(pending.length) : "";
+    if (adminRequests) {
+      adminRequests.innerHTML = reqs.length
+        ? reqs.map(requestRowHTML).join("")
+        : '<p class="admin-hint">No access requests yet. Share this admin page with a new employee — they click &ldquo;Request access&rdquo; and it shows up here.</p>';
+    }
+    if (adminAdmins) {
+      adminAdmins.innerHTML = admins.length
+        ? admins
+            .map(function (a) {
+              return (
+                '<div class="staff-row"><div class="staff-who"><code>' +
+                escapeHtml(a.user_id) +
+                '</code></div><div class="staff-actions">' +
+                '<button class="btn btn--ghost btn--small" type="button" data-remove="' +
+                escapeHtml(a.user_id) +
+                '">Remove</button></div></div>'
+              );
+            })
+            .join("")
+        : '<p class="admin-hint">No admins yet.</p>';
+    }
+  }
+
+  if (adminRequests) {
+    adminRequests.addEventListener("click", async function (e) {
+      var t = e.target.closest("[data-approve],[data-reject]");
+      if (!t) return;
+      var id = t.getAttribute("data-approve") || t.getAttribute("data-reject");
+      t.disabled = true;
+      if (t.hasAttribute("data-approve")) await GC.approveAccess(id);
+      else await GC.rejectAccess(id);
+      renderStaffAccess();
+    });
+  }
+  if (adminAdmins) {
+    adminAdmins.addEventListener("click", async function (e) {
+      var t = e.target.closest("[data-remove]");
+      if (!t) return;
+      if (!window.confirm("Remove this admin? They lose access immediately.")) return;
+      t.disabled = true;
+      await GC.removeAdmin(t.getAttribute("data-remove"));
+      renderStaffAccess();
+    });
+  }
+
+  /* ---------- staff self-registration ---------- */
+  function showSignup(on) {
+    if (signupForm) signupForm.hidden = !on;
+    var loginForm = document.getElementById("adminLoginForm");
+    if (loginForm) loginForm.hidden = on;
+    if (showSignupWrap) showSignupWrap.hidden = on;
+    if (on) {
+      if (signupErr) signupErr.hidden = true;
+      if (signupOk) signupOk.hidden = true;
+    }
+  }
+
+  if (showSignupBtn) {
+    showSignupBtn.addEventListener("click", function () { showSignup(true); });
+  }
+  if (cancelSignupBtn) {
+    cancelSignupBtn.addEventListener("click", function () { showSignup(false); });
+  }
+  if (signupForm) {
+    signupForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      if (signupErr) signupErr.hidden = true;
+      if (signupOk) signupOk.hidden = true;
+      var name = signupName ? signupName.value.trim() : "";
+      var email = signupEmail ? signupEmail.value.trim() : "";
+      var password = signupPassword ? signupPassword.value : "";
+      if (!email || !password) {
+        if (signupErr) { signupErr.textContent = "Enter your email and a password."; signupErr.hidden = false; }
+        return;
+      }
+      if (password.length < 6) {
+        if (signupErr) { signupErr.textContent = "Use a password of at least 6 characters."; signupErr.hidden = false; }
+        return;
+      }
+      signupBtn.disabled = true;
+      var res = await GC.signUpStaff(email, password, name);
+      signupBtn.disabled = false;
+      if (!res.ok) {
+        var msg = res.error === "not-configured"
+          ? "Access requests are available once Supabase is connected."
+          : "Could not send the request. " + (res.error && res.error.message ? res.error.message : "Please try again.");
+        if (signupErr) { signupErr.textContent = msg; signupErr.hidden = false; }
+        return;
+      }
+      if (res.needsConfirm) {
+        if (signupOk) { signupOk.textContent = "Almost done — confirm your email, then sign in and click \u201cRequest access\u201d again."; signupOk.hidden = false; }
+        return;
+      }
+      if (signupPassword) signupPassword.value = "";
+      if (signupOk) { signupOk.textContent = "Request sent. You can manage the shop once the owner approves it."; signupOk.hidden = false; }
+    });
+  }
+  if (pendingSignOutBtn) {
+    pendingSignOutBtn.addEventListener("click", async function () {
+      await GC.signOutAdmin();
+      if (pendingNote) pendingNote.hidden = true;
+      showSignup(false);
+    });
+  }
+
   /* ---------- auth -------- */
   function enterAdmin() {
     adminWrap.hidden = false;
@@ -1375,6 +1511,7 @@
     addColorRow("", "#d9a5b0");
     renderList();
     renderOrders();
+    renderStaffAccess();
   }
 
   if (loginBtn) {
