@@ -1097,6 +1097,25 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
     }
   }
 
+  /* Records an admin action for the audit trail. Fire-and-forget: if the
+     audit_log table has not been created yet, or the network is down, the
+     product/settings save itself must not fail because of it. */
+  function logAudit(action, entity, entityId) {
+    if (!configured || !sb || !currentUserId) return;
+    try {
+      var row = {
+        user_id: currentUserId,
+        action: action,
+        entity: entity,
+        entity_id: entityId == null ? null : String(entityId)
+      };
+      var p = sb.from("audit_log").insert(row);
+      if (p && typeof p.then === "function") {
+        p.then(function () {}, function () {});
+      }
+    } catch (e) { /* never let logging break the save */ }
+  }
+
   /* ============================================================= */
 
   var GC = {
