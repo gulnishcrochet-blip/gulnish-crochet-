@@ -1950,7 +1950,15 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
         delete row.updated_by;
         res = await sb.from("products").upsert(row, { onConflict: "id" });
       }
-      if (!res.error) logAudit(existed ? "update" : "create", "product", product.id);
+      if (!res.error) {
+        logAudit(existed ? "update" : "create", "product", product.id);
+      } else {
+        /* The write failed, so undo the optimistic in-memory change. Without
+           this the admin list kept showing the product exactly as if it had
+           saved, and the edit silently vanished on the next reload. */
+        if (existed) products[idx] = previous;
+        else products = products.filter(function (p) { return p.id !== product.id; });
+      }
       return { ok: !res.error, error: res.error };
     },
 
