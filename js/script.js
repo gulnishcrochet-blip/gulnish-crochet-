@@ -1915,6 +1915,32 @@
     if (wasOpen) visibleCartTrigger().focus();
   }
 
+  /* Keep focus inside the drawer while it is open; without this a keyboard
+     user can Tab out and get stranded behind the overlay. */
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Tab") return;
+    if (!cartDrawer || !cartDrawer.classList.contains("open")) return;
+    var focusables = Array.prototype.filter.call(
+      cartDrawer.querySelectorAll(
+        'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      ),
+      function (el) { return !el.disabled && !el.hidden; }
+    );
+    if (!focusables.length) return;
+    var first = focusables[0];
+    var last = focusables[focusables.length - 1];
+    var active = document.activeElement;
+    if (e.shiftKey) {
+      if (active === first || (active && !cartDrawer.contains(active))) {
+        e.preventDefault();
+        last.focus();
+      }
+    } else if (active === last || (active && !cartDrawer.contains(active))) {
+      e.preventDefault();
+      first.focus();
+    }
+  });
+
   function bumpBadge() {
     if (!cartCountEl) return;
     cartCountEl.classList.remove("bump");
