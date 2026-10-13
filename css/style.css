@@ -4678,6 +4678,13 @@ p.about-text {
   box-shadow: 0 0 0 3px rgba(197, 75, 60, 0.14) !important;
 }
 
+.co-error {
+  margin-top: 0.4rem;
+  font-size: 0.82rem;
+  color: var(--danger);
+  font-weight: 600;
+}
+
 .co-place {
   width: 100%;
   margin-top: 1.1rem;
