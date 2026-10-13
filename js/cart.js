@@ -16,6 +16,11 @@
   var grandRow = document.getElementById("cpGrandRow");
   var grandEl = document.getElementById("cpGrand");
 
+  /* Announce the "N items in your bag" line and the rebuilt item list to
+     assistive tech; quantity changes are silent visually. */
+  if (countLabel) countLabel.setAttribute("aria-live", "polite");
+  if (itemsEl) itemsEl.setAttribute("aria-live", "polite");
+
   function getProducts() { return GC ? GC.products || [] : []; }
   function getSettings() { return GC ? GC.settings || {} : {}; }
 
