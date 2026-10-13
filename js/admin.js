@@ -418,9 +418,20 @@
         : []
     };
 
-    if (GC.saveProduct) await GC.saveProduct(product);
+    var saved = GC.saveProduct ? await GC.saveProduct(product) : { ok: true };
     if (subcategoryWarn && GC.subcategoryColumnMissing) subcategoryWarn.hidden = false;
     if (priceMaxWarn && GC.priceMaxColumnMissing) priceMaxWarn.hidden = false;
+    if (saved && saved.ok === false) {
+      /* The row was rejected (RLS, missing table, offline). GC.saveProduct has
+         already rolled the in-memory change back, so keep the form filled and
+         tell the owner instead of pretending it saved. */
+      alert(
+        "Could not save the product to the database. Please check your connection and try again." +
+        (saved.error && saved.error.message ? "\n\n" + saved.error.message : "")
+      );
+      renderList();
+      return;
+    }
     resetForm();
     renderList();
   }
