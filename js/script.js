@@ -1413,7 +1413,8 @@
         : photoPendingHTML("photo-pending--lg");
     }
     if (ppThumbs) {
-      var all = [p.image].concat((p.gallery || []).filter(Boolean).filter(function (s) { return s !== p.image; }));
+      var all = [p.image].concat((p.gallery || []).filter(Boolean).filter(function (s) { return s !== p.image; }))
+        .filter(Boolean);
       ppThumbs.innerHTML = all.map(function (src, i) {
         return '<button type="button" class="pp-thumb' + (i === 0 ? " active" : "") +
           '" data-pp-thumb="' + escapeHtml(src) + '" aria-label="' + escapeHtml(p.name) + " image " + (i + 1) + '">' +
