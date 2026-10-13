@@ -2097,12 +2097,22 @@
       imgEl.alt = item.alt || "";
       capEl.textContent = item.name || "";
       lightbox.classList.add("open");
+      lightbox.setAttribute("aria-hidden", "false");
+      lightboxTrigger = document.activeElement;
       document.body.style.overflow = "hidden";
+      if (closeBtn) {
+        void closeBtn.offsetWidth;
+        closeBtn.focus();
+      }
     };
 
     var close = function () {
       lightbox.classList.remove("open");
+      lightbox.setAttribute("aria-hidden", "true");
       document.body.style.overflow = "";
+      if (lightboxTrigger && lightboxTrigger.isConnected) {
+        try { lightboxTrigger.focus({ preventScroll: true }); } catch (err) { lightboxTrigger.focus(); }
+      }
     };
 
     document
