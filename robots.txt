@@ -1,10 +1,8 @@
 User-agent: *
 Allow: /
 
-# Private / transactional pages — keep out of search results
-# These are prefix matches, so they also cover the .html variants
-Disallow: /admin
-Disallow: /checkout
-Disallow: /cart
+# Private / transactional pages carry their own noindex meta tag; they are not
+# blocked here so crawlers can still read and honour the tag (blocking both
+# would produce "Indexed, though blocked by robots.txt").
 
 Sitemap: https://gulnishcrochet.vercel.app/sitemap.xml
