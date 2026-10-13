@@ -522,7 +522,7 @@ ${MARKER}
   return head + body + shell.tail;
 }
 
-function buildHead(page, title, description) {
+function buildHead(page, title, description, noindex) {
   const url = ORIGIN + page.url;
   /* The share card keeps the site's own 1200x630 cover rather than the first
      product photo: the width and height tags below describe that cover, and a
@@ -535,6 +535,12 @@ function buildHead(page, title, description) {
     head = head.replace(re, () => value);
   };
   set(/<title>[\s\S]*?<\/title>/, `<title>${escapeHtml(title)}</title>`);
+  if (noindex) {
+    set(
+      /<meta name="robots" content="[^"]*">/,
+      `<meta name="robots" content="noindex, follow">`
+    );
+  }
   set(
     /<meta name="description" content="[^"]*">/,
     `<meta name="description" content="${escapeAttr(description)}">`
