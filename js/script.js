@@ -85,9 +85,9 @@
     if (parts.length < 3 || parts[parts.length - 2] === "sm") return "";
     /* Only the catalogue directories ship an sm/ twin. Without this guard a
        stray images/og-cover-v2.webp would get a srcset pointing at the
-       non-existent images/sm/og-cover-v2.webp, which is a 404 on every card. */
-    var photoDirs = "bags bouquets gajrays geometry headbands jewellery keychains pencil pencilbox purses";
-    if ((" " + photoDirs + " ").indexOf(" " + parts[parts.length - 2] + " ") < 0) return "";
+       non-existent images/sm/og-cover-v2.webp, which is a 404 on every card.
+       PHOTO_DIRS is shared with hasSmallTwin() so the two never disagree. */
+    if ((" " + PHOTO_DIRS + " ").indexOf(" " + parts[parts.length - 2] + " ") < 0) return "";
     var small = parts.slice(0, parts.length - 1);
     small.push("sm", parts[parts.length - 1]);
     small = small.join("/");
