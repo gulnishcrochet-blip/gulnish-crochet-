@@ -1900,9 +1900,10 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
       if (configured && catalogueEmpty) {
         await GC.importCatalogue();
       }
-      var existed = products.some(function (p) { return p.id === product.id; });
       var idx = products.findIndex(function (p) { return p.id === product.id; });
-      if (idx !== -1) products[idx] = product;
+      var existed = idx !== -1;
+      var previous = existed ? products[idx] : null;
+      if (existed) products[idx] = product;
       else products.unshift(product);
 
       if (!configured) {
