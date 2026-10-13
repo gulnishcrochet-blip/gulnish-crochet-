@@ -238,4 +238,8 @@
   } else {
     render();
   }
+
+  /* Another script changed the basket (e.g. checkout clearing it after a
+     successful order). Repaint so this page never shows stale items. */
+  window.addEventListener("gulnish:cart", render);
 })();
