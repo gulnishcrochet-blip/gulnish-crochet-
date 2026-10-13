@@ -513,7 +513,7 @@ ${MARKER}
   ${faqHtml(faqs, label)}
 </main>`;
 
-  let head = buildHead(page, title, description);
+  let head = buildHead(page, title, description, items.length === 0);
   head = head.replace(
     /<script type="application\/ld\+json" id="seoBreadcrumbLd">[\s\S]*?<\/script>/,
     () => jsonLd(page, label, title, description, items, faqs)
