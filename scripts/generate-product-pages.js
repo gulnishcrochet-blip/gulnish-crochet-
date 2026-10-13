@@ -734,6 +734,7 @@ function main() {
 
 function build() {
   const products = (GC.products || []).slice();
+  assignedTitles = new Set();
   if (!products.length) {
     console.error("[product-pages] catalogue is empty - nothing generated");
     process.exitCode = 1;
