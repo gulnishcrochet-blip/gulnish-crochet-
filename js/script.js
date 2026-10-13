@@ -1805,6 +1805,10 @@
     }
     if (cartCountEl) {
       cartCountEl.textContent = n;
+      cartCountEl.setAttribute(
+        "aria-label",
+        n === 1 ? "1 item in your cart" : n + " items in your cart"
+      );
       cartCountEl.classList.toggle("show", n > 0);
     }
     if (cartBar) cartBar.classList.toggle("show", n > 0);
