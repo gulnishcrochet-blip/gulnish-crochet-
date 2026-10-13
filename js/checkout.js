@@ -403,6 +403,14 @@
   }
 
   function placeOrder() {
+    /* The basket is emptied the moment an order is placed. If the mobile
+       WhatsApp hand-off is cancelled (user dismisses the prompt) the page stays
+       and the button re-enables, so without this guard a second tap would send
+       an empty, duplicate order. */
+    if (!loadCart().length) {
+      showMsg("Your cart is empty. Please add an item before placing an order.");
+      return;
+    }
     if (!validate()) return;
 
     setLoading(true);
