@@ -995,7 +995,13 @@
       String(o.status || "").toLowerCase() !== "delivered";
     var wa = (GC && GC.shopWhatsApp) ? GC.shopWhatsApp() : "";
 
-    var phoneDigits = String(cust.phone || "").replace(/[^\d]/g, "").replace(/^0+/, "");
+    /* Stored phones are missing the country code on purpose (the trunk 0 is
+       dropped so repeat customers match). Printing them behind a bare "+"
+       gave out a dead number, so rebuild the international form first. */
+    var phoneIntl = GC.formatPhone
+      ? GC.formatPhone(cust.phone)
+      : "+92" + String(cust.phone || "").replace(/[^\d]/g, "").replace(/^0+/, "");
+    var phoneDigits = phoneIntl.replace(/[^\d]/g, "");
 
     return (
       '<div class="admin-order__detail" hidden>' +
