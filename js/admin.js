@@ -1009,7 +1009,7 @@
       '<div class="ad-order-block">' +
       '<h4>Customer</h4>' +
       '<p><strong>' + escapeHtml(cust.name || "—") + "</strong></p>" +
-      (cust.phone ? '<p>' + (phoneDigits ? '<a class="link" href="tel:+' + escapeHtml(phoneDigits) + '">+' + escapeHtml(cust.phone) + "</a>" : escapeHtml(cust.phone)) + "</p>" : "") +
+      (cust.phone ? '<p>' + (phoneIntl ? '<a class="link" href="tel:' + escapeHtml(phoneIntl) + '">' + escapeHtml(phoneIntl) + "</a>" : escapeHtml(cust.phone)) + "</p>" : "") +
       (cust.email ? "<p>" + escapeHtml(cust.email) + "</p>" : "") +
       (cust.address || cust.city ? "<p class='muted'>" + escapeHtml(cust.address) + (cust.city ? ", " + escapeHtml(cust.city) : "") + "</p>" : "") +
       (cust.notes ? '<p class="muted"><em>Notes: ' + escapeHtml(cust.notes) + "</em></p>" : "") +
