@@ -376,7 +376,7 @@ function jsonLd(p, catLabel, subLabel, canonical, description, canonicalIsSelf) 
     name: p.name,
     description,
     image: [`${ORIGIN}/${p.image}`],
-    productID: p.id,
+    sku: p.id,
     category: subLabel ? `${catLabel} > ${subLabel}` : catLabel,
     brand: { "@type": "Brand", name: "Gulnish Crochet" },
     manufacturer: { "@id": `${ORIGIN}/#org` },
