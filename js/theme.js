@@ -395,6 +395,24 @@
         '<span class="footer-contact__row">' +
         ICONS.pin + "<span>Handmade in Pakistan — all Pakistan delivery</span></span>";
     }
+
+    /* The FAQ and full shop-index pages exist and are in the sitemap, but no
+       static page links to them, so a crawler has no path to either. Append
+       them into the existing footer columns rather than editing every page. */
+    var help = document.querySelector(".footer-links[aria-label='Help links']");
+    if (help && !help.querySelector('a[href="/faq"]')) {
+      var faqA = document.createElement("a");
+      faqA.href = "/faq";
+      faqA.textContent = "FAQs";
+      help.appendChild(faqA);
+    }
+    var shop = document.querySelector(".footer-links[aria-label='Shop links']");
+    if (shop && !shop.querySelector('a[href="/shop-index"]')) {
+      var idxA = document.createElement("a");
+      idxA.href = "/shop-index";
+      idxA.textContent = "Shop Index";
+      shop.appendChild(idxA);
+    }
   }
 
   /* ---------- Mobile menu: turn the mega panel into an accordion ---------- */
