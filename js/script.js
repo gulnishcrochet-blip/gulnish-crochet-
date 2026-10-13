@@ -1137,6 +1137,14 @@
     } catch (e) {
       existing = null;
     }
+    /* A payload that is itself an @graph (the product list) replaces the whole
+       block. Without this it had no top-level @type, findIndex returned -1 and
+       the entire graph was appended again on every filter/search, producing an
+       ever-growing JSON-LD blob. */
+    if (payload && Array.isArray(payload["@graph"])) {
+      el.textContent = JSON.stringify(payload);
+      return;
+    }
     if (existing && Array.isArray(existing["@graph"])) {
       var type = payload && payload["@type"];
       var graph = existing["@graph"];
