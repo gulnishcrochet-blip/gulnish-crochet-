@@ -25,6 +25,9 @@ const vm = require("vm");
 
 const ROOT = path.resolve(__dirname, "..");
 const OUT_DIR = path.join(ROOT, "product");
+/* Titles already handed out in this run, so a collision can be broken at the
+   point the page is rendered. */
+let assignedTitles = new Set();
 const ORIGIN = (() => {
   const html = fs.readFileSync(path.join(ROOT, "index.html"), "utf8");
   const m = html.match(/<link rel="canonical" href="(https:\/\/[^/"]+)/);
