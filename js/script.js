@@ -361,6 +361,8 @@
     if (!toast) {
       toast = document.createElement("div");
       toast.className = "toast";
+      toast.setAttribute("role", "status");
+      toast.setAttribute("aria-live", "polite");
       document.body.appendChild(toast);
     }
     toast.textContent = message;
