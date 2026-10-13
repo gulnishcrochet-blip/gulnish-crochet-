@@ -495,8 +495,15 @@ function renderPage(p, catLabel, subLabel, shell) {
   /* Both branches go through buildTitle: the alias pages used to be the one
      place the 60 character cap was skipped, so a long duplicate name could
      ship an uncapped title while its canonical was trimmed. */
-  const title = buildTitle(p, catLabel);
-  const status = stockStatus(p);  const statusClass = status === "sold out" ? "status-out" : status === "made to order" ? "status-made" : "status-in";
+  let title = buildTitle(p, catLabel);
+  /* A title already used this run means the base-name collision above; break
+     it before the page is written. */
+  if (assignedTitles.has(title.toLowerCase())) {
+    title = disambiguateTitle(title, p);
+  }
+  assignedTitles.add(title.toLowerCase());
+  const status = stockStatus(p);
+  const statusClass = status === "sold out" ? "status-out" : status === "made to order" ? "status-made" : "status-in";
   const statusText = status === "sold out" ? "Sold out" : status === "made to order" ? "Made to order" : "In stock";
   const size = imageSize(p.image) || { w: 800, h: 800 };
   const twin = smallTwin(p.image);
