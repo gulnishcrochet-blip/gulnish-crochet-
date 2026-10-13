@@ -486,9 +486,9 @@
     }
 
     var catLabel = function (val) {
-      var idx = parseInt(val.replace("gr", ""), 10) - 1;
+      var idx = parseInt(String(val == null ? "" : val).replace(/[^\d]/g, ""), 10) - 1;
       if (idx >= 0 && settings.categories[idx]) return settings.categories[idx];
-      return val;
+      return val == null ? "" : val;
     };
 
     var subLabel = function (p) {
