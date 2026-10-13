@@ -854,8 +854,14 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
        form, a stale row, a max below or level with the base, a max on a
        product that has no price at all) is dropped to 0, which every surface
        reads as "single fixed price". */
+    /* Rows come back from PostgREST with the column name price_max, while the
+       seed catalogue and every in-memory product use priceMax. Without the
+       fallback every DB-loaded product lost its range and the storefront
+       printed only the base price after a reload - it looked right immediately
+       after an admin save, which is why the defect hid until the next visit. */
     var base = parseFloat(p && p.price) || 0;
-    var top = parseFloat(p && p.priceMax) || 0;
+    var rawTop = p ? (p.priceMax != null ? p.priceMax : p.price_max) : 0;
+    var top = parseFloat(rawTop) || 0;
     if (!(base > 0) || !(top > base)) top = 0;
     var gal = Array.isArray(p && p.gallery)
       ? p.gallery.filter(function (x) { return typeof x === "string" && x.trim(); })
