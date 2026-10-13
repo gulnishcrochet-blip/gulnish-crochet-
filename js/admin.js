@@ -1206,7 +1206,9 @@
       var order = getOrders().find(function (o) { return o.id === waBtn.dataset.waorder; });
       if (!order) return;
       var cust = order.customer || {};
-      var phone = String(cust.phone || "").replace(/[^\d]/g, "").replace(/^0+/, "");
+      var phone = GC.formatPhone
+        ? GC.formatPhone(cust.phone).replace(/[^\d]/g, "")
+        : ("92" + String(cust.phone || "").replace(/[^\d]/g, "").replace(/^0+/, ""));
       if (!phone) { alert("No phone number for this order."); return; }
       var status = order.status || "Pending";
       var msg = "Hi " + (cust.name || "Customer") + ",\n\nYour order *" + order.id + "* has been updated to: *" + status + "*.\n\nItems: " +
