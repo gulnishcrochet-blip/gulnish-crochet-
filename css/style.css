@@ -4380,7 +4380,7 @@ html.js .reveal.revealed {
 }
 
 .footer-note {
-  color: rgba(194, 154, 91, 0.75);
+  color: var(--gold-light);
 }
 
 /* Info / about cards */
