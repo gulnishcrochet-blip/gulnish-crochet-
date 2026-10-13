@@ -137,6 +137,12 @@ function buildTitle(page, label) {
 }
 
 function buildDescription(page, label, count) {
+  /* A shelf that currently has no products must not advertise "0 handmade
+     crochet ..." in its meta description - that reads as broken to a shopper
+     and to a search engine. Describe the made-to-order service instead. */
+  if (!count) {
+    return `Handmade crochet ${label.toLowerCase()} by Gulnish Crochet, made to order in Wazirabad. Custom colours and sizes, delivery confirmed on WhatsApp.`;
+  }
   return page.sub
     ? `${count} handmade crochet ${label.toLowerCase()} from our ${catLabelOf(page.cat)} collection, stitched to order in Pakistan. Custom colours and delivery confirmed on WhatsApp.`
     : `${count} handmade crochet ${label.toLowerCase()} by Gulnish Crochet, stitched to order in Wazirabad. Custom colours and sizes, delivery confirmed on WhatsApp.`;
