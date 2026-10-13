@@ -589,6 +589,14 @@ function renderPage(p, catLabel, subLabel, shell) {
   set(/<meta property="og:description" content="[^"]*">/, `<meta property="og:description" content="${escapeAttr(description)}">`);
   set(/<meta property="og:url" content="[^"]*">/, `<meta property="og:url" content="${escapeAttr(url)}">`);
   set(/<meta property="og:image" content="[^"]*">/, `<meta property="og:image" content="${escapeAttr(ORIGIN + "/" + p.image)}">`);
+  /* The shell advertises a 1200x630 social card, but a product page points
+     og:image at the square product photo. State the real pixel size or the
+     declared dimensions lie to scrapers. */
+  const ogSize = imageSize(p.image);
+  if (ogSize) {
+    set(/<meta property="og:image:width" content="[^"]*">/, `<meta property="og:image:width" content="${ogSize.w}">`);
+    set(/<meta property="og:image:height" content="[^"]*">/, `<meta property="og:image:height" content="${ogSize.h}">`);
+  }
   set(
     /<meta property="og:image:alt" content="[^"]*">/,
     `<meta property="og:image:alt" content="${escapeAttr(p.name)}">`
