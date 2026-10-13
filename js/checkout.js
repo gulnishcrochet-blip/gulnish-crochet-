@@ -306,6 +306,8 @@
     if (!toast) {
       toast = document.createElement("div");
       toast.className = "toast";
+      toast.setAttribute("role", "status");
+      toast.setAttribute("aria-live", "polite");
       document.body.appendChild(toast);
     }
     toast.textContent = message;
@@ -314,10 +316,43 @@
     showMsg._t = setTimeout(function () { toast.classList.remove("show"); }, 2600);
   }
 
+  /* A Pakistani mobile number: 03XXXXXXXXX, 3XXXXXXXXX or +92/92 3XXXXXXXXX. */
+  function validPhone(v) {
+    var d = String(v || "").replace(/\D/g, "");
+    if (/^92\d{10}$/.test(d)) return true;
+    if (/^0/.test(d)) d = d.replace(/^0/, "");
+    return /^3\d{9}$/.test(d);
+  }
+
+  /* Put a real, persistent error next to the field instead of relying on the
+     transient toast, and flag it with aria-invalid so assistive tech reports
+     it when the field is announced. */
+  function markInvalid(el, message) {
+    if (!el) return;
+    el.classList.add("co-invalid");
+    el.setAttribute("aria-invalid", "true");
+    var errId = el.id + "-err";
+    var errEl = document.getElementById(errId);
+    if (!message) {
+      el.removeAttribute("aria-invalid");
+      if (errEl) errEl.remove();
+      return;
+    }
+    if (!errEl) {
+      errEl = document.createElement("p");
+      errEl.id = errId;
+      errEl.className = "co-error";
+      errEl.setAttribute("role", "alert");
+      el.insertAdjacentElement("afterend", errEl);
+    }
+    errEl.textContent = message;
+    el.setAttribute("aria-describedby", errId);
+  }
+
   function validate() {
     var checks = [
       { id: "coName", test: function (v) { return v.trim().length > 1; }, msg: "Please enter your name." },
-      { id: "coPhone", test: function (v) { return v.replace(/\D/g, "").length >= 10; }, msg: "Please enter a valid WhatsApp number." },
+      { id: "coPhone", test: function (v) { return validPhone(v); }, msg: "Please enter a valid WhatsApp number, e.g. 0301 2345678." },
       { id: "coAddress", test: function (v) { return v.trim().length > 9; }, msg: "Please enter your full delivery address." }
     ];
 
@@ -325,7 +360,7 @@
       var el = document.getElementById(checks[i].id);
       if (!el) continue;
       var ok = checks[i].test(el.value || "");
-      el.classList.toggle("co-invalid", !ok);
+      markInvalid(el, ok ? "" : checks[i].msg);
       if (!ok) {
         el.focus();
         showMsg(checks[i].msg);
