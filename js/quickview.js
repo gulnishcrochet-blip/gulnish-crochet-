@@ -236,7 +236,7 @@
     if (p.image) all.push(p.image);
     (p.gallery || []).forEach(function (g) { if (g && g !== p.image) all.push(g); });
     mediaEl.innerHTML = all[0]
-      ? '<img src="' + all[0] + '" alt="' + escapeHtml(p.name) + '">'
+      ? '<img src="' + escapeHtml(all[0]) + '" alt="' + escapeHtml(p.name) + '">'
       : '<div class="photo-pending photo-pending--lg"><span class="photo-pending__mark"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15.5l-4.8-4.8L6.5 20.5"/></svg></span><p class="photo-pending__text">Photo coming soon — customize on WhatsApp.</p></div>';
     thumbsEl.innerHTML = all
       .slice(0, 6)
