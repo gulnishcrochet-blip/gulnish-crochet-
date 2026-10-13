@@ -5,7 +5,7 @@
   "use strict";
 
   var GC = window.GC;
-  var overlay, panel, input, resultsEl, closeBtn, suggestEl, hintEl, emptyEl;
+  var overlay, panel, input, resultsEl, closeBtn, suggestEl, hintEl, emptyEl, statusEl;
   var isOpen = false;
   var cursor = -1;
   var hitsCache = [];
