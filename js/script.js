@@ -19,13 +19,26 @@
         navigator.connection.effectiveType === "2g" ||
         navigator.connection.effectiveType === "3g")) ||
     window.matchMedia("(max-width: 760px)").matches;
+  /* Only the bundled catalogue ships a 480px sm/ twin alongside each full
+     photo. Anything else - most importantly the Supabase storage URLs every
+     admin-panel upload produces - has no such folder, so blindly splicing
+     "sm" into the path 404s. On phones LOW_RES is always on, which is why a
+     product uploaded from the admin panel looked fine in the panel preview
+     (a data URL) but broke on the mobile storefront while still working on a
+     wide desktop. Same guard imgSrcset uses below. */
+  var PHOTO_DIRS = "bags bouquets gajrays geometry headbands jewellery keychains pencil pencilbox purses";
+  function hasSmallTwin(src) {
+    if (!src || src.lastIndexOf("images/", 0) !== 0) return false;
+    var parts = src.split("/");
+    if (parts.length < 3 || parts[parts.length - 2] === "sm") return false;
+    return (" " + PHOTO_DIRS + " ").indexOf(" " + parts[parts.length - 2] + " ") >= 0;
+  }
   function displayImage(src) {
     if (!src || !LOW_RES) return src;
     if (src.lastIndexOf("data:", 0) === 0) return src;
+    if (!hasSmallTwin(src)) return src;
     var parts = src.split("/");
-    if (parts.length >= 2 && parts[parts.length - 2] !== "sm") {
-      parts.splice(parts.length - 1, 0, "sm");
-    }
+    parts.splice(parts.length - 1, 0, "sm");
     return parts.join("/");
   }
 
