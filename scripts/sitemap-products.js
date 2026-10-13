@@ -64,6 +64,7 @@ GC.init()
        Keeping this idempotent matters: the file is committed, so a second run
        must not double the list. */
     xml = xml.replace(/  <!-- PRODUCT PAGES START -->[\s\S]*?<!-- PRODUCT PAGES END -->\n/g, "");
+    xml = refreshStaticEntries(xml);
 
     const entries = [...slugs.entries()]
       .sort((a, b) => a[0].localeCompare(b[0]))
