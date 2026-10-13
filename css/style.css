@@ -117,16 +117,36 @@ label {
 }
 
 :focus-visible,
-a:focus-visible,
-button:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible,
-[tabindex]:focus-visible {
-  outline: 2px solid var(--gold);
-  outline-offset: 3px;
-  border-radius: 6px;
-}
+ a:focus-visible,
+ button:focus-visible,
+ input:focus-visible,
+ select:focus-visible,
+ textarea:focus-visible,
+ [tabindex]:focus-visible {
+   outline: 2px solid var(--primary-deep);
+   outline-offset: 3px;
+   border-radius: 6px;
+ }
+
+ /* Skip link jumps straight to content for keyboard / screen reader users
+    without tabbing through the whole header. Hidden until focused. */
+ .skip-link {
+   position: fixed;
+   top: -100%;
+   left: 1rem;
+   z-index: 1000;
+   background: var(--primary-deep);
+   color: #fff;
+   padding: 0.6rem 1.1rem;
+   border-radius: 0 0 12px 12px;
+   font-weight: 600;
+   box-shadow: var(--shadow-md);
+ }
+ .skip-link:focus-visible {
+   top: 0;
+   outline: 2px solid var(--gold);
+   outline-offset: -2px;
+ }
 
 img {
   max-width: 100%;
