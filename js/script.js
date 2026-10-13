@@ -2082,6 +2082,7 @@
   if (lightbox) {
     var images = [];
     var current = 0;
+    var lightboxTrigger = null;
 
     var imgEl = lightbox.querySelector(".lightbox__img");
     var capEl = lightbox.querySelector(".lightbox__caption");
