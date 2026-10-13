@@ -351,16 +351,22 @@ function jsonLd(page, label, title, description, items, faqs) {
       description,
       isPartOf: { "@id": `${ORIGIN}/#website` },
       inLanguage: "en",
-      mainEntity: {
-        "@type": "ItemList",
-        numberOfItems: items.length,
-        itemListElement: items.map((p, i) => ({
-          "@type": "ListItem",
-          position: i + 1,
-          url: `${ORIGIN}/product/${GC.canonicalProductSlug(p)}`,
-          name: p.name,
-        })),
-      },
+      /* An ItemList with numberOfItems 0 and no elements is invalid structured
+         data, so an empty shelf publishes a plain CollectionPage instead. */
+      ...(items.length
+        ? {
+            mainEntity: {
+              "@type": "ItemList",
+              numberOfItems: items.length,
+              itemListElement: items.map((p, i) => ({
+                "@type": "ListItem",
+                position: i + 1,
+                url: `${ORIGIN}/product/${GC.canonicalProductSlug(p)}`,
+                name: p.name,
+              })),
+            },
+          }
+        : {}),
     },
     {
       "@type": "BreadcrumbList",
