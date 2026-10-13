@@ -1179,11 +1179,11 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
      is not renderable in Chrome, Firefox or Android at all, and the old code
      stored the HEIC payload under a ".webp" name, so the picture broke on
      every browser except the iPhone that took it. Downscale to a sane edge
-     and re-encode to WebP (with a JPEG/author format fallback) before upload
-     so storage only ever receives a normal, web-safe image of a predictable
-     size. When the browser cannot decode the source at all (some Android
-     builds cannot open HEIC) the original file is uploaded untouched rather
-     than being lost. */
+     and re-encode to WebP before upload so storage only ever receives a
+     normal, web-safe image of a predictable size; if the browser cannot
+     encode WebP the original is uploaded untouched. When it cannot decode the
+     source at all (some Android builds cannot open HEIC) the original file is
+     likewise uploaded rather than being lost. */
   function downscaleImage(file) {
     return new Promise(function (resolve) {
       if (!file || typeof file.type !== "string" || file.type.indexOf("image/") !== 0 ||
