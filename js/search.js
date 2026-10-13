@@ -154,6 +154,9 @@
 
     resultsEl = document.createElement('div');
     resultsEl.className = 'search-panel__results';
+    resultsEl.id = 'searchResults';
+    resultsEl.setAttribute('role', 'listbox');
+    resultsEl.setAttribute('aria-label', 'Search results');
 
     emptyEl = document.createElement('div');
     emptyEl.className = 'search-empty';
