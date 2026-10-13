@@ -871,6 +871,7 @@
       total: stats.total || 0,
       pending: stats.pending || 0,
       progress: (stats.confirmed || 0) + (stats.processing || 0) + (stats.shipped || 0),
+      shipped: stats.shipped || 0,
       delivered: stats.delivered || 0,
       cancelled: stats.cancelled || 0,
       revenue: stats.revenue || 0,
