@@ -379,10 +379,19 @@
     resultsEl.innerHTML = '';
     emptyEl.hidden = hitsCache.length !== 0;
 
-    hitsCache.forEach(function (p) {
+    if (statusEl) {
+      statusEl.textContent = hitsCache.length
+        ? hitsCache.length + (hitsCache.length === 1 ? " result" : " results") + ' for "' + query + '"'
+        : 'No results for "' + query + '"';
+    }
+
+    hitsCache.forEach(function (p, i) {
       var row = document.createElement('div');
       row.className = 'search-hit';
       row.dataset.id = p.id;
+      row.setAttribute('role', 'option');
+      row.id = 'searchResult-' + i;
+      row.setAttribute('aria-selected', 'false');
 
       var img = document.createElement('img');
       if (p.image) {
