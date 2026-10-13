@@ -2111,18 +2111,28 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
 
     /* ---- images ---- */
     uploadImage: async function (fileOrDataUrl) {
+      /* Normalise phone photos first so storage never receives a HEIC the
+         storefront cannot render, and never a 6MB original. */
+      var entry = fileOrDataUrl;
+      if (entry && typeof entry === "object" && typeof entry.size === "number" &&
+          typeof entry.type === "string" && entry.type.indexOf("image/") === 0) {
+        try { entry = (await downscaleImage(entry)) || entry; } catch (e) { /* keep original */ }
+      }
+
       if (configured) {
         try {
-          var type = (typeof fileOrDataUrl === "object" && fileOrDataUrl && fileOrDataUrl.type) ? fileOrDataUrl.type : "image/webp";
+          var type = (entry && typeof entry === "object" && entry.type) ? entry.type : "image/webp";
           var ext = "webp";
           if (type === "image/jpeg") ext = "jpg";
           else if (type === "image/png") ext = "png";
           else if (type === "image/avif") ext = "avif";
           else if (type === "image/gif") ext = "gif";
+          else if (type === "image/heic" || type === "image/heif") ext = "heic";
+          else if (type && type.indexOf("image/") === 0) ext = type.slice(6).replace(/[^a-z0-9]/g, "") || "webp";
           var name = "img_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8) + "." + ext;
           var res = await sb.storage
             .from(cfg.storageBucket || "shop-images")
-            .upload(name, fileOrDataUrl, {
+            .upload(name, entry, {
               contentType: type,
               upsert: true
             });
@@ -2135,7 +2145,13 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
           console.warn("Storage upload failed, saving as data URL:", e);
         }
       }
-      return { url: fileOrDataUrl };
+      /* Fallback contract: the admin panel stores whatever `.url` holds, so it
+         must be a string. Returning the File object (as this once did) made the
+         product save as "[object File]" and render a broken image. */
+      if (entry && typeof entry === "object" && typeof entry.arrayBuffer === "function") {
+        try { return { url: await blobToDataURL(entry) }; } catch (e) { /* fall through */ }
+      }
+      return { url: entry };
     },
 
     /* ---- shop whatsapp ---- */
