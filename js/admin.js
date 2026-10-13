@@ -1219,7 +1219,7 @@
           : "") +
         (String(status).toLowerCase() === "shipped" ? "\n\nYour order is on the way!" : "") +
         (String(status).toLowerCase() === "delivered" ? "\n\nThank you for shopping with Gulnish Crochet!" : "");
-      window.open("https://wa.me/92" + phone + "?text=" + encodeURIComponent(msg), "_blank");
+      window.open("https://wa.me/" + phone + "?text=" + encodeURIComponent(msg), "_blank");
     });
 
     /* delete */
