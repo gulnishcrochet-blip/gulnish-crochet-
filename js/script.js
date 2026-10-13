@@ -2175,6 +2175,23 @@
       if (e.key === "Escape") close();
       if (e.key === "ArrowLeft") prevBtn.click();
       if (e.key === "ArrowRight") nextBtn.click();
+      if (e.key === "Tab") {
+        var fb = Array.prototype.filter.call(
+          lightbox.querySelectorAll(
+            'button, a[href], input, [tabindex]:not([tabindex="-1"])'
+          ),
+          function (el) { return !el.disabled && !el.hidden; }
+        );
+        if (!fb.length) return;
+        var firstLb = fb[0];
+        var lastLb = fb[fb.length - 1];
+        if (e.shiftKey) {
+          if (document.activeElement === firstLb) { e.preventDefault(); lastLb.focus(); }
+        } else if (document.activeElement === lastLb) {
+          e.preventDefault();
+          firstLb.focus();
+        }
+      }
     });
   }
 
