@@ -124,7 +124,7 @@
   function hideMsg() { if (msg) msg.hidden = true; }
 
   async function lookup() {
-    if (!input || !btn) return;
+    if (!input || !btn || !results) return;
     var q = input.value.trim();
     if (!q) {
       showMsg("Please enter an order number or phone number.", true);
