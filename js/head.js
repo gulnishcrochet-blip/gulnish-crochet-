@@ -31,10 +31,25 @@ document.documentElement.classList.add("js");
   }
 })();
 
-window.addEventListener("load", function () {
+document.addEventListener("load", function () {
   setTimeout(function () {
     if (window.__gcRevealReady) return;
     var els = document.querySelectorAll(".reveal");
     for (var i = 0; i < els.length; i++) els[i].classList.add("revealed");
   }, 1500);
+});
+
+/* Injected (rather than baked into every page) so a keyboard or screen-reader
+   user lands on the same skip link whichever of the 160+ pages they open:
+   the link must be the first focusable element, and <main> needs an anchor. */
+document.addEventListener("DOMContentLoaded", function () {
+  var main = document.querySelector("main");
+  if (main && !main.id) main.id = "main";
+  if (!document.querySelector(".skip-link")) {
+    var a = document.createElement("a");
+    a.className = "skip-link";
+    a.href = "#main";
+    a.textContent = "Skip to content";
+    document.body.insertBefore(a, document.body.firstChild);
+  }
 });
