@@ -182,8 +182,7 @@
   }
 
   if (itemsEl) {
-    itemsEl.addEventListener("click", function (e) {
-      var btn = e.target.closest(".cp-qty__btn, .cp-item__remove");
+    itemsEl.addEventListener("click", function (e) {      var btn = e.target.closest(".cp-qty__btn, .cp-item__remove");
       if (!btn) return;
       /* Mark the event so script.js's document listener skips it: it runs after
          this one (the click bubbles from #cpItems to document) and by then the
