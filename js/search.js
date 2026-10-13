@@ -349,6 +349,7 @@
       });
       resultsEl.innerHTML = '';
       emptyEl.hidden = true;
+      if (statusEl) statusEl.textContent = '';
       cursor = -1;
       return;
     }
