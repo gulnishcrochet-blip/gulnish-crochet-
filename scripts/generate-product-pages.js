@@ -277,6 +277,39 @@ function titleNameCandidates(name) {
   return out;
 }
 
+/* Teams of products share a base name and differ only by a trailing bracket
+   ("(Per Single Piece)"). buildTitle drops that bracket to fit 60 characters,
+   which can make two pages ship an identical <title> — duplicate titles in the
+   index. Recover the qualifier so every page stays distinct. */
+function disambiguateTitle(baseTitle, p) {
+  const name = String(p.name || "");
+  const m = name.match(/\(([^()]+)\)\s*$/);
+  const tag = m ? m[1].trim() : "";
+  const head = name.replace(/\s*\([^()]*\)\s*$/, "").trim();
+  if (tag) {
+    let candidate = head + " | " + tag;
+    if (candidate.length <= 60) return candidate;
+    const budget = 60 - (" | " + tag).length;
+    if (budget >= 8) {
+      let cut = head.slice(0, budget);
+      const sp = cut.lastIndexOf(" ");
+      if (sp > 0) cut = cut.slice(0, sp);
+      cut = cut.replace(/[\s,;:|/\-–—]+$/, "").trim();
+      if (cut) {
+        candidate = cut + " | " + tag;
+        if (candidate.length <= 60) return candidate;
+      }
+    }
+  }
+  /* No usable qualifier: fall back to the catalogue id so the titles differ. */
+  const tail = " | " + String(p.id || "").replace(/^seed_/, "");
+  if (tail.length < 60) {
+    const keep = baseTitle.slice(0, 60 - tail.length).replace(/[\s|]+$/, "");
+    return keep + tail;
+  }
+  return baseTitle;
+}
+
 /* Largest prefix of `name` that leaves room for `suffix` inside the 60
    character limit, ending on a whole word and with no bracket left open. */
 function trimNameForTitle(name, suffix) {
