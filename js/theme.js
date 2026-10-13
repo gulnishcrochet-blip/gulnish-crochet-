@@ -187,14 +187,19 @@
     li.classList.add("nav-item");
     li.setAttribute("data-has-mega", "");
 
-    var caret = document.createElement("svg");
-    caret.className = "nav-caret";
+    /* Must be an SVG-namespaced element: createElement("svg") makes an HTML
+       element, so the polyline never rendered and the caret was invisible. */
+    var SVG_NS = "http://www.w3.org/2000/svg";
+    var caret = document.createElementNS(SVG_NS, "svg");
+    caret.setAttribute("class", "nav-caret");
     caret.setAttribute("viewBox", "0 0 24 24");
     caret.setAttribute("fill", "none");
     caret.setAttribute("stroke", "currentColor");
     caret.setAttribute("stroke-width", "2.4");
     caret.setAttribute("aria-hidden", "true");
-    caret.innerHTML = '<polyline points="6 9 12 15 18 9"/>';
+    var caretArrow = document.createElementNS(SVG_NS, "polyline");
+    caretArrow.setAttribute("points", "6 9 12 15 18 9");
+    caret.appendChild(caretArrow);
     shopLink.appendChild(caret);
 
     var panel = document.createElement("div");
