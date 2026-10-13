@@ -8,6 +8,29 @@
    wired up, and this only forces everything visible if that never happens. */
 document.documentElement.classList.add("js");
 
+/* Kick off the TLS/DNS handshakes for the hosts the page will talk to before
+   the deferred bundles actually need them: the Supabase REST API, the
+   jsdelivr CDN that serves the Supabase SDK, and the analytics endpoints. */
+(function resourceHints() {
+  var hosts = [
+    "https://nmdojjoxqfbaxogehsxc.supabase.co",
+    "https://cdn.jsdelivr.net",
+    "https://www.googletagmanager.com",
+    "https://connect.facebook.net"
+  ];
+  for (var i = 0; i < hosts.length; i++) {
+    var link = document.createElement("link");
+    link.rel = "preconnect";
+    link.href = hosts[i];
+    link.crossOrigin = "anonymous";
+    document.head.appendChild(link);
+    var dns = document.createElement("link");
+    dns.rel = "dns-prefetch";
+    dns.href = hosts[i];
+    document.head.appendChild(dns);
+  }
+})();
+
 window.addEventListener("load", function () {
   setTimeout(function () {
     if (window.__gcRevealReady) return;
