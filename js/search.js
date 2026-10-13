@@ -437,9 +437,14 @@
   function setCursor(i) {
     var els = resultsEl.querySelectorAll('.search-hit');
     els.forEach(function (el, idx) {
+      el.setAttribute('aria-selected', idx === i ? 'true' : 'false');
       el.classList.toggle('is-cursor', idx === i);
     });
     cursor = i;
+    if (input) {
+      if (i >= 0) input.setAttribute('aria-activedescendant', 'searchResult-' + i);
+      else input.removeAttribute('aria-activedescendant');
+    }
   }
 
   function moveCursor(dir) {
