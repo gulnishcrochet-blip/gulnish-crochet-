@@ -327,7 +327,9 @@
     var list = products
       .map(function (p) { return Object.assign({}, p, { _s: score(p, query) }); })
       .filter(function (p) { return p._s > 0 || query.length <= 2; })
-      .sort(function (a, b) { return b._s - a._s || a.name.localeCompare(b.name); })
+      .sort(function (a, b) {
+        return b._s - a._s || String(a.name || "").localeCompare(String(b.name || ""));
+      })
       .slice(0, 12);
 
     if (query.length >= 2) {
