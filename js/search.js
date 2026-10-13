@@ -119,6 +119,17 @@
     input.placeholder = 'Search products, colors, keywords...';
     input.setAttribute('autocomplete', 'off');
     input.setAttribute('spellcheck', 'false');
+    input.setAttribute('aria-label', 'Search products, colors and keywords');
+    input.setAttribute('role', 'combobox');
+    input.setAttribute('aria-expanded', 'true');
+    input.setAttribute('aria-autocomplete', 'list');
+    input.setAttribute('aria-controls', 'searchResults');
+
+    /* Screen-reader-only status: reports how many products matched without
+       re-reading the whole result list on every keystroke. */
+    statusEl = document.createElement('div');
+    statusEl.className = 'sr-only search-status';
+    statusEl.setAttribute('aria-live', 'polite');
 
     hintEl = document.createElement('span');
     hintEl.className = 'search-panel__hint';
