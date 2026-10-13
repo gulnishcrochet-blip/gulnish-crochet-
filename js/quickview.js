@@ -241,7 +241,7 @@
     thumbsEl.innerHTML = all
       .slice(0, 6)
       .map(function (src, i) {
-        return '<button type="button" class="qv-thumb' + (i === 0 ? ' is-active' : '') + '" data-src="' + escapeHtml(src) + '"><img src="' + src + '" alt=""></button>';
+        return '<button type="button" class="qv-thumb' + (i === 0 ? ' is-active' : '') + '" data-src="' + escapeHtml(src) + '"><img src="' + escapeHtml(src) + '" alt=""></button>';
       })
       .join('');
     thumbsEl.hidden = all.length <= 1;
