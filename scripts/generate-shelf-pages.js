@@ -469,13 +469,15 @@ function buildPage(page) {
   );
   const range = priceRangeLabel(items);
 
-  const p1 = page.sub
-    ? `This shelf holds the ${items.length} crochet ${label.toLowerCase()} pieces in the ${catLabel} collection, every one stitched to order in Wazirabad${
-        range ? ` and priced from ${range}` : ""
-      }. Popular right now: ${namesHtml}.`
-    : `The ${catLabel} shelf lists ${items.length} handmade crochet pieces, every one stitched to order in Wazirabad${
-        range ? ` and priced from ${range}` : ""
-      }. Popular right now: ${namesHtml}.`;
+  const p1 = items.length
+    ? page.sub
+      ? `This shelf holds the ${items.length} crochet ${label.toLowerCase()} pieces in the ${catLabel} collection, every one stitched to order in Wazirabad${
+          range ? ` and priced from ${range}` : ""
+        }. Popular right now: ${namesHtml}.`
+      : `The ${catLabel} shelf lists ${items.length} handmade crochet pieces, every one stitched to order in Wazirabad${
+          range ? ` and priced from ${range}` : ""
+        }. Popular right now: ${namesHtml}.`
+    : `We are stitching the next batch of ${label.toLowerCase()} now. Every piece is made to order in the colours you choose, so message us on WhatsApp and we will confirm a date and a price before you pay.`;
 
   const p2 = `Nothing is mass produced. Each piece is crocheted by hand in the colours you choose, which takes about ${craft} days, and the courier then adds about ${days} days. We confirm the exact date on WhatsApp before the first stitch.`;
 
