@@ -223,16 +223,18 @@
      the cart once boot() resolves — the basket would stay on the defaults for
      the whole visit. */
   if (GC && typeof GC.init === "function") {
-    var started = false;
+    var painted = false;
     var paint = function () {
-      if (started) return;
-      started = true;
+      painted = true;
       render();
     };
     GC.init().then(paint, paint);
     /* If the snapshot never settles (blocked network), paint the local copy
-       rather than leaving an empty cart page. */
-    setTimeout(paint, 1500);
+       rather than leaving an empty cart page - but do not mark that as final:
+       paint() runs again when boot() actually resolves so live prices and the
+       published WhatsApp number replace the fallback. The old `started` guard
+       made the 1.5s fallback permanent, freezing the cart on defaults. */
+    setTimeout(function () { if (!painted) render(); }, 1500);
   } else {
     render();
   }
