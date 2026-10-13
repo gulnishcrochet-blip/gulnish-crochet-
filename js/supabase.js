@@ -1174,6 +1174,64 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
     } catch (e) { /* never let logging break the save */ }
   }
 
+  /* ---------- upload helpers ----------
+     Phone camera photos are routinely 3-8MB and iPhones hand back HEIC. HEIC
+     is not renderable in Chrome, Firefox or Android at all, and the old code
+     stored the HEIC payload under a ".webp" name, so the picture broke on
+     every browser except the iPhone that took it. Downscale to a sane edge
+     and re-encode to WebP (with a JPEG/author format fallback) before upload
+     so storage only ever receives a normal, web-safe image of a predictable
+     size. When the browser cannot decode the source at all (some Android
+     builds cannot open HEIC) the original file is uploaded untouched rather
+     than being lost. */
+  function downscaleImage(file) {
+    return new Promise(function (resolve) {
+      if (!file || typeof file.type !== "string" || file.type.indexOf("image/") !== 0 ||
+          typeof file.size !== "number") {
+        return resolve(file);
+      }
+      var MAX = 1600;
+      var QUALITY = 0.85;
+      var url;
+      try { url = URL.createObjectURL(file); } catch (e) { return resolve(file); }
+      var settled = false;
+      var finish = function (blob) {
+        if (settled) return;
+        settled = true;
+        try { URL.revokeObjectURL(url); } catch (e) { /* ignore */ }
+        resolve(blob || file);
+      };
+      var img = new Image();
+      img.onload = function () {
+        try {
+          var w = img.naturalWidth || img.width;
+          var h = img.naturalHeight || img.height;
+          if (!w || !h) return finish(null);
+          var scale = Math.min(1, MAX / Math.max(w, h));
+          var cw = Math.max(1, Math.round(w * scale));
+          var ch = Math.max(1, Math.round(h * scale));
+          var canvas = document.createElement("canvas");
+          canvas.width = cw;
+          canvas.height = ch;
+          canvas.getContext("2d").drawImage(img, 0, 0, cw, ch);
+          if (canvas.toBlob) canvas.toBlob(function (b) { finish(b); }, "image/webp", QUALITY);
+          else finish(null);
+        } catch (e) { finish(null); }
+      };
+      img.onerror = function () { finish(null); };
+      img.src = url;
+    });
+  }
+
+  function blobToDataURL(blob) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function () { resolve(reader.result); };
+      reader.onerror = function () { reject(reader.error || new Error("read failed")); };
+      reader.readAsDataURL(blob);
+    });
+  }
+
   /* ============================================================= */
 
   var GC = {
