@@ -13,6 +13,35 @@ const DATE = process.env.SITEMAP_DATE || new Date().toISOString().slice(0, 10);
 
 const GENERATED_NAME = /^(purses?|bags?|gajrays?|bouquets?|jewellery|headbands?|keychains?|geometry|pencil)\s+\d+$/i;
 
+/* Walk the static <url> entries and:
+   - drop any page whose HTML carries a noindex meta (e.g. a shelf with no
+     products yet), so the sitemap never advertises a page that asks crawlers
+     to stay away;
+   - rewrite each <lastmod> from the file's real modification time, so the
+     dates the sitemap publishes are true instead of whatever was typed by
+     hand when the entry was first added. */
+function refreshStaticEntries(xml) {
+  return xml.replace(/ {2}<url>[\s\S]*?<\/url>\n/g, (block) => {
+    const loc = block.match(/<loc>([^<]+)<\/loc>/);
+    if (!loc) return block;
+    const pathname = decodeURIComponent(loc[1].replace(/^https?:\/\/[^/]+/, ""));
+    const rel = pathname.replace(/^\//, "").replace(/\/$/, "");
+    const candidates = [
+      path.join(ROOT, rel + ".html"),
+      path.join(ROOT, rel, "index.html"),
+    ];
+    let file = null;
+    for (const c of candidates) {
+      if (fs.existsSync(c)) { file = c; break; }
+    }
+    if (!file) return block;
+    const html = fs.readFileSync(file, "utf8");
+    if (/<meta\s+name="robots"[^>]*noindex/i.test(html)) return "";
+    const date = fs.statSync(file).mtime.toISOString().slice(0, 10);
+    return block.replace(/<lastmod>[^<]*<\/lastmod>/, `<lastmod>${date}</lastmod>`);
+  });
+}
+
 /* init() resolves when the catalogue is populated, not with the catalogue
    itself, so the GC object has to be held on to separately. */
 const GC = loadCatalog();
