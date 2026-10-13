@@ -2049,12 +2049,17 @@ var SCHOOL_SUB_SHIFT = { sg1: "sg2", sg2: "sg3", sg3: "sg4" };
     uploadImage: async function (fileOrDataUrl) {
       if (configured) {
         try {
+          var type = (typeof fileOrDataUrl === "object" && fileOrDataUrl && fileOrDataUrl.type) ? fileOrDataUrl.type : "image/webp";
           var ext = "webp";
+          if (type === "image/jpeg") ext = "jpg";
+          else if (type === "image/png") ext = "png";
+          else if (type === "image/avif") ext = "avif";
+          else if (type === "image/gif") ext = "gif";
           var name = "img_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8) + "." + ext;
           var res = await sb.storage
             .from(cfg.storageBucket || "shop-images")
             .upload(name, fileOrDataUrl, {
-              contentType: fileOrDataUrl.type || "image/webp",
+              contentType: type,
               upsert: true
             });
           if (res.error) throw res.error;
