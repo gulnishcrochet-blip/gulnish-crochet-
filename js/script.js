@@ -1673,6 +1673,7 @@
   var cartDrawer = document.getElementById("cartDrawer");
   var cartItemsEl = document.getElementById("cartItems");
   var cartCountEl = document.getElementById("cartCount");
+  if (cartCountEl) cartCountEl.setAttribute("aria-live", "polite");
   var cartDrawerWa = document.getElementById("cartDrawerWa");
   var cartSubtotalEl = document.getElementById("cartSubtotal");
   var cartSubtotalLabelEl = document.getElementById("cartSubtotalLabel");
