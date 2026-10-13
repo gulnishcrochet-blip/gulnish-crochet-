@@ -983,6 +983,10 @@
         box.classList.add("slideshow");
         var secondLayer = firstLayer.cloneNode(true);
         secondLayer.removeAttribute("data-slides");
+        /* cloneNode copies the first photo's srcset, which would keep both
+           layers showing slide 0 and make the cross-fade invisible. */
+        secondLayer.removeAttribute("srcset");
+        secondLayer.removeAttribute("sizes");
         secondLayer.src = slides[1];
         secondLayer.style.opacity = "0";
         firstLayer.classList.add("slideshow-layer");
@@ -1927,7 +1931,14 @@
     var thumbBtn = e.target.closest("[data-pp-thumb]");
     if (thumbBtn && ppImage) {
       var mainImg = ppImage.querySelector("img");
-      if (mainImg) mainImg.src = displayImage(thumbBtn.dataset.ppThumb);
+      if (mainImg) {
+        /* The main image carries a srcset built from the first photo, and a
+           srcset always wins over src - so without clearing it the thumbnail
+           click looked like it did nothing. */
+        mainImg.removeAttribute("srcset");
+        mainImg.removeAttribute("sizes");
+        mainImg.src = displayImage(thumbBtn.dataset.ppThumb);
+      }
       document.querySelectorAll("[data-pp-thumb]").forEach(function (b) {
         b.classList.toggle("active", b === thumbBtn);
       });
