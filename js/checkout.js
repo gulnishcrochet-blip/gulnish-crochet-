@@ -616,7 +616,7 @@ var anyRange = order.items.some(function (i) { return parseFloat(i.priceMax) > p
   /* clear the error ring as soon as the shopper fixes the field */
   ["coName", "coPhone", "coAddress"].forEach(function (id) {
     var el = document.getElementById(id);
-    if (el) el.addEventListener("input", function () { el.classList.remove("co-invalid"); });
+    if (el) el.addEventListener("input", function () { markInvalid(el, ""); });
   });
 
   function init() {
