@@ -385,7 +385,11 @@
     var img = imageData;
     if (pendingImageFile) {
       var up = await GC.uploadImage(pendingImageFile);
-      if (up && up.url) img = up.url;
+      /* Only accept a real URL/data-URL string. If the upload could not produce
+         one, keep the data URL already read for the preview instead of saving a
+         File object (which renders as "[object File]" and breaks the picture). */
+      if (up && typeof up.url === "string" && up.url) img = up.url;
+      else if (imageData) img = imageData;
       pendingImageFile = null;
     }
 
@@ -704,7 +708,7 @@
     }
 
     var up = await GC.uploadImage(file);
-    var imgUrl = (up && up.url) || null;
+    var imgUrl = (up && typeof up.url === "string" && up.url) || null;
     if (!imgUrl) {
       imgUrl = await readAsDataURL(file);
     }
