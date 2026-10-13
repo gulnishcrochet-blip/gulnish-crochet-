@@ -496,8 +496,7 @@ function renderPage(p, catLabel, subLabel, shell) {
      place the 60 character cap was skipped, so a long duplicate name could
      ship an uncapped title while its canonical was trimmed. */
   const title = buildTitle(p, catLabel);
-  const status = stockStatus(p);
-  const statusClass = status === "sold out" ? "status-out" : status === "made to order" ? "status-made" : "status-in";
+  const status = stockStatus(p);  const statusClass = status === "sold out" ? "status-out" : status === "made to order" ? "status-made" : "status-in";
   const statusText = status === "sold out" ? "Sold out" : status === "made to order" ? "Made to order" : "In stock";
   const size = imageSize(p.image) || { w: 800, h: 800 };
   const twin = smallTwin(p.image);
