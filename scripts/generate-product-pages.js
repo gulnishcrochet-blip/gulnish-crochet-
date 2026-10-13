@@ -584,7 +584,7 @@ function renderPage(p, catLabel, subLabel, shell) {
   set(/<title>[\s\S]*?<\/title>/, `<title>${escapeHtml(title)}</title>`);
   set(/<meta name="description" content="[^"]*">/, `<meta name="description" content="${escapeAttr(description)}">`);
   set(/<link rel="canonical" href="[^"]*">/, `<link rel="canonical" href="${escapeAttr(url)}">`);
-  set(/<meta property="og:type" content="[^"]*">/, `<meta property="og:type" content="product">`);
+  set(/<meta property="og:type" content="[^"]*">/, `<meta property="og:type" content="website">`);
   set(/<meta property="og:title" content="[^"]*">/, `<meta property="og:title" content="${escapeAttr(title)}">`);
   set(/<meta property="og:description" content="[^"]*">/, `<meta property="og:description" content="${escapeAttr(description)}">`);
   set(/<meta property="og:url" content="[^"]*">/, `<meta property="og:url" content="${escapeAttr(url)}">`);
