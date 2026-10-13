@@ -201,6 +201,22 @@
         return;
       }
       if (e.key === 'Escape' && isOpen) close();
+      /* Do not let Tab walk out of the search dialog into the page behind it. */
+      if (e.key === 'Tab' && isOpen) {
+        var f = Array.prototype.filter.call(
+          overlay.querySelectorAll('input, button, a[href], [tabindex]'),
+          function (el) { return !el.disabled; }
+        );
+        if (!f.length) return;
+        var first = f[0];
+        var last = f[f.length - 1];
+        if (e.shiftKey) {
+          if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+        } else if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     });
 
     // quick suggestions
