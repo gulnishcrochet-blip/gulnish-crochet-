@@ -46,7 +46,15 @@
   }
 
   function saveCart(items) {
-    localStorage.setItem(CART_KEY, JSON.stringify(items));
+    try {
+      localStorage.setItem(CART_KEY, JSON.stringify(items));
+    } catch (e) { /* private mode / quota - still notify listeners below */ }
+    /* cart.js dispatches this so the shared drawer and in-memory cart refresh.
+       Clearing the basket here (after a successful order) must do the same, or
+       the header badge and drawer keep showing the ordered items until reload. */
+    try {
+      window.dispatchEvent(new CustomEvent("gulnish:cart", { detail: { items: items } }));
+    } catch (e) { /* older browsers */ }
   }
 
   function livePrice(item) {
