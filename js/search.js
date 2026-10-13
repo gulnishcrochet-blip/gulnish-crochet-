@@ -173,6 +173,7 @@
     panel.appendChild(suggestEl);
     panel.appendChild(resultsEl);
     panel.appendChild(emptyEl);
+    panel.appendChild(statusEl);
     panel.appendChild(foot);
     overlay.appendChild(panel);
     document.body.appendChild(overlay);
